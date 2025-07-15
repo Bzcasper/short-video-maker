@@ -90,4 +90,52 @@ export class FFMpeg {
         });
     });
   }
+  async extractThumbnail(
+    videoPath: string,
+    outputPath: string,
+    time: string = "00:00:01",
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      ffmpeg()
+        .input(videoPath)
+        .screenshots({
+          timestamps: [time],
+          filename: outputPath,
+          folder: ".",
+          size: "320x240",
+        })
+        .on("end", () => {
+          logger.debug("Thumbnail extraction complete");
+          resolve(outputPath);
+        })
+        .on("error", (err) => {
+          logger.error({ err }, "Error extracting thumbnail");
+          reject(err);
+        });
+    });
+  }
+
+  async imageToVideo(
+    imagePath: string,
+    outputPath: string,
+    duration: number,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      ffmpeg()
+        .input(imagePath)
+        .inputOptions(["-loop 1"])
+        .outputOptions([`-t ${duration}`])
+        .videoCodec("libx264")
+        .toFormat("mp4")
+        .save(outputPath)
+        .on("end", () => {
+          logger.debug("Image to video conversion complete");
+          resolve(outputPath);
+        })
+        .on("error", (err) => {
+          logger.error({ err }, "Error converting image to video");
+          reject(err);
+        });
+    });
+  }
 }

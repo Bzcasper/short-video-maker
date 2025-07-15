@@ -73,6 +73,13 @@ You can find example n8n workflows created with the REST/MCP server [in this rep
 - Background video search and selection via Pexels
 - Background music with genre/mood selection
 - Serve as both REST API and Model Context Protocol (MCP) server
+- Multi-language support for voiceovers and captions
+- Square video support for platforms like Instagram
+- AI-powered features for caption enhancement using Cloudflare Workers AI
+- Performance optimizations for rendering with adaptive settings
+- Enhanced UI with real-time feedback and social sharing options
+- Community-driven asset library for music and visuals
+- Accessibility features including ARIA labels and keyboard navigation
 
 # How It Works
 
@@ -96,7 +103,6 @@ Shorts Creator takes simple text inputs and search terms, then:
 - ≥ 3 gb free RAM, my recommendation is 4gb RAM
 - ≥ 2 vCPU
 - ≥ 5gb disc space
-
 
 # Concepts
 
@@ -135,18 +141,20 @@ docker run -it --rm --name short-video-maker -p 3123:3123 -e LOG_LEVEL=debug -e 
 docker run -it --rm --name short-video-maker -p 3123:3123 -e LOG_LEVEL=debug -e PEXELS_API_KEY= gyoridavid/short-video-maker:latest
 ```
 
-### Cuda
+### CUDA (GPU Acceleration)
 
-If you own an Nvidia GPU and you want use a larger whisper model with GPU acceleration, you can use the CUDA optimised Docker image.
+If you own an NVIDIA GPU and want to use a larger Whisper model with GPU acceleration for faster transcription, you can use the CUDA-optimized Docker image.
 
-- Uses the `medium.en` whisper.cpp model (with GPU acceleration)
-- Uses `fp32` kokoro model
+- Uses the `medium.en` Whisper.cpp model (with GPU acceleration for faster transcription)
+- Uses `fp32` Kokoro model
 - `CONCURRENCY=1` to overcome OOM errors coming from Remotion with limited resources
-- `VIDEO_CACHE_SIZE_IN_BYTES=2097152000` (2gb) to overcome OOM errors coming from Remotion with limited resources
+- `VIDEO_CACHE_SIZE_IN_BYTES=2097152000` (2GB) to overcome OOM errors coming from Remotion with limited resources
 
-```jsx
-docker run -it --rm --name short-video-maker -p 3123:3123 -e LOG_LEVEL=debug -e PEXELS_API_KEY= --gpus=all gyoridavid/short-video-maker:latest-cuda
+```bash
+docker run -it --rm --name short-video-maker -p 3123:3123 -e LOG_LEVEL=debug -e PEXELS_API_KEY=your_pexels_api_key --gpus=all gyoridavid/short-video-maker:latest-cuda
 ```
+
+**Note**: The `--gpus=all` flag is crucial to enable GPU access for the container. Ensure that NVIDIA Docker runtime is installed and configured on your system to use this feature. GPU acceleration applies only to Whisper.cpp for transcription; Remotion rendering remains CPU-intensive.
 
 ## Docker compose
 

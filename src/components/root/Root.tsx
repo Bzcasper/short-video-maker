@@ -2,6 +2,7 @@ import { CalculateMetadataFunction, Composition } from "remotion";
 import { shortVideoSchema } from "../utils";
 import { PortraitVideo } from "../videos/PortraitVideo";
 import { LandscapeVideo } from "../videos/LandscapeVideo";
+import { SquareVideo } from "../videos/SquareVideo";
 import { TestVideo } from "../videos/Test";
 import z from "zod";
 import { AvailableComponentsEnum } from "../types";
@@ -271,6 +272,47 @@ export const RemotionRoot: React.FC = () => {
             durationMs: 14300,
             paddingBack: 1500,
             captionBackgroundColor: "#ff0000",
+            captionPosition: "center",
+          },
+        }}
+        calculateMetadata={calculateMetadata}
+      />
+      <Composition
+        id={AvailableComponentsEnum.SquareVideo}
+        component={SquareVideo}
+        durationInFrames={30}
+        fps={FPS}
+        width={1080}
+        height={1080}
+        defaultProps={{
+          music: {
+            url:
+              "http://localhost:3123/api/music/" +
+              encodeURIComponent(
+                "Aurora on the Boulevard - National Sweetheart.mp3",
+              ),
+            file: "mellow-smooth-rap-beat-20230107-132480.mp3",
+            start: 0,
+            end: 175,
+          },
+          scenes: [
+            {
+              captions: [
+                { text: " Hello", startMs: 390, endMs: 990 },
+                { text: " World.", startMs: 990, endMs: 2000 },
+              ],
+              video:
+                "https://videos.pexels.com/video-files/4625747/4625747-hd_1080_1080_24fps.mp4",
+              audio: {
+                url: "http://localhost:3123/api/tmp/cma1lgean0001rlsi52b8h3n3.mp3",
+                duration: 3.15,
+              },
+            },
+          ],
+          config: {
+            durationMs: 4650,
+            paddingBack: 1500,
+            captionBackgroundColor: "blue",
             captionPosition: "center",
           },
         }}

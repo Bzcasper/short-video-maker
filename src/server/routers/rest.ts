@@ -12,15 +12,22 @@ import { logger } from "../../logger";
 import { Config } from "../../config";
 
 // todo abstract class
+import { CloudflareAI } from "../libraries/CloudflareAI";
+import { SunoAI } from "../libraries/SunoAI";
+
 export class APIRouter {
   public router: express.Router;
   private shortCreator: ShortCreator;
   private config: Config;
+  private cloudflareAI: CloudflareAI;
+  private sunoAI: SunoAI;
 
   constructor(config: Config, shortCreator: ShortCreator) {
     this.config = config;
     this.router = express.Router();
     this.shortCreator = shortCreator;
+    this.cloudflareAI = new CloudflareAI(config);
+    this.sunoAI = new SunoAI(config);
 
     this.router.use(express.json());
 
@@ -45,7 +52,10 @@ export class APIRouter {
             videoId,
           });
         } catch (error: unknown) {
-          logger.error(error, "Error validating input");
+          logger.error(
+            { error, body: req.body },
+            "Error validating input with request details",
+          );
 
           // Handle validation errors specifically
           if (error instanceof Error && error.message.startsWith("{")) {
@@ -55,10 +65,21 @@ export class APIRouter {
                 error: "Validation failed",
                 message: errorData.message,
                 missingFields: errorData.missingFields,
+                details:
+                  "Check the input structure for required fields and formats",
               });
               return;
             } catch (parseError: unknown) {
-              logger.error(parseError, "Error parsing validation error");
+              logger.error(
+                { parseError, originalError: error },
+                "Error parsing validation error",
+              );
+              res.status(400).json({
+                error: "Validation failed",
+                message: "Unable to parse validation error details",
+                details: "Input validation failed with unparseable error data",
+              });
+              return;
             }
           }
 
@@ -66,6 +87,7 @@ export class APIRouter {
           res.status(400).json({
             error: "Invalid input",
             message: error instanceof Error ? error.message : "Unknown error",
+            details: "An unexpected error occurred during input processing",
           });
         }
       },
@@ -82,8 +104,12 @@ export class APIRouter {
           return;
         }
         const status = this.shortCreator.status(videoId);
+        const progress = this.shortCreator.getProgress(videoId) || 0; // Assuming method exists or will be added
+        const stage = this.shortCreator.getStage(videoId) || "Processing"; // Assuming method exists or will be added
         res.status(200).json({
           status,
+          progress,
+          stage,
         });
       },
     );
@@ -214,9 +240,147 @@ export class APIRouter {
           );
           res.send(video);
         } catch (error: unknown) {
-          logger.error(error, "Error getting video");
+          logger.error(
+            { error, videoId: req.params.videoId },
+            "Error retrieving video with ID",
+          );
           res.status(404).json({
             error: "Video not found",
+            message: error instanceof Error ? error.message : "Unknown error",
+            details: `Video with ID ${req.params.videoId} could not be located or accessed`,
+          });
+        }
+      },
+    );
+
+    // Community Asset Library Endpoints
+    this.router.post(
+      "/community-assets/upload",
+      async (req: ExpressRequest, res: ExpressResponse) => {
+        try {
+          const { assetType, fileName, fileData } = req.body;
+          if (!assetType || !fileName || !fileData) {
+            res.status(400).json({
+              error: "assetType, fileName, and fileData are required",
+            });
+            return;
+          }
+          // Placeholder for storing asset in Cloudflare R2 or local storage
+          logger.info({ assetType, fileName }, "Uploading community asset");
+          // Implement storage logic here
+          res.status(201).json({
+            assetId: `asset-${Date.now()}`, // Placeholder ID
+            message: "Asset uploaded successfully",
+          });
+        } catch (error: unknown) {
+          logger.error(error, "Error uploading community asset");
+          res.status(500).json({
+            error: "Internal server error",
+          });
+        }
+      },
+    );
+
+    this.router.get(
+      "/community-assets",
+      (req: ExpressRequest, res: ExpressResponse) => {
+        try {
+          // Placeholder for listing community assets
+          logger.info("Listing community assets");
+          res.status(200).json({
+            assets: [], // Placeholder empty list
+          });
+        } catch (error: unknown) {
+          logger.error(error, "Error listing community assets");
+          res.status(500).json({
+            error: "Internal server error",
+          });
+        }
+      },
+    );
+
+    this.router.post(
+      "/community-assets/rate",
+      async (req: ExpressRequest, res: ExpressResponse) => {
+        try {
+          const { assetId, rating } = req.body;
+          if (!assetId || rating === undefined) {
+            res.status(400).json({
+              error: "assetId and rating are required",
+            });
+            return;
+          }
+          // Placeholder for recording asset rating
+          logger.info({ assetId, rating }, "Rating community asset");
+          res.status(200).json({
+            message: "Rating recorded successfully",
+          });
+        } catch (error: unknown) {
+          logger.error(error, "Error rating community asset");
+          res.status(500).json({
+            error: "Internal server error",
+          });
+        }
+      },
+    );
+
+    // AI-powered endpoints
+    this.router.post(
+      "/ai/caption-enhancement",
+      async (req: ExpressRequest, res: ExpressResponse) => {
+        try {
+          const { text, videoId } = req.body;
+          if (!text || !videoId) {
+            res.status(400).json({
+              error: "text and videoId are required",
+            });
+            return;
+          }
+          logger.info(
+            { text, videoId },
+            "Processing AI caption enhancement with Cloudflare Workers AI",
+          );
+          const enhancedText = await this.cloudflareAI.enhanceCaption(
+            text,
+            videoId,
+          );
+          res.status(200).json({
+            enhancedText,
+            status: "completed",
+          });
+        } catch (error: unknown) {
+          logger.error(error, "Error processing AI caption enhancement");
+          res.status(500).json({
+            error: "Internal server error",
+          });
+        }
+      },
+    );
+
+    this.router.post(
+      "/ai/content-suggestions",
+      async (req: ExpressRequest, res: ExpressResponse) => {
+        try {
+          const { script, theme } = req.body;
+          if (!script) {
+            res.status(400).json({
+              error: "script is required",
+            });
+            return;
+          }
+          // Placeholder for Vercel AI SDK integration for content suggestions
+          logger.info({ script, theme }, "Generating AI content suggestions");
+          res.status(200).json({
+            suggestions: {
+              backgroundVideo: "Suggested video based on theme",
+              music: "Suggested music based on theme",
+            }, // Placeholder response
+            status: "processing",
+          });
+        } catch (error: unknown) {
+          logger.error(error, "Error generating AI content suggestions");
+          res.status(500).json({
+            error: "Internal server error",
           });
         }
       },

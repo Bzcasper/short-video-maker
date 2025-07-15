@@ -4,6 +4,7 @@ import {
   transcribe,
 } from "@remotion/install-whisper-cpp";
 import path from "path";
+import { whisperModels } from "../../types/shorts";
 
 import { Config } from "../../config";
 import type { Caption } from "../../types/shorts";
@@ -44,10 +45,13 @@ export class Whisper {
   }
 
   // todo shall we extract it to a Caption class?
-  async CreateCaption(audioPath: string): Promise<Caption[]> {
-    logger.debug({ audioPath }, "Starting to transcribe audio");
+  async CreateCaption(
+    audioPath: string,
+    model: whisperModels,
+  ): Promise<Caption[]> {
+    logger.debug({ audioPath, model }, "Starting to transcribe audio");
     const { transcription } = await transcribe({
-      model: this.config.whisperModel,
+      model,
       whisperPath: this.config.whisperInstallPath,
       modelFolder: path.join(this.config.whisperInstallPath, "models"),
       whisperCppVersion: this.config.whisperVersion,

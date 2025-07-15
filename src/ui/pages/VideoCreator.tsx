@@ -17,6 +17,8 @@ import {
   IconButton,
   Divider,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -28,19 +30,22 @@ import {
   VoiceEnum,
   OrientationEnum,
   MusicVolumeEnum,
+  LanguageEnum,
 } from "../../types/shorts";
 
 interface SceneFormData {
   text: string;
   searchTerms: string; // Changed to string
+  customVisualPrompt: string;
 }
 
 const VideoCreator: React.FC = () => {
   const navigate = useNavigate();
   const [scenes, setScenes] = useState<SceneFormData[]>([
-    { text: "", searchTerms: "" },
+    { text: "", searchTerms: "", customVisualPrompt: "" },
   ]);
   const [config, setConfig] = useState<RenderConfig>({
+    language: LanguageEnum.en, // Default language
     paddingBack: 1500,
     music: MusicMoodEnum.chill,
     captionPosition: CaptionPositionEnum.bottom,
@@ -48,11 +53,13 @@ const VideoCreator: React.FC = () => {
     voice: VoiceEnum.af_heart,
     orientation: OrientationEnum.portrait,
     musicVolume: MusicVolumeEnum.high,
+    useAiVisuals: false,
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [useAiVisuals, setUseAiVisuals] = useState(false);
 
   useEffect(() => {
     // Options are now directly available from enums, no need to fetch
@@ -60,7 +67,10 @@ const VideoCreator: React.FC = () => {
   }, []);
 
   const handleAddScene = () => {
-    setScenes([...scenes, { text: "", searchTerms: "" }]);
+    setScenes([
+      ...scenes,
+      { text: "", searchTerms: "", customVisualPrompt: "" },
+    ]);
   };
 
   const handleRemoveScene = (index: number) => {
@@ -82,8 +92,15 @@ const VideoCreator: React.FC = () => {
   };
 
   const handleConfigChange = (
-    field: keyof RenderConfig, 
-    value: string | number | MusicMoodEnum | CaptionPositionEnum | VoiceEnum | OrientationEnum | MusicVolumeEnum
+    field: keyof RenderConfig,
+    value:
+      | string
+      | number
+      | MusicMoodEnum
+      | CaptionPositionEnum
+      | VoiceEnum
+      | OrientationEnum
+      | MusicVolumeEnum,
   ) => {
     setConfig({ ...config, [field]: value });
   };
@@ -101,11 +118,14 @@ const VideoCreator: React.FC = () => {
           .split(",")
           .map((term) => term.trim())
           .filter((term) => term.length > 0),
+        customVisualPrompt: scene.customVisualPrompt || undefined,
       }));
+
+      const updatedConfig = { ...config, useAiVisuals };
 
       const response = await axios.post("/api/short-video", {
         scenes: apiScenes,
-        config,
+        config: updatedConfig,
       });
 
       navigate(`/video/${response.data.videoId}`);
@@ -126,13 +146,21 @@ const VideoCreator: React.FC = () => {
         height="80vh"
       >
         <CircularProgress />
+        <Typography variant="body1" sx={{ ml: 2 }}>
+          Loading configuration options...
+        </Typography>
       </Box>
     );
   }
 
   return (
     <Box maxWidth="md" mx="auto" py={4}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        aria-label="Create New Video Page"
+      >
         Create New Video
       </Typography>
 
@@ -171,7 +199,7 @@ const VideoCreator: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Text"
+                  label="Text for Scene"
                   multiline
                   rows={4}
                   value={scene.text}
@@ -179,6 +207,7 @@ const VideoCreator: React.FC = () => {
                     handleSceneChange(index, "text", e.target.value)
                   }
                   required
+                  aria-label={`Text input for scene ${index + 1}`}
                 />
               </Grid>
 
@@ -192,8 +221,30 @@ const VideoCreator: React.FC = () => {
                   }
                   helperText="Enter keywords for background video, separated by commas"
                   required
+                  aria-label={`Search terms for scene ${index + 1}`}
                 />
               </Grid>
+
+              {useAiVisuals && (
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Custom Visual Prompt (optional)"
+                    multiline
+                    rows={2}
+                    value={scene.customVisualPrompt}
+                    onChange={(e) =>
+                      handleSceneChange(
+                        index,
+                        "customVisualPrompt",
+                        e.target.value,
+                      )
+                    }
+                    helperText="Enter a custom prompt for AI-generated visual for this scene"
+                    aria-label={`Custom visual prompt for scene ${index + 1}`}
+                  />
+                </Grid>
+              )}
             </Grid>
           </Paper>
         ))}
@@ -203,6 +254,7 @@ const VideoCreator: React.FC = () => {
             variant="outlined"
             startIcon={<AddIcon />}
             onClick={handleAddScene}
+            aria-label="Add a new scene"
           >
             Add Scene
           </Button>
@@ -303,6 +355,12 @@ const VideoCreator: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Alert severity="info" sx={{ mb: 3 }}>
+                Your video content will be enhanced using Cloudflare AI services
+                for captions and metadata.
+              </Alert>
+            </Grid>
 
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
@@ -343,10 +401,35 @@ const VideoCreator: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  // Placeholder for opening community asset library dialog or page
+                  alert("Community Asset Library coming soon!");
+                }}
+                aria-label="Browse Community Assets Library"
+              >
+                Browse Community Assets
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={useAiVisuals}
+                    onChange={(e) => setUseAiVisuals(e.target.checked)}
+                  />
+                }
+                label="Use AI-Generated Visuals"
+                sx={{ minWidth: 200 }}
+              />
+            </Grid>
           </Grid>
         </Paper>
 
-        <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="center" alignItems="center">
           <Button
             type="submit"
             variant="contained"
@@ -354,9 +437,13 @@ const VideoCreator: React.FC = () => {
             size="large"
             disabled={loading}
             sx={{ minWidth: 200 }}
+            aria-label={loading ? "Creating video in progress" : "Create video"}
           >
             {loading ? (
-              <CircularProgress size={24} color="inherit" />
+              <>
+                <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
+                Creating Video...
+              </>
             ) : (
               "Create Video"
             )}

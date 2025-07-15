@@ -46,6 +46,14 @@ export class Config {
   public whisperVersion: string = whisperVersion;
   public whisperModel: whisperModels = defaultWhisperModel;
   public kokoroModelPrecision: kokoroModelPrecision = "fp32";
+  public cloudflareApiKey: string = "";
+  public cloudflareAccountId: string = "";
+  public cloudflareModel: string = "@cf/meta/llama-2-7b-chat-int8";
+  public sunoApiUrl: string = "http://localhost:3000";
+  public sunoCookie: string = "";
+  public twoCaptchaKey: string = "";
+  public vercelApiKey: string = "";
+  public vercelApiUrl: string = "https://api.vercel-ai.com/v1";
 
   // docker-specific, performance-related settings to prevent memory issues
   public concurrency?: number;
@@ -87,6 +95,30 @@ export class Config {
     if (process.env.KOKORO_MODEL_PRECISION) {
       this.kokoroModelPrecision = process.env
         .KOKORO_MODEL_PRECISION as kokoroModelPrecision;
+    }
+    if (process.env.CLOUDFLARE_API_KEY) {
+      this.cloudflareApiKey = process.env.CLOUDFLARE_API_KEY;
+    }
+    if (process.env.CLOUDFLARE_ACCOUNT_ID) {
+      this.cloudflareAccountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+    }
+    if (process.env.CLOUDFLARE_MODEL) {
+      this.cloudflareModel = process.env.CLOUDFLARE_MODEL;
+    }
+    if (process.env.SUNO_API_URL) {
+      this.sunoApiUrl = process.env.SUNO_API_URL;
+    }
+    if (process.env.SUNO_COOKIE) {
+      this.sunoCookie = process.env.SUNO_COOKIE;
+    }
+    if (process.env.TWOCAPTCHA_KEY) {
+      this.twoCaptchaKey = process.env.TWOCAPTCHA_KEY;
+    }
+    if (process.env.VERCEL_API_KEY) {
+      this.vercelApiKey = process.env.VERCEL_API_KEY;
+    }
+    if (process.env.VERCEL_API_URL) {
+      this.vercelApiUrl = process.env.VERCEL_API_URL;
     }
 
     this.concurrency = process.env.CONCURRENCY

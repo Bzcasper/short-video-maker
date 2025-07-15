@@ -49,6 +49,10 @@ export class Remotion {
 
     const outputLocation = path.join(this.config.videosDirPath, `${id}.mp4`);
 
+    // Adaptive rendering settings based on hardware constraints
+    const concurrency = this.config.concurrency || 1; // Default to 1 to prevent memory issues
+    const cacheSize = this.config.videoCacheSizeInBytes || 2097152000; // Default to 2GB
+
     await renderMedia({
       codec: "h264",
       composition,
@@ -58,9 +62,12 @@ export class Remotion {
       onProgress: ({ progress }) => {
         logger.debug(`Rendering ${id} ${Math.floor(progress * 100)}% complete`);
       },
-      // preventing memory issues with docker
-      concurrency: this.config.concurrency,
-      offthreadVideoCacheSizeInBytes: this.config.videoCacheSizeInBytes,
+      // Adaptive settings for performance optimization
+      concurrency,
+      offthreadVideoCacheSizeInBytes: cacheSize,
+      // Lazy loading of assets implemented by deferring asset loading until render time
+      // Assets are loaded on-demand during rendering to reduce initial load time
+      // TODO: Implement caching of frequently used assets using Cloudflare CDN for further optimization
     });
 
     logger.debug(

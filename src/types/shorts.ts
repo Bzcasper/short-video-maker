@@ -37,8 +37,23 @@ export const sceneInput = z.object({
     .describe(
       "Search term for video, 1 word, and at least 2-3 search terms should be provided for each scene. Make sure to match the overall context with the word - regardless what the video search result would be.",
     ),
+  customVisualPrompt: z
+    .string()
+    .optional()
+    .describe("Custom prompt for AI-generated visual for this scene"),
 });
 export type SceneInput = z.infer<typeof sceneInput>;
+
+export enum LanguageEnum {
+  en = "en",
+  es = "es",
+  fr = "fr",
+  ja = "ja",
+  zh = "zh",
+  hi = "hi",
+  it = "it",
+  pt = "pt",
+}
 
 export enum VoiceEnum {
   af_heart = "af_heart",
@@ -74,6 +89,7 @@ export enum VoiceEnum {
 export enum OrientationEnum {
   landscape = "landscape",
   portrait = "portrait",
+  square = "square",
 }
 
 export enum MusicVolumeEnum {
@@ -116,6 +132,16 @@ export const renderConfig = z.object({
     .nativeEnum(MusicVolumeEnum)
     .optional()
     .describe("Volume of the music, default is high"),
+  language: z
+    .nativeEnum(LanguageEnum)
+    .optional()
+    .default(LanguageEnum.en)
+    .describe("Language for voiceover and captions, default is English"),
+  useAiVisuals: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Whether to use AI-generated visuals instead of Pexels videos"),
 });
 export type RenderConfig = z.infer<typeof renderConfig>;
 

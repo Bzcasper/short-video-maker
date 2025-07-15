@@ -34,7 +34,9 @@ vi.mock("fs-extra", async () => {
     ensureDirSync: vi.fn((path) => {
       try {
         memfs.mkdirSync(path, { recursive: true });
-      } catch (error) {}
+      } catch {
+        // Ignore errors
+      }
     }),
     removeSync: vi.fn((path) => {
       try {
@@ -45,7 +47,9 @@ vi.mock("fs-extra", async () => {
         } else {
           memfs.unlinkSync(path);
         }
-      } catch (error) {}
+      } catch {
+        // Ignore errors
+      }
     }),
     createWriteStream: vi.fn(() => ({
       on: vi.fn(),
@@ -87,16 +91,58 @@ vi.mock("fluent-ffmpeg", () => {
 
 // mock kokoro-js
 vi.mock("kokoro-js", () => {
+  // Create a proper WAV header buffer (44 bytes)
+  const createMockWavBuffer = () => {
+    const buffer = new ArrayBuffer(44 + 1000); // Header + some audio data
+    const view = new DataView(buffer);
+    
+    // WAV header
+    view.setUint32(0, 0x46464952, true); // "RIFF"
+    view.setUint32(4, 36 + 1000, true); // File size - 8
+    view.setUint32(8, 0x45564157, true); // "WAVE"
+    view.setUint32(12, 0x20746d66, true); // "fmt "
+    view.setUint32(16, 16, true); // PCM chunk size
+    view.setUint16(20, 1, true); // Audio format (PCM)
+    view.setUint16(22, 1, true); // Number of channels
+    view.setUint32(24, 44100, true); // Sample rate
+    view.setUint32(28, 44100 * 2, true); // Byte rate
+    view.setUint16(32, 2, true); // Block align
+    view.setUint16(34, 16, true); // Bits per sample
+    view.setUint32(36, 0x61746164, true); // "data"
+    view.setUint32(40, 1000, true); // Data size
+    
+    return buffer;
+  };
+
+  const mockAudioObject = {
+    toWav: vi.fn().mockReturnValue(createMockWavBuffer()),
+    audio: new ArrayBuffer(1000),
+    sampling_rate: 44100,
+  };
+
+  const mockAsyncIterator = {
+    async *[Symbol.asyncIterator]() {
+      yield {
+        audio: mockAudioObject,
+      };
+    },
+  };
+
   return {
     KokoroTTS: {
       from_pretrained: vi.fn().mockResolvedValue({
+        stream: vi.fn().mockReturnValue(mockAsyncIterator),
         generate: vi.fn().mockResolvedValue({
-          toWav: vi.fn().mockReturnValue(new ArrayBuffer(8)),
-          audio: new ArrayBuffer(8),
+          toWav: vi.fn().mockReturnValue(createMockWavBuffer()),
+          audio: new ArrayBuffer(1000),
           sampling_rate: 44100,
         }),
       }),
     },
+    TextSplitterStream: vi.fn().mockImplementation(() => ({
+      push: vi.fn(),
+      close: vi.fn(),
+    })),
   };
 });
 

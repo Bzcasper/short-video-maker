@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -23,7 +23,7 @@ const VideoDetails: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isMounted = useRef(true);
 
-  const checkVideoStatus = async () => {
+  const checkVideoStatus = useCallback(async () => {
     try {
       const response = await axios.get(`/api/short-video/${videoId}/status`);
       const videoStatus = response.data.status;
@@ -58,7 +58,7 @@ const VideoDetails: React.FC = () => {
         }
       }
     }
-  };
+  }, [videoId]);
 
   useEffect(() => {
     checkVideoStatus();
@@ -74,7 +74,7 @@ const VideoDetails: React.FC = () => {
         intervalRef.current = null;
       }
     };
-  }, [videoId]);
+  }, [videoId, checkVideoStatus]);
 
   const handleBack = () => {
     navigate('/');
@@ -120,7 +120,7 @@ const VideoDetails: React.FC = () => {
             mb: 3,
             backgroundColor: '#000'
           }}>
-            <video
+            <OffthreadVideo
               controls
               autoPlay
               style={{

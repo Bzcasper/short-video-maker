@@ -52,31 +52,11 @@ const VideoCreator: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [voices, setVoices] = useState<VoiceEnum[]>([]);
-  const [musicTags, setMusicTags] = useState<MusicMoodEnum[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
 
   useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const [voicesResponse, musicResponse] = await Promise.all([
-          axios.get("/api/voices"),
-          axios.get("/api/music-tags"),
-        ]);
-
-        setVoices(voicesResponse.data);
-        setMusicTags(musicResponse.data);
-      } catch (err) {
-        console.error("Failed to fetch options:", err);
-        setError(
-          "Failed to load voices and music options. Please refresh the page.",
-        );
-      } finally {
-        setLoadingOptions(false);
-      }
-    };
-
-    fetchOptions();
+    // Options are now directly available from enums, no need to fetch
+    setLoadingOptions(false);
   }, []);
 
   const handleAddScene = () => {
@@ -101,7 +81,10 @@ const VideoCreator: React.FC = () => {
     setScenes(newScenes);
   };
 
-  const handleConfigChange = (field: keyof RenderConfig, value: any) => {
+  const handleConfigChange = (
+    field: keyof RenderConfig, 
+    value: string | number | MusicMoodEnum | CaptionPositionEnum | VoiceEnum | OrientationEnum | MusicVolumeEnum
+  ) => {
     setConfig({ ...config, [field]: value });
   };
 

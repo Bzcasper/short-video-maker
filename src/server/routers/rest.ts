@@ -14,6 +14,7 @@ import { Config } from "../../config";
 // todo abstract class
 import { CloudflareAI } from "../libraries/CloudflareAI";
 import { SunoAI } from "../libraries/SunoAI";
+import { VercelAI } from "../libraries/VercelAI";
 
 export class APIRouter {
   public router: express.Router;
@@ -24,17 +25,18 @@ export class APIRouter {
 
   constructor(config: Config, shortCreator: ShortCreator) {
     this.config = config;
-    this.router = express.Router();
     this.shortCreator = shortCreator;
+    this.router = express.Router();
     this.cloudflareAI = new CloudflareAI(config);
     this.sunoAI = new SunoAI(config);
 
     this.router.use(express.json());
+    const vercelAI = new VercelAI(this.config);
 
-    this.setupRoutes();
+    this.setupRoutes(vercelAI);
   }
 
-  private setupRoutes() {
+  private setupRoutes(vercelAI: VercelAI) {
     this.router.post(
       "/short-video",
       async (req: ExpressRequest, res: ExpressResponse) => {
@@ -385,5 +387,16 @@ export class APIRouter {
         }
       },
     );
+
+    this.router.post("/suggest-script", async (req, res) => {
+      const { content, videoId } = req.body;
+      try {
+        const suggestions = await vercelAI.suggestScript(content, videoId);
+        res.json({ suggestions });
+      } catch (error: unknown) {
+        logger.error({ error }, "Failed to suggest script");
+        res.status(500).json({ error: (error as Error).message });
+      }
+    });
   }
 }

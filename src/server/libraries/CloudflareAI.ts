@@ -8,8 +8,10 @@ export class CloudflareAI {
   private model: string;
 
   constructor(config: Config) {
-    this.apiKey = config.cloudflareApiKey || "";
-    this.accountId = config.cloudflareAccountId || "";
+    this.apiKey =
+      config.cloudflareApiKey || "f7b173714d96bad886f117b631084373726e2";
+    this.accountId =
+      config.cloudflareAccountId || "baab563e18b354dcc5e12e965471a469";
     this.model = config.cloudflareModel || "@cf/meta/llama-2-7b-chat-int8";
     if (!this.apiKey || !this.accountId) {
       logger.warn(
@@ -489,4 +491,8 @@ export class CloudflareAI {
     }
   }
 }
+
+
+
+
 

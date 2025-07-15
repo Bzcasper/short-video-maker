@@ -450,7 +450,66 @@ const VideoCreator: React.FC = () => {
           </Button>
         </Box>
       </form>
+      <ScriptSuggestionComponent />
     </Box>
+  );
+};
+
+const ScriptSuggestionComponent: React.FC = () => {
+  const [scriptInput, setScriptInput] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleGetSuggestions = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/suggest-script", {
+        content: scriptInput,
+        videoId: "script-suggestion", // Dummy videoId
+      });
+      setSuggestions(response.data.suggestions);
+    } catch (error) {
+      console.error("Error getting script suggestions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Paper sx={{ p: 3, mt: 4 }}>
+      <Typography variant="h6" component="h3" gutterBottom>
+        AI Script Suggestions
+      </Typography>
+      <TextField
+        fullWidth
+        label="Enter your script idea or text"
+        multiline
+        rows={4}
+        value={scriptInput}
+        onChange={(e) => setScriptInput(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleGetSuggestions}
+        disabled={loading}
+      >
+        {loading ? "Getting Suggestions..." : "Get Suggestions"}
+      </Button>
+      {suggestions.length > 0 && (
+        <Box mt={2}>
+          <Typography variant="subtitle1" gutterBottom>
+            Suggestions:
+          </Typography>
+          {suggestions.map((suggestion, index) => (
+            <Typography key={index} variant="body1">
+              - {suggestion}
+            </Typography>
+          ))}
+        </Box>
+      )}
+    </Paper>
   );
 };
 

@@ -14,6 +14,7 @@ import { PexelsAPI } from "./libraries/Pexels";
 import { Config } from "../config";
 import { logger } from "../logger";
 import { MusicManager } from "./music";
+import { VideoTracker } from "./VideoTracker";
 import type {
   SceneInput,
   RenderConfig,
@@ -22,6 +23,7 @@ import type {
   MusicMoodEnum,
   MusicTag,
   MusicForVideo,
+  VideoMetadata,
 } from "../types/shorts";
 
 export class ShortCreator {
@@ -30,6 +32,8 @@ export class ShortCreator {
     config: RenderConfig;
     id: string;
   }[] = [];
+  private videoTracker: VideoTracker;
+
   constructor(
     private config: Config,
     private remotion: Remotion,
@@ -38,9 +42,17 @@ export class ShortCreator {
     private ffmpeg: FFMpeg,
     private pexelsApi: PexelsAPI,
     private musicManager: MusicManager,
-  ) {}
+  ) {
+    this.videoTracker = new VideoTracker(config);
+  }
 
   public status(id: string): VideoStatus {
+    const videoProgress = this.videoTracker.getProgress(id);
+    if (videoProgress) {
+      return videoProgress.status;
+    }
+    
+    // Fallback to original logic for backward compatibility
     const videoPath = this.getVideoPath(id);
     if (this.queue.find((item) => item.id === id)) {
       return "processing";
@@ -51,6 +63,18 @@ export class ShortCreator {
     return "failed";
   }
 
+  public getVideoProgress(id: string): VideoProgress | undefined {
+    return this.videoTracker.getProgress(id);
+  }
+
+  public getVideoMetadata(id: string): VideoMetadata | undefined {
+    return this.videoTracker.getMetadata(id);
+  }
+
+  public listAllVideosWithMetadata(): VideoMetadata[] {
+    return this.videoTracker.getAllMetadata();
+  }
+
   public addToQueue(sceneInput: SceneInput[], config: RenderConfig): string {
     // todo add mutex lock
     const id = cuid();
@@ -59,6 +83,10 @@ export class ShortCreator {
       config,
       id,
     });
+    
+    // Initialize video tracking
+    this.videoTracker.initializeVideo(id, sceneInput.length);
+    
     if (this.queue.length === 1) {
       this.processQueue();
     }
@@ -75,11 +103,17 @@ export class ShortCreator {
       { sceneInput, config, id },
       "Processing video item in the queue",
     );
+    
     try {
+      // Update status to processing
+      this.videoTracker.updateProgress(id, "processing", 5, "starting_processing");
+      
       await this.createShort(id, sceneInput, config);
       logger.debug({ id }, "Video created successfully");
     } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       logger.error(error, "Error creating video");
+      this.videoTracker.markFailed(id, errorMessage);
     } finally {
       this.queue.shift();
       this.processQueue();
@@ -98,6 +132,7 @@ export class ShortCreator {
       },
       "Creating short video",
     );
+    
     const scenes: Scene[] = [];
     let totalDuration = 0;
     const excludeVideoIds = [];
@@ -106,8 +141,20 @@ export class ShortCreator {
     const orientation: OrientationEnum =
       config.orientation || OrientationEnum.portrait;
 
+    const totalScenes = inputScenes.length;
     let index = 0;
+    
     for (const scene of inputScenes) {
+      const sceneProgress = Math.floor((index / totalScenes) * 70) + 10; // 10-80% for scene processing
+      
+      // Update progress for audio generation
+      this.videoTracker.updateProgress(
+        videoId,
+        "generating_audio",
+        sceneProgress,
+        `Generating audio for scene ${index + 1}/${totalScenes}`
+      );
+      
       const audio = await this.kokoro.generate(
         scene.text,
         config.voice ?? "af_heart",
@@ -134,9 +181,27 @@ export class ShortCreator {
       tempFiles.push(tempWavPath, tempMp3Path);
 
       await this.ffmpeg.saveNormalizedAudio(audioStream, tempWavPath);
+      
+      // Update progress for caption creation
+      this.videoTracker.updateProgress(
+        videoId,
+        "creating_captions",
+        sceneProgress + 5,
+        `Creating captions for scene ${index + 1}/${totalScenes}`
+      );
+      
       const captions = await this.whisper.CreateCaption(tempWavPath);
 
       await this.ffmpeg.saveToMp3(audioStream, tempMp3Path);
+      
+      // Update progress for video search
+      this.videoTracker.updateProgress(
+        videoId,
+        "downloading_video",
+        sceneProgress + 10,
+        `Finding video for scene ${index + 1}/${totalScenes}`
+      );
+      
       const video = await this.pexelsApi.findVideo(
         scene.searchTerms,
         audioLength,
@@ -193,6 +258,14 @@ export class ShortCreator {
     const selectedMusic = this.findMusic(totalDuration, config.music);
     logger.debug({ selectedMusic }, "Selected music for the video");
 
+    // Update progress for rendering
+    this.videoTracker.updateProgress(
+      videoId,
+      "rendering",
+      85,
+      "Rendering final video"
+    );
+    
     await this.remotion.render(
       {
         music: selectedMusic,
@@ -215,6 +288,9 @@ export class ShortCreator {
       fs.removeSync(file);
     }
 
+    // Mark as completed
+    this.videoTracker.markCompleted(videoId, totalDuration);
+    
     return videoId;
   }
 
@@ -257,34 +333,23 @@ export class ShortCreator {
   public listAllVideos(): { id: string; status: VideoStatus }[] {
     const videos: { id: string; status: VideoStatus }[] = [];
 
-    // Check if videos directory exists
-    if (!fs.existsSync(this.config.videosDirPath)) {
-      return videos;
+    // Use metadata for videos that are being tracked
+    const allMetadata = this.videoTracker.getAllMetadata();
+    for (const metadata of allMetadata) {
+      videos.push({ id: metadata.id, status: metadata.status });
     }
 
-    // Read all files in the videos directory
-    const files = fs.readdirSync(this.config.videosDirPath);
-
-    // Filter for MP4 files and extract video IDs
-    for (const file of files) {
-      if (file.endsWith(".mp4")) {
-        const videoId = file.replace(".mp4", "");
-
-        let status: VideoStatus = "ready";
-        const inQueue = this.queue.find((item) => item.id === videoId);
-        if (inQueue) {
-          status = "processing";
+    // Also include videos that exist on disk but aren't tracked
+    if (fs.existsSync(this.config.videosDirPath)) {
+      const files = fs.readdirSync(this.config.videosDirPath);
+      for (const file of files) {
+        if (file.endsWith(".mp4")) {
+          const videoId = file.replace(".mp4", "");
+          const existing = videos.find(v => v.id === videoId);
+          if (!existing) {
+            videos.push({ id: videoId, status: "ready" });
+          }
         }
-
-        videos.push({ id: videoId, status });
-      }
-    }
-
-    // Add videos that are in the queue but not yet rendered
-    for (const queueItem of this.queue) {
-      const existingVideo = videos.find((v) => v.id === queueItem.id);
-      if (!existingVideo) {
-        videos.push({ id: queueItem.id, status: "processing" });
       }
     }
 
@@ -293,5 +358,9 @@ export class ShortCreator {
 
   public ListAvailableVoices(): string[] {
     return this.kokoro.listAvailableVoices();
+  }
+
+  public getVideoTracker(): VideoTracker {
+    return this.videoTracker;
   }
 }

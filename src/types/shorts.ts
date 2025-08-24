@@ -148,7 +148,35 @@ export const createShortInput = z.object({
 });
 export type CreateShortInput = z.infer<typeof createShortInput>;
 
-export type VideoStatus = "processing" | "ready" | "failed";
+export type VideoStatus =
+  | "queued"
+  | "processing"
+  | "generating_audio"
+  | "downloading_video"
+  | "creating_captions"
+  | "rendering"
+  | "ready"
+  | "failed";
+
+export interface VideoProgress {
+  status: VideoStatus;
+  progress: number; // 0-100
+  currentStep?: string;
+  estimatedTimeRemaining?: number; // seconds
+  startedAt: string;
+  updatedAt: string;
+  error?: string;
+}
+
+export interface VideoMetadata {
+  id: string;
+  status: VideoStatus;
+  progress: VideoProgress;
+  scenesCount: number;
+  totalDuration: number;
+  createdAt: string;
+  completedAt?: string;
+}
 
 export type Music = {
   file: string;

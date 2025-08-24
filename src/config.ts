@@ -51,6 +51,12 @@ export class Config {
   public concurrency?: number;
   public videoCacheSizeInBytes: number | null = null;
 
+  // Redis configuration for BullMQ
+  public redisHost: string;
+  public redisPort: number;
+  public redisPassword?: string;
+  public redisDb: number;
+
   constructor() {
     this.dataDirPath =
       process.env.DATA_DIR_PATH ||
@@ -98,6 +104,12 @@ export class Config {
         process.env.VIDEO_CACHE_SIZE_IN_BYTES,
       );
     }
+
+    // Redis configuration
+    this.redisHost = process.env.REDIS_HOST || "localhost";
+    this.redisPort = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379;
+    this.redisPassword = process.env.REDIS_PASSWORD;
+    this.redisDb = process.env.REDIS_DB ? parseInt(process.env.REDIS_DB) : 0;
   }
 
   public ensureConfig() {

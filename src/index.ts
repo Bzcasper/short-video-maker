@@ -11,6 +11,7 @@ import { Config } from "./config";
 import { ShortCreator } from "./short-creator/ShortCreator";
 import { logger } from "./logger";
 import { Server } from "./server/server";
+import { RedisConnection } from "./server/redis";
 import { MusicManager } from "./short-creator/music";
 
 async function main() {
@@ -85,7 +86,45 @@ async function main() {
   const server = new Server(config, shortCreator);
   const app = server.start();
 
-  // todo add shutdown handler
+  // Graceful shutdown handler
+  const gracefulShutdown = async (signal: string) => {
+    logger.info(`Received ${signal}, shutting down gracefully...`);
+    
+    // Close server
+    app.close(() => {
+      logger.info("HTTP server closed");
+    });
+
+    // Close Redis connection
+    try {
+      await RedisConnection.disconnect();
+      logger.info("Redis connection closed");
+    } catch (error: unknown) {
+      logger.error(error, "Error closing Redis connection");
+    }
+
+    // Close queue
+    try {
+      await server.getVideoQueue()?.close();
+      logger.info("Video queue closed");
+    } catch (error: unknown) {
+      logger.error(error, "Error closing video queue");
+    }
+
+    // Close WebSocket server
+    try {
+      await server.getWebSocketServer()?.close();
+      logger.info("WebSocket server closed");
+    } catch (error: unknown) {
+      logger.error(error, "Error closing WebSocket server");
+    }
+
+    process.exit(0);
+  };
+
+  // Handle shutdown signals
+  process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+  process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 }
 
 main().catch((error: unknown) => {

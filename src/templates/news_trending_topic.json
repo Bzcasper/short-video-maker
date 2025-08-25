@@ -1,0 +1,91 @@
+{
+  "id": "news_trending_reaction",
+  "name": "Trending News Reaction Template",
+  "contentType": "news_trends", 
+  "description": "Template for reacting to trending news or viral topics with personal commentary",
+  "template": "Everyone's talking about {trending_topic}, but here's what they're not telling you. {context_summary}. Now, here's my take: {personal_opinion}. The reason this matters is {significance}. What I find most interesting is {unique_angle}. But here's what I think will happen next: {prediction}. {supporting_evidence}. What's your take on this? Are you {reaction_option_1} or {reaction_option_2}? Let me know below!",
+  "variables": [
+    {
+      "name": "trending_topic",
+      "type": "string",
+      "required": true,
+      "description": "The trending news, event, or viral topic being discussed"
+    },
+    {
+      "name": "context_summary",
+      "type": "string",
+      "required": true,
+      "description": "Brief summary of what happened or the current situation"
+    },
+    {
+      "name": "personal_opinion",
+      "type": "string",
+      "required": true,
+      "description": "Your personal take or opinion on the topic"
+    },
+    {
+      "name": "significance",
+      "type": "string",
+      "required": true,
+      "description": "Why this topic is important or relevant"
+    },
+    {
+      "name": "unique_angle",
+      "type": "string",
+      "required": true,
+      "description": "An interesting perspective or detail others might have missed"
+    },
+    {
+      "name": "prediction",
+      "type": "string",
+      "required": true,
+      "description": "Your prediction about what will happen next"
+    },
+    {
+      "name": "supporting_evidence",
+      "type": "string",
+      "required": false,
+      "description": "Evidence or reasoning supporting your prediction",
+      "defaultValue": "Based on similar situations in the past"
+    },
+    {
+      "name": "reaction_option_1",
+      "type": "string",
+      "required": true,
+      "description": "First reaction option for audience engagement"
+    },
+    {
+      "name": "reaction_option_2",
+      "type": "string",
+      "required": true,
+      "description": "Second reaction option for audience engagement"
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "Everyone's talking about {trending_topic}, but here's what they're not telling you",
+      "purpose": "curiosity_gap"
+    },
+    {
+      "position": "middle",
+      "text": "But here's what I think will happen next",
+      "purpose": "anticipation_builder"
+    },
+    {
+      "position": "closing",
+      "text": "What's your take on this? Are you {reaction_option_1} or {reaction_option_2}?",
+      "purpose": "call_to_action"
+    }
+  ],
+  "idealLength": {
+    "min": 30,
+    "max": 55
+  },
+  "recommendedSettings": {
+    "voice": "am_echo",
+    "music": "contemplative",
+    "orientation": "portrait"
+  },
+  "tags": ["news", "trending", "current events", "reaction", "commentary", "viral"]
+}

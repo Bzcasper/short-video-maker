@@ -1,0 +1,93 @@
+{
+  "id": "educational_amazing_facts",
+  "name": "Amazing Facts Educational Template",
+  "contentType": "educational",
+  "description": "Template for sharing surprising and educational facts in an engaging way",
+  "template": "Here are {fact_count} {topic_category} facts that will blow your mind! First: {fact_1}. That's {fact_1_impact}! Second: {fact_2}. Imagine {fact_2_context}! And finally: {fact_3}. {fact_3_explanation}. {conclusion_statement}. Which fact surprised you the most? Drop a number 1, 2, or 3 in the comments!",
+  "variables": [
+    {
+      "name": "fact_count",
+      "type": "string",
+      "required": false,
+      "description": "Number of facts being shared",
+      "defaultValue": "3"
+    },
+    {
+      "name": "topic_category",
+      "type": "string",
+      "required": true,
+      "description": "Category or theme of the facts (e.g., 'ocean', 'space', 'history')"
+    },
+    {
+      "name": "fact_1",
+      "type": "string",
+      "required": true,
+      "description": "First surprising fact"
+    },
+    {
+      "name": "fact_1_impact",
+      "type": "string",
+      "required": true,
+      "description": "Why fact 1 is impressive or surprising"
+    },
+    {
+      "name": "fact_2",
+      "type": "string",
+      "required": true,
+      "description": "Second surprising fact"
+    },
+    {
+      "name": "fact_2_context",
+      "type": "string",
+      "required": true,
+      "description": "Context to help visualize or understand fact 2"
+    },
+    {
+      "name": "fact_3",
+      "type": "string",
+      "required": true,
+      "description": "Third surprising fact"
+    },
+    {
+      "name": "fact_3_explanation",
+      "type": "string",
+      "required": true,
+      "description": "Brief explanation or elaboration on fact 3"
+    },
+    {
+      "name": "conclusion_statement",
+      "type": "string",
+      "required": false,
+      "description": "Concluding thought about the facts shared",
+      "defaultValue": "Nature never stops amazing us"
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "Here are {fact_count} {topic_category} facts that will blow your mind!",
+      "purpose": "attention_grabber"
+    },
+    {
+      "position": "middle",
+      "text": "Imagine {fact_2_context}!",
+      "purpose": "visualization"
+    },
+    {
+      "position": "closing",
+      "text": "Which fact surprised you the most? Drop a number 1, 2, or 3 in the comments!",
+      "purpose": "call_to_action"
+    }
+  ],
+  "platform": "tiktok",
+  "idealLength": {
+    "min": 25,
+    "max": 45
+  },
+  "recommendedSettings": {
+    "voice": "af_nova",
+    "music": "excited", 
+    "orientation": "portrait"
+  },
+  "tags": ["facts", "education", "amazing", "science", "knowledge", "viral"]
+}

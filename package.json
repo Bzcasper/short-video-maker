@@ -19,7 +19,9 @@
     "ui:build": "vite build",
     "ui:preview": "vite preview",
     "test:tts": "ts-node src/scripts/test-tts-setup.ts",
-    "test:tts:verbose": "ts-node src/scripts/test-tts-setup.ts --verbose"
+    "test:tts:verbose": "ts-node src/scripts/test-tts-setup.ts --verbose",
+    "setup:tts": "ts-node src/scripts/setup-tts.ts",
+    "test:tts:quality": "ts-node src/tests/TTSQualityTestSuite.ts"
   },
   "bin": {
     "short-video-maker": "dist/index.js"
@@ -83,7 +85,8 @@
     "ws": "^8.17.1",
     "crypto-js": "^4.2.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "^4.0.286",

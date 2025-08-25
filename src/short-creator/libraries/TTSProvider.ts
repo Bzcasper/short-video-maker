@@ -234,16 +234,87 @@ export abstract class TTSProvider {
   }
 
   protected detectLanguage(text: string): string {
-    // Simple language detection based on character ranges
-    // This is a basic implementation - consider using a proper language detection library
-    if (/[\u4E00-\u9FFF]/.test(text)) return 'zh';
-    if (/[\u3040-\u309F\u30A0-\u30FF]/.test(text)) return 'ja';
-    if (/[\uAC00-\uD7AF]/.test(text)) return 'ko';
-    if (/[\u0600-\u06FF]/.test(text)) return 'ar';
-    if (/[\u0400-\u04FF]/.test(text)) return 'ru';
+    // Enhanced language detection with better accuracy
+    const cleanedText = text.trim().toLowerCase();
     
-    // Default to English for Western languages
+    if (cleanedText.length === 0) return 'en';
+    
+    // Character-based detection for non-Latin scripts
+    if (/[\u4E00-\u9FFF]/.test(text)) return 'zh'; // Chinese
+    if (/[\u3040-\u309F\u30A0-\u30FF]/.test(text)) return 'ja'; // Japanese
+    if (/[\uAC00-\uD7AF]/.test(text)) return 'ko'; // Korean
+    if (/[\u0600-\u06FF]/.test(text)) return 'ar'; // Arabic
+    if (/[\u0400-\u04FF]/.test(text)) return 'ru'; // Russian
+    if (/[\u0900-\u097F]/.test(text)) return 'hi'; // Hindi
+    if (/[\u0E00-\u0E7F]/.test(text)) return 'th'; // Thai
+    
+    // Common word detection for Latin-based languages
+    const commonWords: Record<string, string[]> = {
+      en: ['the', 'and', 'is', 'are', 'was', 'were', 'this', 'that', 'with', 'for'],
+      es: ['el', 'la', 'los', 'las', 'que', 'por', 'con', 'para', 'como', 'pero'],
+      fr: ['le', 'la', 'les', 'des', 'une', 'est', 'pas', 'pour', 'dans', 'avec'],
+      de: ['der', 'die', 'das', 'und', 'ist', 'sind', 'für', 'mit', 'auf', 'aus'],
+      it: ['il', 'la', 'i', 'le', 'per', 'con', 'non', 'che', 'una', 'del'],
+      pt: ['o', 'a', 'os', 'as', 'e', 'é', 'para', 'com', 'não', 'que'],
+      nl: ['de', 'het', 'en', 'van', 'een', 'is', 'op', 'te', 'voor', 'met'],
+    };
+    
+    // Count occurrences of common words for each language
+    const wordCounts: Record<string, number> = {};
+    const words = cleanedText.split(/\s+/);
+    
+    for (const [lang, common] of Object.entries(commonWords)) {
+      wordCounts[lang] = words.filter(word => common.includes(word)).length;
+    }
+    
+    // Find language with most common word matches
+    let bestLang = 'en';
+    let maxCount = 0;
+    
+    for (const [lang, count] of Object.entries(wordCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        bestLang = lang;
+      }
+    }
+    
+    // If we have a clear winner (at least 2 matches), use it
+    if (maxCount >= 2) {
+      return bestLang;
+    }
+    
+    // Fallback: Check for language-specific patterns
+    if (/^(bonjour|salut|merci|au revoir)/i.test(cleanedText)) return 'fr';
+    if (/^(hola|gracias|adiós|buenos días)/i.test(cleanedText)) return 'es';
+    if (/^(hallo|guten tag|danke|auf wiedersehen)/i.test(cleanedText)) return 'de';
+    if (/^(ciao|grazie|arrivederci|buongiorno)/i.test(cleanedText)) return 'it';
+    if (/^(olá|obrigado|adeus|bom dia)/i.test(cleanedText)) return 'pt';
+    
+    // Default to English
     return 'en';
+  }
+
+  /**
+   * Detect multiple languages in mixed text
+   */
+  protected detectLanguages(text: string): string[] {
+    const languages = new Set<string>();
+    const segments = text.split(/[.!?]/).filter(segment => segment.trim().length > 0);
+    
+    for (const segment of segments) {
+      const lang = this.detectLanguage(segment);
+      languages.add(lang);
+    }
+    
+    return Array.from(languages);
+  }
+
+  /**
+   * Check if text contains multiple languages
+   */
+  protected isMultilingualText(text: string): boolean {
+    const languages = this.detectLanguages(text);
+    return languages.length > 1;
   }
 
   protected validateRequest(request: TTSRequest): void {

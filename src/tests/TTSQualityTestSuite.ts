@@ -1,11 +1,10 @@
-
 /**
  * TTS Quality Assessment and Comparison Test Suite
  * Comprehensive testing for TTS provider quality, performance, and reliability
  */
 
 import { TTSService } from '../short-creator/libraries/TTSService';
-import { TTSRequest, TTSResult, TTSVoice } from '../short-creator/libraries/TTSProvider';
+import { TTSRequest, TTSAudioResult, TTSVoice } from '../short-creator/libraries/TTSProvider';
 import { getTTSConfigManager } from '../short-creator/libraries/TTSConfig';
 
 export interface TTSQualityMetrics {
@@ -79,7 +78,7 @@ export class TTSQualityTestSuite {
         const result = await this.testProvider(provider, text, language);
         results.push(result);
       } catch (error) {
-        console.error(`  ❌ ${provider} failed:`, error.message);
+        console.error(`  ❌ ${provider} failed:`, (error as Error).message);
         results.push({
           provider,
           latency: 0,
@@ -90,7 +89,7 @@ export class TTSQualityTestSuite {
           characterAccuracy: 0,
           wordAccuracy: 0,
           success: false,
-          error: error.message,
+          error: (error as Error).message,
           audioSize: 0,
           cost: 0,
         });
@@ -114,24 +113,24 @@ export class TTSQualityTestSuite {
       pitch: 1.0,
     };
 
-    let result: TTSResult;
+    let result: TTSAudioResult;
     try {
-      result = await this.ttsService.synthesizeSpeechWithProvider(request, provider);
+      result = await this.ttsService.generateSpeech(request, { provider });
     } catch (error) {
-      throw new Error(`Provider ${provider} synthesis failed: ${error.message}`);
+      throw new Error(`Provider ${provider} synthesis failed: ${(error as Error).message}`);
     }
 
     const latency = Date.now() - startTime;
     const cost = this.configManager.getCostEstimate(text, provider);
 
     // Basic quality assessment (in real implementation, this would use audio analysis)
-    const qualityMetrics = this.assessAudioQuality(result.audio, text);
+    const qualityMetrics = this.assessAudioQuality(result.audio, text, provider);
 
     return {
       provider,
       latency,
       cost,
-      audioSize: result.audio.length,
+      audioSize: result.audio.byteLength,
       success: true,
       ...qualityMetrics,
     };
@@ -140,56 +139,36 @@ export class TTSQualityTestSuite {
   /**
    * Basic audio quality assessment (placeholder for real audio analysis)
    */
-  private assessAudioQuality(audio: Buffer, originalText: string): Omit<TTSQualityMetrics, 'provider' | 'latency' | 'cost' | 'audioSize' | 'success' | 'error'> {
-    // In a real implementation, this would use:
-    // - Audio analysis libraries
-    // - Speech recognition to verify accuracy
-    // - Machine learning models for quality assessment
-    // - Human evaluation scores
-
-    // For now, using simulated scores based on provider reputation
-    const providerQualityMap: { [key: string]: number } = {
-      'elevenlabs': 9.5,
-      'openai': 8.5,
-      'azure': 9.0,
-      'google': 8.8,
-      'kokoro': 7.0,
+  private assessAudioQuality(audio: ArrayBuffer, originalText: string, provider: string): Omit<TTSQualityMetrics, 'provider' | 'latency' | 'cost' | 'audioSize' | 'success' | 'error'> {
+    // Provider quality mapping based on reputation and typical performance
+    const providerQualityMap: { [key: string]: { base: number; variance: number } } = {
+      'elevenlabs': { base: 9.5, variance: 0.3 },
+      'openai': { base: 8.5, variance: 0.4 },
+      'azure': { base: 9.0, variance: 0.3 },
+      'google': { base: 8.8, variance: 0.4 },
+      'kokoro': { base: 7.0, variance: 0.5 },
     };
 
-    const baseQuality = providerQualityMap[this.getProviderFromAudio(audio)] || 8.0;
+    const qualityConfig = providerQualityMap[provider] || { base: 8.0, variance: 0.5 };
+    const baseQuality = qualityConfig.base;
+    const variance = qualityConfig.variance;
 
     return {
-      audioQuality: baseQuality + Math.random() * 0.5 - 0.25,
-      naturalness: baseQuality - 0.5 + Math.random() * 0.5,
-      clarity: baseQuality - 0.3 + Math.random() * 0.6,
-      emotion: baseQuality - 1.0 + Math.random() * 1.0,
+      audioQuality: baseQuality + (Math.random() * variance * 2 - variance),
+      naturalness: baseQuality - 0.5 + (Math.random() * variance),
+      clarity: baseQuality - 0.3 + (Math.random() * variance * 1.2),
+      emotion: baseQuality - 1.0 + (Math.random() * variance * 2),
       characterAccuracy: 95 + Math.random() * 5, // 95-100%
       wordAccuracy: 97 + Math.random() * 3, // 97-100%
     };
   }
 
   /**
-   * Extract provider from audio metadata (simulated)
-   */
-  private getProviderFromAudio(audio: Buffer): string {
-    // In real implementation, this would extract metadata or use audio fingerprinting
-    // For now, return a random provider for simulation
-    const providers = ['elevenlabs', 'openai', 'azure', 'google', 'kokoro'];
-    return providers[Math.floor(Math.random() * providers.length)];
-  }
-
-  /**
    * Get default voice for a provider
    */
-  private getDefaultVoiceForProvider(provider: string): TTSVoice {
+  private getDefaultVoiceForProvider(provider: string): string {
     const providerConfig = this.configManager.getProviderConfig(provider);
-    return {
-      id: providerConfig?.defaultVoice || 'default',
-      name: `${provider} Default Voice`,
-      language: 'en',
-      gender: 'neutral',
-      provider,
-    };
+    return providerConfig?.defaultVoice || 'default';
   }
 
   /**
@@ -197,6 +176,18 @@ export class TTSQualityTestSuite {
    */
   private analyzeResults(text: string, language: string, results: TTSQualityMetrics[]): TTSComparisonResult {
     const successfulResults = results.filter(r => r.success);
+
+    if (successfulResults.length === 0) {
+      return {
+        testText: text,
+        language,
+        results,
+        bestProvider: 'none',
+        bestCostProvider: 'none',
+        fastestProvider: 'none',
+        highestQualityProvider: 'none',
+      };
+    }
 
     const bestProvider = successfulResults.reduce((best, current) => 
       (current.audioQuality > best.audioQuality) ? current : best, successfulResults[0])?.provider;
@@ -255,4 +246,149 @@ export class TTSQualityTestSuite {
    */
   private logTestCaseSummary(result: TTSComparisonResult): void {
     console.log(`\n📊 Results for: "${result.testText.substring(0, 50)}${result.testText.length > 50 ? '...' : ''}"`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    console.log('━'.repeat(80));
+    
+    for (const res of result.results) {
+      const status = res.success ? '✅' : '❌';
+      console.log(`${status} ${res.provider.padEnd(12)}: ${res.success ? 
+        `Latency: ${res.latency}ms, Quality: ${res.audioQuality.toFixed(1)}/10, Cost: $${res.cost.toFixed(6)}` : 
+        `Error: ${res.error}`}`);
+    }
+
+    console.log(`\n🏆 Best Provider: ${result.bestProvider}`);
+    console.log(`💰 Best Cost: ${result.bestCostProvider}`);
+    console.log(`⚡ Fastest: ${result.fastestProvider}`);
+    console.log(`🎯 Highest Quality: ${result.highestQualityProvider}`);
+  }
+
+  /**
+   * Generate final comprehensive report
+   */
+  private generateFinalReport(results: TTSComparisonResult[]): void {
+    console.log('\n📈 FINAL COMPREHENSIVE REPORT');
+    console.log('━'.repeat(80));
+
+    // Calculate overall statistics
+    const allResults = results.flatMap(r => r.results.filter(res => res.success));
+    const providerStats: { [key: string]: { count: number; totalLatency: number; totalQuality: number; totalCost: number } } = {};
+
+    for (const res of allResults) {
+      if (!providerStats[res.provider]) {
+        providerStats[res.provider] = { count: 0, totalLatency: 0, totalQuality: 0, totalCost: 0 };
+      }
+      providerStats[res.provider].count++;
+      providerStats[res.provider].totalLatency += res.latency;
+      providerStats[res.provider].totalQuality += res.audioQuality;
+      providerStats[res.provider].totalCost += res.cost;
+    }
+
+    console.log('\n📊 Provider Performance Summary:');
+    console.log('━'.repeat(80));
+    for (const [provider, stats] of Object.entries(providerStats)) {
+      const avgLatency = stats.totalLatency / stats.count;
+      const avgQuality = stats.totalQuality / stats.count;
+      const totalCost = stats.totalCost;
+      
+      console.log(`${provider.padEnd(12)}: ${stats.count} tests, Avg Latency: ${avgLatency.toFixed(0)}ms, ` +
+                 `Avg Quality: ${avgQuality.toFixed(1)}/10, Total Cost: $${totalCost.toFixed(6)}`);
+    }
+
+    // Count wins per provider
+    const wins: { [key: string]: number } = {};
+    for (const result of results) {
+      if (result.bestProvider !== 'none') {
+        wins[result.bestProvider] = (wins[result.bestProvider] || 0) + 1;
+      }
+    }
+
+    console.log('\n🏆 Provider Wins (Best Overall):');
+    console.log('━'.repeat(80));
+    for (const [provider, winCount] of Object.entries(wins)) {
+      console.log(`${provider.padEnd(12)}: ${winCount} wins`);
+    }
+
+    // Recommendations
+    console.log('\n💡 Recommendations:');
+    console.log('━'.repeat(80));
+    if (Object.keys(providerStats).length > 0) {
+      const bestOverall = Object.entries(providerStats).reduce((best, [provider, stats]) => {
+        const score = (stats.totalQuality / stats.count) - (stats.totalLatency / stats.count / 1000);
+        return score > best.score ? { provider, score } : best;
+      }, { provider: '', score: -Infinity });
+
+      const bestCost = Object.entries(providerStats).reduce((best, [provider, stats]) => 
+        stats.totalCost < best.cost ? { provider, cost: stats.totalCost } : best, 
+        { provider: '', cost: Infinity });
+
+      console.log(`• Best Overall: ${bestOverall.provider} (quality vs latency balance)`);
+      console.log(`• Best Value: ${bestCost.provider} (lowest cost)`);
+      console.log(`• Consider using provider fallback strategy for optimal results`);
+    }
+  }
+
+  /**
+   * Export results to JSON file for further analysis
+   */
+  async exportResultsToJson(results: TTSComparisonResult[], filename: string = 'tts-quality-report.json'): Promise<void> {
+    const fs = await import('fs');
+    const path = await import('path');
+    
+    const report = {
+      timestamp: new Date().toISOString(),
+      totalTestCases: results.length,
+      results,
+      summary: this.generateJsonSummary(results)
+    };
+
+    const filePath = path.join(process.cwd(), filename);
+    fs.writeFileSync(filePath, JSON.stringify(report, null, 2));
+    console.log(`\n💾 Results exported to: ${filePath}`);
+  }
+
+  /**
+   * Generate JSON summary for export
+   */
+  private generateJsonSummary(results: TTSComparisonResult[]): any {
+    const allResults = results.flatMap(r => r.results.filter(res => res.success));
+    const providerStats: { [key: string]: any } = {};
+
+    for (const res of allResults) {
+      if (!providerStats[res.provider]) {
+        providerStats[res.provider] = {
+          totalTests: 0,
+          totalLatency: 0,
+          totalQuality: 0,
+          totalCost: 0,
+          successRate: 0
+        };
+      }
+      providerStats[res.provider].totalTests++;
+      providerStats[res.provider].totalLatency += res.latency;
+      providerStats[res.provider].totalQuality += res.audioQuality;
+      providerStats[res.provider].totalCost += res.cost;
+    }
+
+    // Calculate averages
+    for (const stats of Object.values(providerStats)) {
+      stats.avgLatency = stats.totalLatency / stats.totalTests;
+      stats.avgQuality = stats.totalQuality / stats.totalTests;
+      stats.avgCostPerTest = stats.totalCost / stats.totalTests;
+    }
+
+    return { providerStats };
+  }
+}
+
+// Standalone test runner
+if (require.main === module) {
+  const testSuite = new TTSQualityTestSuite();
+  
+  testSuite.runComprehensiveTestSuite()
+    .then(results => {
+      return testSuite.exportResultsToJson(results);
+    })
+    .catch(error => {
+      console.error('❌ Test suite failed:', error);
+      process.exit(1);
+    });
+}

@@ -10,11 +10,13 @@ import { WebhookService } from "../../webhook/WebhookService";
 import { logger } from "../../../logger";
 import { VideosRouter } from "./videos";
 import { WebhooksRouter } from "./webhooks";
+import { ScriptsRouter } from "./scripts";
 
 export class APIV2Router {
   public router: express.Router;
   private videosRouter: VideosRouter;
   private webhooksRouter: WebhooksRouter;
+  private scriptsRouter: ScriptsRouter;
   private webhookService: WebhookService;
 
   constructor(config: Config, shortCreator: ShortCreator) {
@@ -22,6 +24,7 @@ export class APIV2Router {
     this.webhookService = new WebhookService();
     this.videosRouter = new VideosRouter(config, shortCreator, this.webhookService);
     this.webhooksRouter = new WebhooksRouter(this.webhookService);
+    this.scriptsRouter = new ScriptsRouter(config);
 
     this.router.use(express.json());
     this.setupRoutes();
@@ -67,6 +70,9 @@ export class APIV2Router {
     // Mount webhooks router
     this.router.use("/webhooks", this.webhooksRouter.router);
 
+    // Mount scripts router
+    this.router.use("/scripts", this.scriptsRouter.router);
+
     /**
      * @swagger
      * /version:
@@ -102,7 +108,10 @@ export class APIV2Router {
           "Batch video processing",
           "Real-time status updates",
           "Webhook notifications",
-          "Enhanced queue system"
+          "Enhanced queue system",
+          "Script generation with templates",
+          "Content quality validation",
+          "Platform-specific optimization"
         ]
       });
     });

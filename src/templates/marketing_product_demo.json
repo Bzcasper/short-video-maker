@@ -1,0 +1,105 @@
+{
+  "id": "marketing_product_demo",
+  "name": "Product Demo Marketing Template", 
+  "contentType": "marketing",
+  "description": "Professional product demonstration template focused on benefits and social proof",
+  "template": "Struggling with {pain_point}? I was too, until I discovered {product_name}. Watch this: {demonstration_action}. See how {key_benefit}? But here's the best part - {unique_selling_point}. I've been using this for {usage_duration} and {personal_result}. {social_proof}. If you want to {desired_outcome}, check the link in my bio. Use code {discount_code} for {discount_amount} off!",
+  "variables": [
+    {
+      "name": "pain_point",
+      "type": "string",
+      "required": true,
+      "description": "The problem the product solves"
+    },
+    {
+      "name": "product_name",
+      "type": "string",
+      "required": true,
+      "description": "Name of the product being demonstrated"
+    },
+    {
+      "name": "demonstration_action",
+      "type": "string", 
+      "required": true,
+      "description": "What action demonstrates the product's effectiveness"
+    },
+    {
+      "name": "key_benefit",
+      "type": "string",
+      "required": true,
+      "description": "Main benefit visible in the demonstration"
+    },
+    {
+      "name": "unique_selling_point",
+      "type": "string",
+      "required": true,
+      "description": "What makes this product special or different"
+    },
+    {
+      "name": "usage_duration",
+      "type": "string",
+      "required": true,
+      "description": "How long the speaker has been using the product"
+    },
+    {
+      "name": "personal_result",
+      "type": "string",
+      "required": true,
+      "description": "Personal outcome or result from using the product"
+    },
+    {
+      "name": "social_proof",
+      "type": "string",
+      "required": false,
+      "description": "Testimonial, review, or social proof element",
+      "defaultValue": "Thousands of customers love it too"
+    },
+    {
+      "name": "desired_outcome",
+      "type": "string",
+      "required": true,
+      "description": "What the customer wants to achieve"
+    },
+    {
+      "name": "discount_code",
+      "type": "string",
+      "required": false,
+      "description": "Promotional code for discount",
+      "defaultValue": "SAVE20"
+    },
+    {
+      "name": "discount_amount",
+      "type": "string",
+      "required": false,
+      "description": "Amount or percentage of discount",
+      "defaultValue": "20%"
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "Struggling with {pain_point}?",
+      "purpose": "problem_identification"
+    },
+    {
+      "position": "middle",
+      "text": "But here's the best part - {unique_selling_point}",
+      "purpose": "value_proposition"
+    },
+    {
+      "position": "closing",
+      "text": "Use code {discount_code} for {discount_amount} off!",
+      "purpose": "call_to_action"
+    }
+  ],
+  "idealLength": {
+    "min": 25,
+    "max": 50
+  },
+  "recommendedSettings": {
+    "voice": "af_alloy",
+    "music": "excited",
+    "orientation": "portrait"
+  },
+  "tags": ["marketing", "product", "demo", "sales", "promotion", "business"]
+}

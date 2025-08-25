@@ -1,0 +1,91 @@
+{
+  "id": "educational_howto_basic",
+  "name": "Educational How-To Template",
+  "contentType": "educational",
+  "description": "A structured template for creating educational how-to content with clear step-by-step instructions",
+  "template": "Did you know {hook_question}? Today I'm going to show you exactly how to {main_topic} in just {time_duration}. First, {step_1}. The key here is {key_point_1}. Next, {step_2}. This is crucial because {reason_2}. Finally, {step_3}. {final_tip}. Try this out and let me know how it worked for you in the comments!",
+  "variables": [
+    {
+      "name": "hook_question", 
+      "type": "string",
+      "required": true,
+      "description": "An engaging question to hook viewers at the start"
+    },
+    {
+      "name": "main_topic",
+      "type": "string", 
+      "required": true,
+      "description": "The main skill or topic being taught"
+    },
+    {
+      "name": "time_duration",
+      "type": "string",
+      "required": true,
+      "description": "How long the tutorial will take (e.g., '5 minutes', 'under 60 seconds')"
+    },
+    {
+      "name": "step_1",
+      "type": "string",
+      "required": true,
+      "description": "First step in the process"
+    },
+    {
+      "name": "key_point_1",
+      "type": "string",
+      "required": true,
+      "description": "Important detail or tip for step 1"
+    },
+    {
+      "name": "step_2",
+      "type": "string",
+      "required": true,
+      "description": "Second step in the process"
+    },
+    {
+      "name": "reason_2",
+      "type": "string",
+      "required": true,
+      "description": "Why step 2 is important"
+    },
+    {
+      "name": "step_3",
+      "type": "string",
+      "required": true,
+      "description": "Final step in the process"
+    },
+    {
+      "name": "final_tip",
+      "type": "string",
+      "required": false,
+      "description": "Additional tip or pro advice",
+      "defaultValue": "Pro tip: practice this a few times to get it perfect"
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "Did you know {hook_question}?",
+      "purpose": "curiosity_gap"
+    },
+    {
+      "position": "middle", 
+      "text": "This is crucial because {reason_2}",
+      "purpose": "emphasis"
+    },
+    {
+      "position": "closing",
+      "text": "Try this out and let me know how it worked for you in the comments!",
+      "purpose": "call_to_action"
+    }
+  ],
+  "idealLength": {
+    "min": 30,
+    "max": 60
+  },
+  "recommendedSettings": {
+    "voice": "af_heart",
+    "music": "hopeful",
+    "orientation": "portrait"
+  },
+  "tags": ["education", "tutorial", "how-to", "learning", "step-by-step"]
+}

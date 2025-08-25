@@ -1,0 +1,98 @@
+{
+  "id": "entertainment_comedy_skit",
+  "name": "Comedy Skit Template",
+  "contentType": "entertainment",
+  "description": "Template for creating humorous skits with setup, punchline, and callback structure",
+  "template": "POV: You're {character_description} and {initial_situation}. *{action_1}* '{dialogue_1}' *{reaction_1}* But then {plot_twist}! *{action_2}* '{punchline_dialogue}' *{final_reaction}* {callback_line}. Tag someone who would totally do this!",
+  "variables": [
+    {
+      "name": "character_description",
+      "type": "string",
+      "required": true,
+      "description": "Description of the character or person in the skit"
+    },
+    {
+      "name": "initial_situation",
+      "type": "string",
+      "required": true,
+      "description": "The initial funny scenario or situation"
+    },
+    {
+      "name": "action_1",
+      "type": "string",
+      "required": true,
+      "description": "First physical action or behavior (for visual description)"
+    },
+    {
+      "name": "dialogue_1",
+      "type": "string",
+      "required": true,
+      "description": "First line of dialogue or thought"
+    },
+    {
+      "name": "reaction_1",
+      "type": "string",
+      "required": true,
+      "description": "Initial reaction or response to the situation"
+    },
+    {
+      "name": "plot_twist",
+      "type": "string",
+      "required": true,
+      "description": "The unexpected turn that makes it funny"
+    },
+    {
+      "name": "action_2",
+      "type": "string",
+      "required": true,
+      "description": "Second action or behavior after the twist"
+    },
+    {
+      "name": "punchline_dialogue",
+      "type": "string",
+      "required": true,
+      "description": "The main funny line or punchline"
+    },
+    {
+      "name": "final_reaction",
+      "type": "string",
+      "required": true,
+      "description": "Final reaction or expression for comedic effect"
+    },
+    {
+      "name": "callback_line",
+      "type": "string",
+      "required": false,
+      "description": "A callback to earlier in the skit for extra humor",
+      "defaultValue": "Every. Single. Time."
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "POV: You're {character_description}",
+      "purpose": "relatability_hook"
+    },
+    {
+      "position": "middle",
+      "text": "But then {plot_twist}!",
+      "purpose": "comedy_twist"
+    },
+    {
+      "position": "closing",
+      "text": "Tag someone who would totally do this!",
+      "purpose": "call_to_action"
+    }
+  ],
+  "platform": "tiktok",
+  "idealLength": {
+    "min": 15,
+    "max": 30
+  },
+  "recommendedSettings": {
+    "voice": "af_jessica",
+    "music": "funny",
+    "orientation": "portrait"
+  },
+  "tags": ["comedy", "skit", "humor", "relatable", "viral", "POV"]
+}

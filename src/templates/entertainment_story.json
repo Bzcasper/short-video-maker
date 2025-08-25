@@ -1,0 +1,91 @@
+{
+  "id": "entertainment_story_twist",
+  "name": "Entertainment Story with Twist",
+  "contentType": "entertainment",
+  "description": "Engaging storytelling template with a surprise twist ending for maximum engagement",
+  "template": "You won't believe what happened to me {time_reference}. So I was {setting_scene} when suddenly {initial_event}. At first, I thought {initial_assumption}. But then {plot_development}. Just when I thought things couldn't get {emotion_escalation}, {major_twist}! The crazy part? {revelation}. {moral_or_lesson}. Have you ever experienced something like this? Drop your stories below!",
+  "variables": [
+    {
+      "name": "time_reference",
+      "type": "string",
+      "required": true,
+      "description": "When the story took place (e.g., 'yesterday', 'last week', 'this morning')"
+    },
+    {
+      "name": "setting_scene",
+      "type": "string",
+      "required": true,
+      "description": "Where and what the person was doing when the story begins"
+    },
+    {
+      "name": "initial_event",
+      "type": "string",
+      "required": true,
+      "description": "The first unexpected thing that happened"
+    },
+    {
+      "name": "initial_assumption",
+      "type": "string",
+      "required": true,
+      "description": "What the storyteller first thought was happening"
+    },
+    {
+      "name": "plot_development",
+      "type": "string",
+      "required": true,
+      "description": "How the situation developed or escalated"
+    },
+    {
+      "name": "emotion_escalation",
+      "type": "string",
+      "required": true,
+      "description": "Emotional state (e.g., 'weirder', 'worse', 'more confusing')"
+    },
+    {
+      "name": "major_twist",
+      "type": "string",
+      "required": true,
+      "description": "The big twist or revelation in the story"
+    },
+    {
+      "name": "revelation",
+      "type": "string",
+      "required": true,
+      "description": "The final surprising detail or outcome"
+    },
+    {
+      "name": "moral_or_lesson",
+      "type": "string",
+      "required": false,
+      "description": "Takeaway or lesson from the experience",
+      "defaultValue": "Sometimes life surprises you in the best ways"
+    }
+  ],
+  "hooks": [
+    {
+      "position": "opening",
+      "text": "You won't believe what happened to me {time_reference}",
+      "purpose": "attention_grabber"
+    },
+    {
+      "position": "middle",
+      "text": "Just when I thought things couldn't get {emotion_escalation}",
+      "purpose": "tension_builder"
+    },
+    {
+      "position": "closing",
+      "text": "Have you ever experienced something like this? Drop your stories below!",
+      "purpose": "call_to_action"
+    }
+  ],
+  "idealLength": {
+    "min": 20,
+    "max": 45
+  },
+  "recommendedSettings": {
+    "voice": "af_sarah",
+    "music": "excited",
+    "orientation": "portrait"
+  },
+  "tags": ["story", "entertainment", "twist", "personal", "engaging", "viral"]
+}

@@ -7,12 +7,9 @@
  * - Handle A/B testing scenarios
  */
 
-import { 
-  ServiceFactory,
-  CacheService,
-  PromptTemplateService,
-  ScriptGeneratorService
-} from '../services';
+import { CacheService } from '../services/CacheService';
+import { PromptTemplateService } from '../services/PromptTemplateService';
+import { ScriptGeneratorService } from '../services/ScriptGeneratorService';
 import {
   PromptTemplate,
   PromptCategoryEnum,
@@ -30,23 +27,23 @@ export class CachingSystemExample {
   private scriptGenerator: ScriptGeneratorService;
 
   constructor() {
-    // Initialize services
-    ServiceFactory.initialize({
-      cache: {
-        defaultTtl: 3600, // 1 hour
-        maxSize: 1000,
-        compressionEnabled: true,
-        metrics: {
-          enabled: true,
-          reportingInterval: 300 // 5 minutes
-        }
-      },
-      enableMetrics: true
-    });
+    // Initialize services directly
+    const cacheConfig = {
+      defaultTtl: 3600, // 1 hour
+      maxSize: 1000,
+      compressionEnabled: true,
+      metrics: {
+        enabled: true,
+        reportingInterval: 300 // 5 minutes
+      }
+    };
 
-    this.cacheService = ServiceFactory.getCacheService();
-    this.templateService = ServiceFactory.getTemplateService();
-    this.scriptGenerator = ServiceFactory.getScriptGeneratorService();
+    this.cacheService = new CacheService(cacheConfig);
+    this.templateService = new PromptTemplateService(this.cacheService);
+    this.scriptGenerator = new ScriptGeneratorService(
+      this.cacheService,
+      this.templateService
+    );
   }
 
   /**
@@ -262,6 +259,7 @@ export class CachingSystemExample {
       recommendedLength: VideoLengthEnum.short,
       tags: ["comedy", "entertainment", "sketch", "humor"],
       validationRules: {
+        requiresFactChecking: false,
         prohibitedWords: ["offensive", "inappropriate"],
         maxScenes: 4,
         minScenes: 2
@@ -299,7 +297,9 @@ export class CachingSystemExample {
         qualityThreshold: QualityScoreEnum.good,
         cacheResults: true,
         generateVariations: true,
-        variationCount: 2
+        variationCount: 2,
+        useCache: true,
+        maxRetries: 3
       },
       context: {
         requestId: "req_science_001",
@@ -367,7 +367,7 @@ export class CachingSystemExample {
       targetAudience: TargetAudienceEnum.adults,
       startDate: new Date().toISOString(),
       endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-      metrics: ["engagement", "quality_score", "completion_rate"],
+      metrics: ["engagement", "quality_score", "completion_rate"] as ("quality_score" | "engagement" | "conversion_rate" | "completion_rate")[],
       status: "active" as const
     };
 
@@ -391,28 +391,28 @@ export class CachingSystemExample {
 
     // Get cache statistics
     const cacheStats = this.cacheService.getStats();
-    logger.info("Cache Statistics:", {
+    logger.info({
       hitRate: `${(cacheStats.hitRate * 100).toFixed(2)}%`,
       totalRequests: cacheStats.hits + cacheStats.misses,
       averageResponseTime: `${cacheStats.averageResponseTime.toFixed(2)}ms`,
       memoryUsage: `${(cacheStats.totalMemoryUsage / 1024 / 1024).toFixed(2)}MB`
-    });
+    }, "Cache Statistics");
 
     // Get cache info
     const cacheInfo = await this.cacheService.getCacheInfo();
-    logger.info("Cache Info:", {
+    logger.info({
       size: cacheInfo.size,
       memoryUsage: `${(cacheInfo.memoryUsage / 1024 / 1024).toFixed(2)}MB`
-    });
+    }, "Cache Info");
 
     // Get template metrics
     const templateMetrics = await this.templateService.getTemplateMetrics("edu_science_explainer");
     if (templateMetrics) {
-      logger.info("Template Metrics:", {
+      logger.info({
         totalUsage: templateMetrics.totalUsage,
         successRate: `${(templateMetrics.successRate * 100).toFixed(2)}%`,
         averageQualityScore: templateMetrics.averageQualityScore.toFixed(2)
-      });
+      }, "Template Metrics");
     }
   }
 
@@ -456,7 +456,7 @@ export class CachingSystemExample {
       logger.info("All examples completed successfully!");
       
     } catch (error) {
-      logger.error("Example execution failed:", error);
+      logger.error({ error }, "Example execution failed");
       throw error;
     }
   }
@@ -465,7 +465,7 @@ export class CachingSystemExample {
    * Cleanup resources
    */
   async cleanup(): Promise<void> {
-    await ServiceFactory.cleanup();
+    // Services are managed independently, no factory cleanup needed
     logger.info("System cleanup completed");
   }
 }

@@ -64,7 +64,7 @@ export class ScriptGeneratorService {
       const cacheKey = `${this.GENERATION_CACHE_PREFIX}${requestFingerprint}`;
 
       // Check cache if enabled
-      if (options.useCache !== false) {
+      if (options.enableCache !== false) {
         const cached = await this.cacheService.get<ScriptGenerationResult>(cacheKey);
         if (cached) {
           logger.debug(`Script generation cache hit for template: ${templateId}`);
@@ -132,7 +132,7 @@ export class ScriptGeneratorService {
 
         } catch (error) {
           attempt++;
-          logger.warn(`Script generation attempt ${attempt} failed for template ${templateId}:`, error);
+          logger.warn(`Script generation attempt ${attempt} failed for template ${templateId}: ${error instanceof Error ? error.message : String(error)}`);
           
           if (attempt > maxRetries) {
             return this.createErrorResult(
@@ -178,7 +178,7 @@ export class ScriptGeneratorService {
       );
 
       // Cache result if enabled
-      if (options.cacheResults !== false) {
+      if (options.enableCache !== false) {
         const cacheTtl = this.calculateCacheTtl(template.complexity, processingTimeMs);
         await this.cacheService.set(
           cacheKey,
@@ -195,7 +195,7 @@ export class ScriptGeneratorService {
 
     } catch (error) {
       processingTimeMs = Date.now() - startTime;
-      logger.error(`Script generation error:`, error);
+      logger.error(`Script generation error: ${error instanceof Error ? error.message : String(error)}`);
       
       // Update template metrics for failure
       if (request.templateId) {
@@ -294,7 +294,7 @@ export class ScriptGeneratorService {
       return result;
 
     } catch (error) {
-      logger.error(`Quality validation error:`, error);
+      logger.error(`Quality validation error: ${error instanceof Error ? error.message : String(error)}`);
       
       // Return default validation result
       return {
@@ -360,7 +360,7 @@ export class ScriptGeneratorService {
       };
 
     } catch (error) {
-      logger.error(`Failed to generate script from prompt:`, error);
+      logger.error(`Failed to generate script from prompt: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
     }
   }
@@ -394,7 +394,7 @@ export class ScriptGeneratorService {
           });
         }
       } catch (error) {
-        logger.warn(`Failed to generate variation ${i + 1}:`, error);
+        logger.warn(`Failed to generate variation ${i + 1}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 

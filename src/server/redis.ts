@@ -9,7 +9,7 @@ export class RedisConnection {
   public static initialize(config: Config): void {
     RedisConnection.config = config;
     
-    const redisOptions: Redis.RedisOptions = {
+    const redisOptions: any = {
       host: config.redisHost,
       port: config.redisPort,
       db: config.redisDb,

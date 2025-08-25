@@ -6,6 +6,7 @@ import type {
 
 import { Config } from "../../../config";
 import { ScriptGenerationService } from "../../../services/ScriptGenerationService";
+import { ScriptTemplateEngine, Platform } from "../../../services/ScriptTemplateEngine";
 import { logger } from "../../../logger";
 import { scriptGenerationInput, promptToScenesInput } from "../../../types/shorts";
 
@@ -361,7 +362,7 @@ export class ScriptsRouter {
         }
 
         // Validate the script
-        const contentValidator = new (await import("../../../services/ContentValidator")).ContentValidator();
+        const contentValidator = new (await import("../../../services/ContentValidator.js")).ContentValidator();
         const validatedScript = await contentValidator.validateScript(script);
         const engagementMetrics = await contentValidator.calculateEngagementMetrics(validatedScript);
 
@@ -617,7 +618,7 @@ export class ScriptsRouter {
             step_3: `add the finishing touches`,
             final_tip: `remember to taste and adjust as needed`
           },
-          platform: "tiktok" as const,
+          platform: Platform.TIKTOK,
           targetLength: 45
         };
 

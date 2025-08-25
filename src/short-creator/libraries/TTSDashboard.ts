@@ -235,7 +235,7 @@ export class TTSDashboard {
 
     if (!existingAlert) {
       this.activeAlerts.push(newAlert);
-      logger.warn({ alert: newAlert }, 'TTS Dashboard Alert triggered');
+      logger.warn('TTS Dashboard Alert triggered', { alert: newAlert });
       
       // TODO: Send notification (email, Slack, etc.)
       this.sendNotification(newAlert);
@@ -258,7 +258,7 @@ export class TTSDashboard {
     const alert = this.activeAlerts.find(a => a.id === alertId);
     if (alert) {
       alert.resolved = true;
-      logger.info({ alertId }, 'TTS Dashboard Alert resolved');
+      logger.info('TTS Dashboard Alert resolved', { alertId });
     }
   }
 

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "gradio": {
+      "url": "https://zerogpu-aoti-wan2-2-fp8da-aoti-faster.hf.space/gradio_api/mcp/"
+    },
+    "upload_files_to_gradio": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "gradio[mcp]",
+        "gradio",
+        "upload-mcp",
+        "https://zerogpu-aoti-wan2-2-fp8da-aoti-faster.hf.space/gradio_api/mcp/",
+        "/home/bobby/projects/short-video-maker/docs/mcp_uploads/"
+      ]
+    }
+  }
+}
+

@@ -96,8 +96,9 @@ export class PromptTemplateService {
       return validatedTemplate;
 
     } catch (error) {
-      logger.error(`Failed to create template:`, error);
-      throw new Error(`Template creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to create template:`);
+      throw new Error(`Template creation failed: ${errorMessage}`);
     }
   }
 
@@ -134,7 +135,8 @@ export class PromptTemplateService {
       return template;
 
     } catch (error) {
-      logger.error(`Failed to get template ${id}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to get template ${id}:`);
       return null;
     }
   }
@@ -261,7 +263,8 @@ export class PromptTemplateService {
       };
 
     } catch (error) {
-      logger.error(`Template search failed:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Template search failed:`);
       return { templates: [], total: 0, hasMore: false };
     }
   }
@@ -369,7 +372,8 @@ export class PromptTemplateService {
       };
 
     } catch (error) {
-      logger.error(`Variable substitution failed for template ${templateId}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Variable substitution failed for template ${templateId}:`);
       throw error;
     }
   }
@@ -395,7 +399,8 @@ export class PromptTemplateService {
       return JSON.parse(data) as TemplateUsageMetrics;
 
     } catch (error) {
-      logger.error(`Failed to get metrics for template ${templateId}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to get metrics for template ${templateId}:`);
       return null;
     }
   }
@@ -467,7 +472,8 @@ export class PromptTemplateService {
       }
 
     } catch (error) {
-      logger.error(`Failed to update metrics for template ${templateId}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to update metrics for template ${templateId}:`);
     }
   }
 
@@ -504,7 +510,8 @@ export class PromptTemplateService {
       return validatedConfig;
 
     } catch (error) {
-      logger.error(`Failed to create A/B test:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to create A/B test:`);
       throw error;
     }
   }
@@ -558,7 +565,8 @@ export class PromptTemplateService {
       return template ? { template, variantId: firstVariant.id } : null;
 
     } catch (error) {
-      logger.error(`Failed to get A/B test template for ${testId}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to get A/B test template for ${testId}:`);
       return null;
     }
   }
@@ -587,7 +595,8 @@ export class PromptTemplateService {
       return false;
       
     } catch (error) {
-      logger.error(`Failed to delete template ${id}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to delete template ${id}:`);
       return false;
     }
   }
@@ -653,7 +662,8 @@ export class PromptTemplateService {
       
       await this.redis.set(metricsKey, JSON.stringify(currentMetrics));
     } catch (error) {
-      logger.error(`Failed to increment usage for template ${templateId}:`, error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, `Failed to increment usage for template ${templateId}:`);
     }
   }
 }

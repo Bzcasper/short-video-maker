@@ -147,11 +147,16 @@ export class PerformanceOptimizer extends EventEmitter {
     memoryOptimizations: string[];
   }> {
     const metrics = await this.getSystemMetrics();
-    const optimizations = {
+    const optimizations: {
+      adjustedConcurrency: number;
+      recommendedQuality: "fast" | "balanced" | "high";
+      gpuOptimizations: string[];
+      memoryOptimizations: string[];
+    } = {
       adjustedConcurrency: this.config.maxConcurrentJobs,
-      recommendedQuality: "balanced" as const,
-      gpuOptimizations: [] as string[],
-      memoryOptimizations: [] as string[],
+      recommendedQuality: "balanced",
+      gpuOptimizations: [],
+      memoryOptimizations: [],
     };
 
     // Adjust concurrency based on system load
@@ -304,7 +309,7 @@ export class PerformanceOptimizer extends EventEmitter {
         // Check for performance issues
         await this.checkPerformanceAlerts(metrics);
       } catch (error) {
-        logger.warn({ error: error.message }, "Metrics monitoring failed");
+        logger.warn({ error: (error as Error).message }, "Metrics monitoring failed");
       }
     }, 10000); // Every 10 seconds
   }

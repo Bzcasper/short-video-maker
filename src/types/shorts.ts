@@ -1,4 +1,5 @@
 import z from "zod";
+import { Platform } from "../services/ScriptTemplateEngine";
 
 export enum MusicMoodEnum {
   sad = "sad",
@@ -214,7 +215,7 @@ export type CreateShortInput = z.infer<typeof createShortInput>;
 export const scriptGenerationInput = z.object({
   templateId: z.string().describe("ID of the script template to use"),
   variables: z.record(z.any()).describe("Variables to fill in the template"),
-  platform: z.enum(["tiktok", "youtube_shorts", "instagram_reels"]).optional().describe("Target platform for optimization"),
+  platform: z.nativeEnum(Platform).optional().describe("Target platform for optimization"),
   targetLength: z.number().optional().describe("Target length in seconds"),
   customization: z.object({
     tone: z.enum(["casual", "professional", "energetic", "educational", "humorous"]).optional(),
@@ -277,6 +278,8 @@ export interface VideoMetadata {
   completedAt?: string;
   aiGeneration?: AIGenerationMetadata;
   hybridRenderingUsed: boolean;
+  scenes?: SceneInput[];
+  config?: RenderConfig;
 }
 
 export type Music = {

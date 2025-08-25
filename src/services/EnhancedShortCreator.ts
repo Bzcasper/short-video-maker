@@ -16,6 +16,7 @@ import type {
   VideoMetadata,
   VideoStatus,
 } from "../types/shorts";
+import { OrientationEnum } from "../types/shorts";
 
 export interface EnhancedRenderConfig extends RenderConfig {
   pipelineConfig?: AudioToVideoPipelineConfig;
@@ -110,7 +111,12 @@ export class EnhancedShortCreator extends ShortCreator {
       const pipelineConfig = config.pipelineConfig;
       const scenes: EnhancedScene[] = [];
       const tempFiles: string[] = [];
-      const processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps'] = [];
+      const processingSteps: Array<{
+        step: string;
+        duration: number;
+        success: boolean;
+        details?: any;
+      }> = [];
 
       // Step 1: Audio Processing and Enhancement
       if (pipelineConfig.audioEnhancement.enableAdvancedMixing) {
@@ -188,7 +194,12 @@ export class EnhancedShortCreator extends ShortCreator {
     pipelineConfig: AudioToVideoPipelineConfig,
     sceneIndex: number,
     tempFiles: string[],
-    processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps']
+    processingSteps: Array<{
+      step: string;
+      duration: number;
+      success: boolean;
+      details?: any;
+    }>
   ): Promise<EnhancedScene> {
     const stepStart = Date.now();
 
@@ -201,16 +212,18 @@ export class EnhancedShortCreator extends ShortCreator {
 
       // Enhanced audio processing
       let finalAudioPath = '';
+      
+      // First save the audio to a temporary file
+      const tempAudioPath = path.join(this.config.tempDirPath, `audio_${Date.now()}.wav`);
+      await this.ffmpeg.saveNormalizedAudio(audio.audio, tempAudioPath);
+      tempFiles.push(tempAudioPath);
+      
       if (pipelineConfig.audioEnhancement.enableVoiceEnhancement) {
-        const enhancedAudio = await this.audioPipeline.enhanceVoice(audio.audio);
+        const enhancedAudio = await this.audioPipeline.enhanceVoice(tempAudioPath);
         finalAudioPath = enhancedAudio.outputPath;
         tempFiles.push(finalAudioPath);
       } else {
-        // Save original audio
-        const tempAudioPath = path.join(this.config.tempDirPath, `audio_${Date.now()}.wav`);
-        await this.ffmpeg.saveNormalizedAudio(audio.audioStream, tempAudioPath);
         finalAudioPath = tempAudioPath;
-        tempFiles.push(finalAudioPath);
       }
 
       // Generate captions with enhanced styling
@@ -229,7 +242,15 @@ export class EnhancedShortCreator extends ShortCreator {
         const videoRequest: VideoGenerationRequest = {
           prompt: sceneInput.videoPrompt || this.generateVideoPrompt(sceneInput),
           duration: audio.audioLength,
-          style: pipelineConfig.aiVideoGeneration.stylePreferences,
+          style: pipelineConfig.aiVideoGeneration.stylePreferences ? {
+            ...pipelineConfig.aiVideoGeneration.stylePreferences,
+            lighting: 'natural'
+          } : {
+            mood: 'calm',
+            cinematography: 'smooth',
+            colorGrading: 'natural',
+            lighting: 'natural'
+          },
           referenceImage: sceneInput.imagePrompt ? undefined : await this.generateReferenceImage(sceneInput),
         };
 
@@ -326,7 +347,12 @@ export class EnhancedShortCreator extends ShortCreator {
     inputScenes: SceneInput[],
     pipelineConfig: AudioToVideoPipelineConfig,
     tempFiles: string[],
-    processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps']
+    processingSteps: Array<{
+      step: string;
+      duration: number;
+      success: boolean;
+      details?: any;
+    }>
   ): Promise<void> {
     const stepStart = Date.now();
 
@@ -366,7 +392,12 @@ export class EnhancedShortCreator extends ShortCreator {
     scenes: EnhancedScene[],
     pipelineConfig: AudioToVideoPipelineConfig,
     tempFiles: string[],
-    processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps']
+    processingSteps: Array<{
+      step: string;
+      duration: number;
+      success: boolean;
+      details?: any;
+    }>
   ): Promise<void> {
     const stepStart = Date.now();
 
@@ -375,10 +406,17 @@ export class EnhancedShortCreator extends ShortCreator {
 
       // Generate intro title if enabled
       if (titleConfig.enableIntroTitle) {
+        const brandingConfig = titleConfig.branding ? {
+          ...titleConfig.branding,
+          brandFonts: ['Arial', 'sans-serif'],
+          watermarkPosition: 'bottom-right' as const,
+          brandingOpacity: 0.8
+        } : undefined;
+        
         const introTitle = await this.titleService.generateIntroSequence(
           titleConfig.customTitle || "Short Video",
           titleConfig.customSubtitle,
-          titleConfig.branding
+          brandingConfig
         );
         
         // Add intro scene to beginning
@@ -392,12 +430,19 @@ export class EnhancedShortCreator extends ShortCreator {
         scenes.unshift(introScene);
       }
 
-      // Generate outro title if enabled  
+      // Generate outro title if enabled
       if (titleConfig.enableOutroTitle) {
+        const brandingConfig = titleConfig.branding ? {
+          ...titleConfig.branding,
+          brandFonts: ['Arial', 'sans-serif'],
+          watermarkPosition: 'bottom-right' as const,
+          brandingOpacity: 0.8
+        } : undefined;
+        
         const outroTitle = await this.titleService.generateOutroSequence(
           "Thanks for watching!",
           undefined,
-          titleConfig.branding
+          brandingConfig
         );
         
         // Add outro scene to end
@@ -440,7 +485,12 @@ export class EnhancedShortCreator extends ShortCreator {
   private async processEnhancedSubtitles(
     scenes: EnhancedScene[],
     pipelineConfig: AudioToVideoPipelineConfig,
-    processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps']
+    processingSteps: Array<{
+      step: string;
+      duration: number;
+      success: boolean;
+      details?: any;
+    }>
   ): Promise<void> {
     const stepStart = Date.now();
 
@@ -515,7 +565,12 @@ export class EnhancedShortCreator extends ShortCreator {
     config: EnhancedRenderConfig,
     pipelineConfig: AudioToVideoPipelineConfig,
     tempFiles: string[],
-    processingSteps: EnhancedVideoMetadata['enhancedFeatures']['processingSteps']
+    processingSteps: Array<{
+      step: string;
+      duration: number;
+      success: boolean;
+      details?: any;
+    }>
   ): Promise<string> {
     const stepStart = Date.now();
 
@@ -543,7 +598,7 @@ export class EnhancedShortCreator extends ShortCreator {
           },
         },
         videoId,
-        config.orientation || 'portrait'
+        config.orientation || OrientationEnum.portrait
       );
 
       const stepDuration = Date.now() - stepStart;
@@ -610,7 +665,7 @@ export class EnhancedShortCreator extends ShortCreator {
       sceneInput.searchTerms,
       duration,
       [],
-      'portrait' // Default orientation
+      OrientationEnum.portrait // Default orientation
     );
 
     const tempVideoPath = path.join(this.config.tempDirPath, `stock_${Date.now()}.mp4`);

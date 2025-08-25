@@ -961,7 +961,7 @@ export class GoogleTTSProvider extends TTSProvider {
       }, 'generateSpeech');
 
       const audioContent = response.data.audioContent;
-      const audioBuffer = Buffer.from(audioContent, 'base64');
+      const audioBuffer = Buffer.from(audioContent, 'base64').buffer;
       const latency = Date.now() - startTime;
       const estimatedDuration = this.estimateAudioDuration(request.text);
       const costEstimate = this.estimateCost(request.text, estimatedDuration);

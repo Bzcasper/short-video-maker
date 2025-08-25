@@ -39,7 +39,7 @@ export class ScriptGenerationService {
   }> {
     logger.debug("Generating script and converting to scenes", {
       templateId: request.templateId,
-      platform: request.platform
+      platform: request.platform ?? undefined
     });
 
     // Generate the script
@@ -56,7 +56,7 @@ export class ScriptGenerationService {
 
     logger.info(`Generated script with ${scenes.length} scenes`, {
       scriptId: script.id,
-      validationScore: script.validation.score,
+      validationScore: script.validation?.score ?? undefined,
       estimatedDuration: script.content.estimatedDuration
     });
 
@@ -350,7 +350,7 @@ export class ScriptGenerationService {
   /**
    * Extract a specific variable value from prompt
    */
-  private extractVariableFromPrompt(prompt: string, variable: any): string {
+  private extractVariableFromPrompt(prompt: string, variable: any): string | string[] {
     const lowerPrompt = prompt.toLowerCase();
 
     // Common extraction patterns based on variable name

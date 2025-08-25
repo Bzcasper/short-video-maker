@@ -8,6 +8,7 @@
 import { getTTSConfigManager } from '../short-creator/libraries/TTSConfig';
 import { getTTSService, initializeTTSService, TTSServiceConfig } from '../short-creator/libraries/TTSService';
 import { TTSProviderConfig } from '../short-creator/libraries/TTSProvider';
+import { Config } from '../config'; // This loads dotenv
 
 async function testTTSConfiguration() {
   console.log('🧪 Testing TTS Configuration...\n');

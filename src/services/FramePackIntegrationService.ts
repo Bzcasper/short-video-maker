@@ -180,8 +180,13 @@ export class FramePackIntegrationService {
         audioAnalysis = await this.analyzeAudioForVisuals(request.audioPath);
       }
 
+      // Ensure audioAnalysis is defined
+      if (!audioAnalysis) {
+        throw new Error("Audio analysis failed or was not provided");
+      }
+
       // Generate visual prompts based on audio segments
-      const visualPrompts = request.generateVisualPrompts ? 
+      const visualPrompts = request.generateVisualPrompts ?
         await this.generateVisualPromptsFromAudio(audioAnalysis) :
         [{ prompt: "Abstract visual interpretation of the audio", duration: audioAnalysis.segments[0]?.end || 5 }];
 
@@ -195,12 +200,12 @@ export class FramePackIntegrationService {
           prompt: segment.prompt,
           duration: segment.duration,
           style: request.visualStyle,
-          motionIntensity: this.calculateMotionIntensity(audioAnalysis, i),
+          motionIntensity: this.calculateMotionIntensity(audioAnalysis!, i),
         };
 
         // Sync to beats if requested
-        if (request.syncToBeats && audioAnalysis.beats) {
-          segmentRequest.guidanceScale = this.calculateBeatSyncGuidance(audioAnalysis.beats, i);
+        if (request.syncToBeats && audioAnalysis!.beats) {
+          segmentRequest.guidanceScale = this.calculateBeatSyncGuidance(audioAnalysis!.beats, i);
         }
 
         const segmentResult = await this.generateVideoFromPrompt(segmentRequest);

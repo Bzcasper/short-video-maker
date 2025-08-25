@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import { Config } from "../config";
 import { logger } from "../logger";
-import { VideoStatus, VideoProgress, VideoMetadata } from "../types/shorts";
+import { VideoStatus, VideoProgress, VideoMetadata, SceneInput, RenderConfig } from "../types/shorts";
 
 export class VideoTracker {
   private progressData: Map<string, VideoProgress> = new Map();
@@ -43,7 +43,7 @@ export class VideoTracker {
     }
   }
 
-  public initializeVideo(videoId: string, scenesCount: number): void {
+  public initializeVideo(videoId: string, scenesCount: number, scenes?: SceneInput[], config?: RenderConfig): void {
     const now = new Date().toISOString();
     const progress: VideoProgress = {
       status: "queued",
@@ -59,6 +59,9 @@ export class VideoTracker {
       scenesCount,
       totalDuration: 0,
       createdAt: now,
+      hybridRenderingUsed: false,
+      scenes,
+      config,
     };
 
     this.progressData.set(videoId, progress);
@@ -169,7 +172,7 @@ export class VideoTracker {
   }
 
   private getProgressFilePath(): string {
-    return path.join(this.config.dataDirPath, "video-progress.json");
+    return path.join(this.config.getDataDirPath(), "video-progress.json");
   }
 
   private loadPersistedData(): void {

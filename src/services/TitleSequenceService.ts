@@ -125,6 +125,10 @@ export class TitleSequenceService {
       // Analyze content for dynamic styling
       const contentAnalysis = options.contentAnalysis || await this.analyzeContent(options.contentText);
       
+      if (!contentAnalysis) {
+        throw new Error('Content analysis failed');
+      }
+      
       // Generate adaptive styling
       const finalStyle = await this.generateAdaptiveStyle(template.style, contentAnalysis, options.customStyle);
       
@@ -500,7 +504,7 @@ export class TitleSequenceService {
   /**
    * Analyzes content to determine appropriate styling
    */
-  private async analyzeContent(content: string): Promise<TitleGenerationOptions['contentAnalysis']> {
+  private async analyzeContent(content: string): Promise<NonNullable<TitleGenerationOptions['contentAnalysis']>> {
     const words = content.toLowerCase().split(/\s+/);
     const keywords = words.filter(word => word.length > 3);
     

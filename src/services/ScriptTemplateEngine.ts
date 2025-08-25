@@ -122,13 +122,13 @@ export class ScriptTemplateEngine {
           this.templates.set(templateData.id, templateData);
           logger.debug(`Loaded template: ${templateData.name} (${templateData.id})`);
         } catch (error) {
-          logger.error(`Failed to load template ${file}:`, error);
+          logger.error(`Failed to load template ${file}: ${error instanceof Error ? error.message : String(error)}`);
         }
       }
 
       logger.info(`Loaded ${this.templates.size} script templates`);
     } catch (error) {
-      logger.error("Failed to load templates:", error);
+      logger.error(`Failed to load templates: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -213,7 +213,7 @@ export class ScriptTemplateEngine {
       scriptId: generatedScript.id,
       scenes: scenes.length,
       duration: estimatedDuration,
-      wordCount
+      wordCount: wordCount
     });
 
     return generatedScript;

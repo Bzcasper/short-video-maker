@@ -67,7 +67,8 @@ export class GPUResourceManager extends EventEmitter {
       this.startMonitoring();
       return true;
     } catch (error) {
-      logger.error({ error: error.message }, "Failed to initialize GPU resource manager");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, "Failed to initialize GPU resource manager");
       return false;
     }
   }
@@ -118,7 +119,8 @@ export class GPUResourceManager extends EventEmitter {
 
           resolve(gpuInfo);
         } catch (parseError) {
-          reject(new Error(`Failed to parse GPU info: ${parseError.message}`));
+          const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+          reject(new Error(`Failed to parse GPU info: ${errorMessage}`));
         }
       });
 
@@ -172,7 +174,8 @@ export class GPUResourceManager extends EventEmitter {
       return allocation;
 
     } catch (error) {
-      logger.error({ processId, error: error.message }, "Failed to allocate GPU resources");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ processId, error: errorMessage }, "Failed to allocate GPU resources");
       return null;
     }
   }
@@ -217,7 +220,8 @@ export class GPUResourceManager extends EventEmitter {
       const gpuInfo = await this.getGPUInfo();
       return this.findBestGPU(gpuInfo, requestedMemoryMB) !== null;
     } catch (error) {
-      logger.error({ error: error.message }, "Failed to check resource availability");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ error: errorMessage }, "Failed to check resource availability");
       return false;
     }
   }
@@ -328,7 +332,8 @@ export class GPUResourceManager extends EventEmitter {
         
         this.emit("gpuInfoUpdated", gpuInfo);
       } catch (error) {
-        logger.warn({ error: error.message }, "GPU monitoring update failed");
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.warn({ error: errorMessage }, "GPU monitoring update failed");
       }
     }, this.monitorIntervalMs);
   }
@@ -438,7 +443,8 @@ export class GPUResourceManager extends EventEmitter {
 
           resolve(processes);
         } catch (parseError) {
-          reject(new Error(`Failed to parse process GPU usage: ${parseError.message}`));
+          const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+          reject(new Error(`Failed to parse process GPU usage: ${errorMessage}`));
         }
       });
 

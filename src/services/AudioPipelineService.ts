@@ -76,6 +76,9 @@ export class AudioPipelineService {
       const spectralFeatures = await this.analyzeSpectralFeatures(audioPath);
       
       const result: AudioAnalysisResult = {
+        duration: basicInfo.duration ?? 0,
+        sampleRate: basicInfo.sampleRate ?? 0,
+        channels: basicInfo.channels ?? 0,
         ...basicInfo,
         ...rhythmAnalysis,
         ...spectralFeatures,

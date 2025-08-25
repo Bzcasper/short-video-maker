@@ -37,7 +37,7 @@ export interface FramePackProgress {
 }
 
 export class FramePackService {
-  private queue: Queue;
+  private queue!: Queue; // Definite assignment assertion
   private framePackPath: string;
   private pythonPath: string;
   private activeProcesses: Map<string, ChildProcess> = new Map();
@@ -342,7 +342,14 @@ export class FramePackService {
     completed: number;
     failed: number;
   }> {
-    return await this.queue.getJobCounts();
+    const counts = await this.queue.getJobCounts();
+    // Ensure the returned object has all required properties
+    return {
+      active: counts.active || 0,
+      waiting: counts.waiting || 0,
+      completed: counts.completed || 0,
+      failed: counts.failed || 0,
+    };
   }
 
   public async close(): Promise<void> {

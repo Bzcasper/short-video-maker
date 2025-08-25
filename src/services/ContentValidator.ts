@@ -1,5 +1,5 @@
 import { logger } from "../logger";
-import type { GeneratedScript, Platform, ContentType } from "./ScriptTemplateEngine";
+import { GeneratedScript, Platform, ContentType } from "./ScriptTemplateEngine";
 
 export interface ValidationRule {
   name: string;
@@ -147,11 +147,11 @@ export class ContentValidator {
   }
 
   public async validateScript(script: GeneratedScript): Promise<GeneratedScript> {
-    logger.debug(`Validating script ${script.id}`, {
+    logger.debug({
       templateId: script.templateId,
       platform: script.platform,
       duration: script.content.estimatedDuration
-    });
+    }, `Validating script ${script.id}`);
 
     const validationResults: ValidationResult[] = [];
     let totalScore = 0;
@@ -169,7 +169,7 @@ export class ContentValidator {
         totalScore += result.score * rule.weight;
         totalWeight += rule.weight;
       } catch (error) {
-        logger.error(`Validation rule ${rule.name} failed:`, error);
+        logger.error({ error }, `Validation rule ${rule.name} failed:`);
         validationResults.push({
           passed: false,
           score: 0,
@@ -208,11 +208,11 @@ export class ContentValidator {
       recommendations
     };
 
-    logger.debug(`Validation complete for script ${script.id}`, {
+    logger.debug({
       score: finalScore,
       isValid: script.validation.isValid,
       issuesCount: issues.length
-    });
+    }, `Validation complete for script ${script.id}`);
 
     return script;
   }
@@ -493,7 +493,8 @@ export class ContentValidator {
         return visualWords.some(word => fullScript.toLowerCase().includes(word));
       
       case "hook_within_3_seconds":
-        return firstScene && firstScene.duration <= 3 && (firstScene.hook || firstScene.text.includes('?'));
+        const hasHook = firstScene && firstScene.hook;
+        return firstScene && firstScene.duration <= 3 && (!!hasHook || firstScene.text.includes('?'));
       
       case "clear_title_hook":
         return firstScene && (firstScene.text.includes('?') || firstScene.text.toLowerCase().startsWith('how'));

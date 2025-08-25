@@ -5,8 +5,8 @@ import { ShortCreator } from "../../short-creator/ShortCreator";
 import { SceneInput, RenderConfig } from "../../types/shorts";
 
 export class VideoQueue {
-  private queue: Queue;
-  private worker: Worker;
+  private queue!: Queue;
+  private worker!: Worker;
   private shortCreator: ShortCreator;
 
   constructor(shortCreator: ShortCreator) {
@@ -51,8 +51,9 @@ export class VideoQueue {
         );
 
         try {
-          await this.shortCreator.createShort(videoId, scenes, config);
-          logger.info({ jobId: job.id, videoId }, "Video job completed successfully");
+          // Use the public method to add to queue instead of calling private createShort
+          this.shortCreator.addToQueue(scenes, config);
+          logger.info({ jobId: job.id, videoId }, "Video job added to creator queue");
           return { success: true, videoId };
         } catch (error: unknown) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
@@ -121,7 +122,15 @@ export class VideoQueue {
     failed: number;
     delayed: number;
   }> {
-    return await this.queue.getJobCounts();
+    const counts = await this.queue.getJobCounts();
+    // Convert the BullMQ counts object to match our expected interface
+    return {
+      active: counts.active || 0,
+      waiting: counts.waiting || 0,
+      completed: counts.completed || 0,
+      failed: counts.failed || 0,
+      delayed: counts.delayed || 0,
+    };
   }
 
   public async getJob(videoId: string): Promise<Job | undefined> {
@@ -142,6 +151,22 @@ export class VideoQueue {
     await this.worker.close();
     await this.queue.close();
     logger.info("Video queue closed");
+  }
+
+  public async cancelJob(videoId: string): Promise<boolean> {
+    try {
+      const job = await this.queue.getJob(videoId);
+      if (job) {
+        await job.remove();
+        logger.info({ videoId }, "Cancelled video job");
+        return true;
+      }
+      logger.warn({ videoId }, "Job not found for cancellation");
+      return false;
+    } catch (error) {
+      logger.error(error, "Failed to cancel job");
+      return false;
+    }
   }
 
   public async cleanOldJobs(): Promise<void> {

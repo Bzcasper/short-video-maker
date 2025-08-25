@@ -170,7 +170,7 @@ export class CacheService {
       return true;
       
     } catch (error) {
-      logger.error(`Cache SET error for key ${key}:`, error);
+      logger.error({ error }, `Cache SET error for key ${key}:`);
       return false;
     }
   }
@@ -227,7 +227,7 @@ export class CacheService {
       return validatedEntry.content as T;
       
     } catch (error) {
-      logger.error(`Cache GET error for key ${key}:`, error);
+      logger.error({ error }, `Cache GET error for key ${key}:`);
       this.stats.misses++;
       this.updateAverageResponseTime(Date.now() - startTime);
       return null;
@@ -243,7 +243,7 @@ export class CacheService {
       const result = await this.redis.exists(cacheKey);
       return result === 1;
     } catch (error) {
-      logger.error(`Cache EXISTS error for key ${key}:`, error);
+      logger.error({ error }, `Cache EXISTS error for key ${key}:`);
       return false;
     }
   }
@@ -266,7 +266,7 @@ export class CacheService {
       
       return false;
     } catch (error) {
-      logger.error(`Cache DELETE error for key ${key}:`, error);
+      logger.error({ error }, `Cache DELETE error for key ${key}:`);
       return false;
     }
   }
@@ -298,7 +298,7 @@ export class CacheService {
       return invalidatedCount;
       
     } catch (error) {
-      logger.error(`Cache invalidation error for tag ${tag}:`, error);
+      logger.error({ error }, `Cache invalidation error for tag ${tag}:`);
       return 0;
     }
   }
@@ -328,7 +328,7 @@ export class CacheService {
       return invalidatedCount;
       
     } catch (error) {
-      logger.error(`Cache invalidation error for dependency ${dependency}:`, error);
+      logger.error({ error }, `Cache invalidation error for dependency ${dependency}:`);
       return 0;
     }
   }
@@ -360,7 +360,7 @@ export class CacheService {
       return true;
       
     } catch (error) {
-      logger.error("Cache clear error:", error);
+      logger.error({ error }, "Cache clear error:");
       return false;
     }
   }
@@ -398,7 +398,7 @@ export class CacheService {
         newestEntry: filteredKeys.length > 0 ? filteredKeys[filteredKeys.length - 1].replace(this.CACHE_PREFIX, '') : undefined
       };
     } catch (error) {
-      logger.error("Cache info error:", error);
+      logger.error({ error }, "Cache info error:");
       return { size: 0, memoryUsage: 0 };
     }
   }
@@ -446,7 +446,7 @@ export class CacheService {
       }
       
     } catch (error) {
-      logger.error("Cache cleanup error:", error);
+      logger.error({ error }, "Cache cleanup error:");
     }
   }
 
@@ -492,7 +492,7 @@ export class CacheService {
         await this.redis.setex(cacheKey, ttl, compressedData);
       }
     } catch (error) {
-      logger.error(`Failed to update cache metadata for key ${key}:`, error);
+      logger.error({ error }, `Failed to update cache metadata for key ${key}:`);
     }
   }
 
@@ -523,7 +523,7 @@ export class CacheService {
         logger.info(`Cache evicted ${keysToEvict.length} entries`);
       }
     } catch (error) {
-      logger.error("Cache eviction error:", error);
+      logger.error({ error }, "Cache eviction error:");
     }
   }
 
@@ -578,7 +578,7 @@ export class CacheService {
       await this.redis.ltrim(this.METRICS_KEY, 0, 100); // Keep last 100 metrics
       
     } catch (error) {
-      logger.error("Failed to collect performance metrics:", error);
+      logger.error({ error }, "Failed to collect performance metrics:");
     }
   }
 }

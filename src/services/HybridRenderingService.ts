@@ -1,6 +1,7 @@
 import path from "path";
 import { promises as fs } from "fs";
 import cuid from "cuid";
+import ffmpeg from "fluent-ffmpeg";
 import { FramePackService, FramePackConfig, FramePackResult } from "./FramePackService";
 import { ImageProcessingService, ImageGenerationConfig, ImageProcessingResult } from "./ImageProcessingService";
 import { PexelsAPI } from "../short-creator/libraries/Pexels";
@@ -138,10 +139,11 @@ export class HybridRenderingService {
             }
           }
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
           logger.warn({
             sceneIndex: i,
             searchTerm,
-            error: error.message
+            error: errorMessage
           }, "Scene generation failed, falling back");
 
           // Fallback to traditional if AI fails
@@ -382,7 +384,8 @@ export class HybridRenderingService {
       };
 
     } catch (error) {
-      logger.error({ sceneId, searchTerm, error: error.message }, "Traditional scene generation failed");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error({ sceneId, searchTerm, error: errorMessage }, "Traditional scene generation failed");
       throw error;
     }
   }
@@ -401,7 +404,7 @@ export class HybridRenderingService {
     try {
       // Apply video post-processing based on quality settings
       await new Promise<void>((resolve, reject) => {
-        let ffmpegCommand = this.ffmpeg.ffmpegCommand()
+        let ffmpegCommand = ffmpeg()
           .input(inputPath)
           .videoCodec('libx264')
           .audioCodec('aac')
@@ -437,14 +440,15 @@ export class HybridRenderingService {
         ffmpegCommand
           .output(outputPath)
           .on('end', () => resolve())
-          .on('error', (error) => reject(error))
+          .on('error', (error: Error) => reject(error))
           .run();
       });
 
       return outputPath;
 
     } catch (error) {
-      logger.warn({ sceneId, error: error.message }, "AI video post-processing failed, using original");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.warn({ sceneId, error: errorMessage }, "AI video post-processing failed, using original");
       return inputPath;
     }
   }
@@ -463,7 +467,7 @@ export class HybridRenderingService {
     try {
       // Basic video enhancement using FFmpeg filters
       await new Promise<void>((resolve, reject) => {
-        let ffmpegCommand = this.ffmpeg.ffmpegCommand()
+        let ffmpegCommand = ffmpeg()
           .input(inputPath);
 
         // Apply enhancement filters
@@ -493,14 +497,15 @@ export class HybridRenderingService {
           .fps(config.qualitySettings.frameRate)
           .output(outputPath)
           .on('end', () => resolve())
-          .on('error', (error) => reject(error))
+          .on('error', (error: Error) => reject(error))
           .run();
       });
 
       return outputPath;
 
     } catch (error) {
-      logger.warn({ sceneId, error: error.message }, "Video enhancement failed");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.warn({ sceneId, error: errorMessage }, "Video enhancement failed");
       return null;
     }
   }
@@ -514,7 +519,7 @@ export class HybridRenderingService {
     }
 
     // Enhanced prompt engineering for better image generation
-    const basePrompts = {
+    const basePrompts: Record<string, string> = {
       person: "professional portrait photography, high quality, detailed face, natural lighting",
       nature: "stunning landscape photography, natural lighting, high resolution, detailed",
       city: "urban cityscape, modern architecture, golden hour lighting, professional photography",
@@ -522,11 +527,12 @@ export class HybridRenderingService {
       technology: "modern technology, clean design, professional product photography",
       sports: "dynamic sports action, professional sports photography, high energy",
       business: "professional business environment, modern office, clean and bright",
-      travel: "travel photography, beautiful destination, professional quality, inspiring view"
+      travel: "travel photography, beautiful destination, professional quality, inspiring view",
+      general: "professional photography, high quality, detailed"
     };
 
     const category = this.categorizeSearchTerm(searchTerm);
-    const basePrompt = basePrompts[category] || "professional photography, high quality, detailed";
+    const basePrompt = basePrompts[category] || basePrompts.general;
     
     return `${searchTerm}, ${basePrompt}, 8K resolution, award-winning photography`;
   }
@@ -540,7 +546,7 @@ export class HybridRenderingService {
     }
 
     // FramePack works well with motion-focused prompts
-    const motionPrompts = {
+    const motionPrompts: Record<string, string> = {
       person: "person moves naturally, expressive gestures, smooth movements, clear motions",
       nature: "gentle movement in nature, flowing water, swaying trees, natural motion",
       city: "dynamic urban movement, people walking, traffic flowing, city life",
@@ -548,11 +554,12 @@ export class HybridRenderingService {
       technology: "smooth technology demonstration, elegant device interaction",
       sports: "dynamic athletic movements, energetic sports action, fluid motions",
       business: "professional business interactions, confident movements",
-      travel: "exploring beautiful locations, smooth camera movements, engaging travel scenes"
+      travel: "exploring beautiful locations, smooth camera movements, engaging travel scenes",
+      general: "smooth, natural movements, clear motion, engaging action"
     };
 
     const category = this.categorizeSearchTerm(searchTerm);
-    const basePrompt = motionPrompts[category] || "smooth, natural movements, clear motion, engaging action";
+    const basePrompt = motionPrompts[category] || motionPrompts.general;
     
     return `${searchTerm}, ${basePrompt}, high quality video, smooth motion, clear and engaging`;
   }
@@ -632,7 +639,8 @@ export class HybridRenderingService {
         await fs.unlink(filePath);
       } catch (error) {
         // Ignore cleanup errors
-        logger.debug({ filePath, error: error.message }, "Failed to cleanup temp file");
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.debug({ filePath, error: errorMessage }, "Failed to cleanup temp file");
       }
     }
   }

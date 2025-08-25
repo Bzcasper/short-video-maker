@@ -309,7 +309,7 @@ export class TTSService {
     const text = request.text;
     // Simple heuristic to detect if text might be multilingual
     const hasNonEnglish = /[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF\u0600-\u06FF\u0400-\u04FF]/.test(text);
-    return hasNonEnglish || (request.language && !request.language.startsWith('en'));
+    return hasNonEnglish || !!(request.language && !request.language.startsWith('en'));
   }
 
   private async tryFallbackProviders(
@@ -470,7 +470,7 @@ export class TTSService {
   async getProviderHealth(providerName?: string): Promise<Map<string, TTSProviderHealth>> {
     if (providerName) {
       const health = this.providerHealth.get(providerName);
-      return new Map([[providerName, health || { status: 'unknown', latency: 0, errorRate: 0, lastCheck: new Date() }]]);
+      return new Map([[providerName, health || { status: 'healthy', latency: 0, errorRate: 0, lastCheck: new Date() }]]);
     }
     return new Map(this.providerHealth);
   }
@@ -490,6 +490,20 @@ export class TTSService {
       }]]);
     }
     return new Map(this.providerMetrics);
+  }
+
+  getTotalCost(): number {
+    let total = 0;
+    for (const metrics of this.providerMetrics.values()) {
+      total += metrics.totalCost;
+    }
+    return total;
+  }
+
+  getBudgetUtilization(): number {
+    const totalCost = this.getTotalCost();
+    const monthlyBudget = this.config.monthlyBudget || 100; // Default budget
+    return monthlyBudget > 0 ? (totalCost / monthlyBudget) * 100 : 0;
   }
 
   async performHealthChecks(): Promise<void> {

@@ -148,7 +148,8 @@ export class ImageProcessingService {
       }
 
     } catch (error) {
-      logger.warn({ error: error.message }, "Stability AI generation failed");
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.warn({ error: errorMessage }, "Stability AI generation failed");
       throw error;
     }
   }
@@ -212,7 +213,7 @@ export class ImageProcessingService {
       }
 
     } catch (error) {
-      logger.warn({ error: error.message }, "OpenAI generation failed");
+      logger.warn({ error: (error as Error).message }, "OpenAI generation failed");
       throw error;
     }
   }
@@ -389,7 +390,7 @@ export class ImageProcessingService {
       });
 
       // Ensure RGB format (FramePack expects RGB)
-      processedImage = processedImage.ensureAlpha(false).toColourspace("srgb");
+      processedImage = processedImage.removeAlpha().toColourspace("srgb");
 
       // Save as high-quality JPEG
       await processedImage.jpeg({ quality: 95 }).toFile(outputPath);
@@ -586,7 +587,7 @@ export class ImageProcessingService {
       };
 
     } catch (error) {
-      issues.push(`Unable to analyze image: ${error.message}`);
+      issues.push(`Unable to analyze image: ${(error as Error).message}`);
       return { valid: false, issues, suggestions };
     }
   }

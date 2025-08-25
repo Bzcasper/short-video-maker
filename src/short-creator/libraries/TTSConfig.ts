@@ -138,7 +138,39 @@ export class TTSConfigManager {
 
   constructor(initialConfig: Partial<TTSGlobalConfig> = {}) {
     this.config = { ...DEFAULT_TTS_CONFIG, ...initialConfig };
+    this.applyEnvironmentOverrides();
     this.validateConfig();
+  }
+
+  private applyEnvironmentOverrides(): void {
+    // Enable providers based on environment variables
+    const providerEnableFlags = {
+      elevenlabs: process.env.ENABLE_ELEVENLABS,
+      openai: process.env.ENABLE_OPENAI,
+      azure: process.env.ENABLE_AZURE,
+      google: process.env.ENABLE_GOOGLE,
+      kokoro: process.env.ENABLE_KOKORO,
+    };
+
+    for (const [providerName, enableFlag] of Object.entries(providerEnableFlags)) {
+      if (this.config.providers[providerName] && enableFlag !== undefined) {
+        // Handle both string "true"/"false" and actual boolean values
+        const flagValue = enableFlag.toString().toLowerCase();
+        this.config.providers[providerName].enabled = flagValue === 'true' || flagValue === '1';
+      }
+    }
+
+    // Override default provider from environment
+    if (process.env.TTS_DEFAULT_PROVIDER && this.config.providers[process.env.TTS_DEFAULT_PROVIDER]) {
+      this.config.defaultProvider = process.env.TTS_DEFAULT_PROVIDER;
+    }
+
+    // Debug logging to show what providers are enabled
+    console.log('🔧 TTS Configuration Environment Overrides Applied:');
+    for (const [providerName, config] of Object.entries(this.config.providers)) {
+      console.log(`   ${providerName}: ${config.enabled ? '✅ ENABLED' : '❌ DISABLED'}`);
+    }
+    console.log(`   Default Provider: ${this.config.defaultProvider}`);
   }
 
   private validateConfig(): void {

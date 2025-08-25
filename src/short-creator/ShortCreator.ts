@@ -25,9 +25,10 @@ import type {
   MusicTag,
   MusicForVideo,
   VideoMetadata,
-  AIGenerationQualityEnum,
+  VideoProgress,
   AIImageStyleEnum,
 } from "../types/shorts";
+import { AIGenerationQualityEnum } from "../types/shorts";
 
 export class ShortCreator {
   private queue: {
@@ -39,12 +40,12 @@ export class ShortCreator {
   private hybridRenderingService: HybridRenderingService;
 
   constructor(
-    private config: Config,
-    private remotion: Remotion,
-    private kokoro: Kokoro,
-    private whisper: Whisper,
-    private ffmpeg: FFMpeg,
-    private pexelsApi: PexelsAPI,
+    protected config: Config,
+    protected remotion: Remotion,
+    protected kokoro: Kokoro,
+    protected whisper: Whisper,
+    protected ffmpeg: FFMpeg,
+    protected pexelsApi: PexelsAPI,
     private musicManager: MusicManager,
   ) {
     this.videoTracker = new VideoTracker(config);
@@ -125,7 +126,7 @@ export class ShortCreator {
     }
   }
 
-  private async createShort(
+  protected async createShort(
     videoId: string,
     inputScenes: SceneInput[],
     config: RenderConfig,
@@ -325,7 +326,7 @@ export class ShortCreator {
     return fs.readFileSync(videoPath);
   }
 
-  private findMusic(videoDuration: number, tag?: MusicMoodEnum): MusicForVideo {
+  protected findMusic(videoDuration: number, tag?: MusicMoodEnum): MusicForVideo {
     const musicFiles = this.musicManager.musicList().filter((music) => {
       if (tag) {
         return music.mood === tag;
@@ -385,7 +386,7 @@ export class ShortCreator {
       const capabilities = await this.hybridRenderingService.getCapabilities();
       return capabilities.framePackAvailable || capabilities.imageGenerationAvailable;
     } catch (error) {
-      logger.warn({ error: error.message }, "Failed to check hybrid rendering capabilities");
+      logger.warn({ error: (error as Error).message }, "Failed to check hybrid rendering capabilities");
       return false;
     }
   }
@@ -430,7 +431,7 @@ export class ShortCreator {
           config.voice ?? "af_heart",
         );
         let { audioLength } = audio;
-        const { audio: audioStream } = audio;
+        const { audio: audioArrayBuffer } = audio;
 
         // Add padding for last scene
         if (i + 1 === inputScenes.length && config.paddingBack) {
@@ -441,6 +442,8 @@ export class ShortCreator {
         const tempWavPath = path.join(this.config.tempDirPath, `${tempId}.wav`);
         const tempMp3Path = path.join(this.config.tempDirPath, `${tempId}.mp3`);
 
+        const audioStream = Buffer.from(audioArrayBuffer);
+        
         await this.ffmpeg.saveNormalizedAudio(audioStream, tempWavPath);
         const captions = await this.whisper.CreateCaption(tempWavPath);
         await this.ffmpeg.saveToMp3(audioStream, tempMp3Path);
@@ -565,7 +568,7 @@ export class ShortCreator {
         try {
           fs.removeSync(file);
         } catch (error) {
-          logger.debug({ file, error: error.message }, "Failed to cleanup temp file");
+          logger.debug({ file, error: (error as Error).message }, "Failed to cleanup temp file");
         }
       }
 
@@ -580,7 +583,7 @@ export class ShortCreator {
         try {
           fs.removeSync(file);
         } catch (cleanupError) {
-          logger.debug({ file, error: cleanupError.message }, "Failed to cleanup temp file on error");
+          logger.debug({ file, error: (cleanupError as Error).message }, "Failed to cleanup temp file on error");
         }
       }
       throw error;

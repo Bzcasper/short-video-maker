@@ -3,7 +3,7 @@
  * Comprehensive testing for TTS provider quality, performance, and reliability
  */
 
-import { TTSService } from '../short-creator/libraries/TTSService';
+import { TTSService, getTTSService, initializeTTSService } from '../short-creator/libraries/TTSService';
 import { TTSRequest, TTSAudioResult, TTSVoice } from '../short-creator/libraries/TTSProvider';
 import { getTTSConfigManager } from '../short-creator/libraries/TTSConfig';
 
@@ -37,7 +37,19 @@ export class TTSQualityTestSuite {
   private configManager = getTTSConfigManager();
 
   constructor() {
-    this.ttsService = TTSService.getInstance();
+    // Try to get existing instance or initialize with default config
+    try {
+      this.ttsService = getTTSService();
+    } catch {
+      // If no instance exists, create a default one for testing
+      const defaultConfig = {
+        providers: {},
+        fallbackOrder: [],
+        costOptimization: false,
+        monthlyBudget: 100
+      };
+      this.ttsService = initializeTTSService(defaultConfig);
+    }
   }
 
   /**
@@ -189,18 +201,18 @@ export class TTSQualityTestSuite {
       };
     }
 
-    const bestProvider = successfulResults.reduce((best, current) => 
-      (current.audioQuality > best.audioQuality) ? current : best, successfulResults[0])?.provider;
+    const bestProvider = successfulResults.reduce((best, current) =>
+      (current.audioQuality > best.audioQuality) ? current : best, successfulResults[0]).provider;
 
-    const bestCostProvider = successfulResults.reduce((best, current) => 
-      (current.cost < best.cost) ? current : best, successfulResults[0])?.provider;
+    const bestCostProvider = successfulResults.reduce((best, current) =>
+      (current.cost < best.cost) ? current : best, successfulResults[0]).provider;
 
-    const fastestProvider = successfulResults.reduce((best, current) => 
-      (current.latency < best.latency) ? current : best, successfulResults[0])?.provider;
+    const fastestProvider = successfulResults.reduce((best, current) =>
+      (current.latency < best.latency) ? current : best, successfulResults[0]).provider;
 
-    const highestQualityProvider = successfulResults.reduce((best, current) => 
-      ((current.audioQuality + current.naturalness + current.clarity) / 3 > 
-       (best.audioQuality + best.naturalness + best.clarity) / 3) ? current : best, successfulResults[0])?.provider;
+    const highestQualityProvider = successfulResults.reduce((best, current) =>
+      ((current.audioQuality + current.naturalness + current.clarity) / 3 >
+       (best.audioQuality + best.naturalness + best.clarity) / 3) ? current : best, successfulResults[0]).provider;
 
     return {
       testText: text,

@@ -26,9 +26,9 @@ export class VideosRouter {
     this.config = config;
     this.shortCreator = shortCreator;
     this.webhookService = webhookService;
-    this.videoTracker = new VideoTracker();
-    this.videoQueue = new VideoQueue();
-    this.wsServer = new VideoWebSocketServer();
+    this.videoTracker = new VideoTracker(config);
+    this.videoQueue = new VideoQueue(shortCreator);
+    this.wsServer = new VideoWebSocketServer(config, this.videoTracker);
     this.router = express.Router();
 
     this.setupRoutes();
@@ -107,26 +107,19 @@ export class VideosRouter {
                 input.config
               );
               
-              // Track the video with enhanced metadata
-              this.videoTracker.trackVideo(videoId, {
-                scenes: input.scenes,
-                config: input.config,
-                batchId: `batch_${Date.now()}`,
-                createdAt: new Date().toISOString(),
-                status: "queued",
-                progress: 0,
-                estimatedTimeRemaining: null,
-                currentStep: "queued",
-                steps: [
-                  { name: "queued", startedAt: new Date().toISOString(), completedAt: null }
-                ]
-              });
+              // Initialize video tracking with scenes count and original data
+              const scenesCount = input.scenes?.length || 0;
+              this.videoTracker.initializeVideo(videoId, scenesCount, input.scenes, input.config);
+              
+              // Set additional metadata manually
+              const metadata = this.videoTracker.getMetadata(videoId);
+              if (metadata) {
+                // Add any additional metadata fields needed
+                // The metadata structure is already set by initializeVideo
+              }
 
               // Add to queue for processing
-              await this.videoQueue.addJob(videoId, {
-                scenes: input.scenes,
-                config: input.config
-              });
+              await this.videoQueue.addJob(videoId, input.scenes, input.config);
 
               results.push({ success: true, videoId, status: "queued" });
             } catch (error: unknown) {
@@ -253,7 +246,7 @@ export class VideosRouter {
           return;
         }
 
-        const progress = this.videoTracker.getVideoProgress(videoId);
+        const progress = this.videoTracker.getProgress(videoId);
         if (!progress) {
           res.status(404).json({
             error: "Video not found or not being tracked",
@@ -325,7 +318,7 @@ export class VideosRouter {
           return;
         }
 
-        const metadata = this.videoTracker.getVideoMetadata(videoId);
+        const metadata = this.videoTracker.getMetadata(videoId);
         if (!metadata) {
           res.status(404).json({
             error: "Video metadata not found",
@@ -366,7 +359,8 @@ export class VideosRouter {
      *                   type: number
      */
     this.router.get("/", (req: ExpressRequest, res: ExpressResponse) => {
-      const videos = this.videoTracker.getAllVideos();
+      const metadata = this.videoTracker.getAllMetadata();
+      const videos = metadata.map(m => ({ id: m.id, status: m.status }));
       res.status(200).json({
         videos,
         total: videos.length,
@@ -424,7 +418,7 @@ export class VideosRouter {
     this.router.get(
       "/metadata/all",
       (req: ExpressRequest, res: ExpressResponse) => {
-        const metadata = this.videoTracker.getAllVideosWithMetadata();
+        const metadata = this.videoTracker.getAllMetadata();
         res.status(200).json({
           videos: metadata,
           total: metadata.length,
@@ -470,15 +464,9 @@ export class VideosRouter {
           return;
         }
 
-        // Upgrade to WebSocket connection
-        this.wsServer.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
-          this.wsServer.addClient(videoId, ws);
-          ws.send(JSON.stringify({
-            type: "connected",
-            videoId,
-            timestamp: new Date().toISOString()
-          }));
-        });
+        // Upgrade to WebSocket connection - handled by VideoWebSocketServer's attachToServer
+        // The WebSocket server will automatically handle the connection and subscription
+        res.status(101).end(); // Switching Protocols
 
         res.status(101).end(); // Switching Protocols
       }
@@ -543,7 +531,7 @@ export class VideosRouter {
         try {
           const success = await this.videoQueue.cancelJob(videoId);
           if (success) {
-            this.videoTracker.updateVideoStatus(videoId, "cancelled");
+            this.videoTracker.updateProgress(videoId, "failed", 100, "cancelled");
             
             // Trigger webhook for cancellation
             this.webhookService.triggerWebhook("video.cancelled", videoId, {
@@ -630,7 +618,7 @@ export class VideosRouter {
         }
 
         try {
-          const videoData = this.videoTracker.getVideoMetadata(videoId);
+          const videoData = this.videoTracker.getMetadata(videoId);
           if (!videoData) {
             res.status(404).json({
               error: "Video not found"
@@ -646,11 +634,16 @@ export class VideosRouter {
           }
 
           // Reset status and add to queue
-          this.videoTracker.updateVideoStatus(videoId, "queued");
-          await this.videoQueue.addJob(videoId, {
-            scenes: videoData.scenes,
-            config: videoData.config
-          });
+          this.videoTracker.updateProgress(videoId, "queued", 0, "queued");
+          
+          if (!videoData.scenes || !videoData.config) {
+            res.status(400).json({
+              error: "Cannot retry video - original scenes or config data not available"
+            });
+            return;
+          }
+          
+          await this.videoQueue.addJob(videoId, videoData.scenes, videoData.config);
 
           res.status(200).json({
             success: true,

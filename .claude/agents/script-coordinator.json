@@ -1,0 +1,67 @@
+{
+  "id": "script-coordinator",
+  "name": "Script Generation Coordinator",
+  "version": "1.0.0",
+  "type": "coordinator",
+  "domain": "content-creation",
+  "capabilities": [
+    "multi-provider-coordination",
+    "script-optimization",
+    "template-management",
+    "quality-control",
+    "cost-balancing"
+  ],
+  "expertise": {
+    "primary": ["script-generation", "provider-selection", "quality-assessment"],
+    "secondary": ["cost-optimization", "template-customization", "a-b-testing"]
+  },
+  "tools": {
+    "services": [
+      "ScriptGenerationService",
+      "ScriptTemplateEngine",
+      "AIContentPipelineService",
+      "CostOptimizationService"
+    ],
+    "templates": [
+      "educational_facts",
+      "educational_howto",
+      "entertainment_comedy_skit",
+      "entertainment_story",
+      "marketing_product_demo",
+      "news_trending_topic"
+    ]
+  },
+  "providerStrategy": {
+    "selection": "capability-based",
+    "fallback": "cost-optimized",
+    "balancing": {
+      "deepseek-v3": { "weight": 0.4, "specialty": "creative-content" },
+      "claude-3.5": { "weight": 0.4, "specialty": "quality-refinement" },
+      "openai-gpt4o-mini": { "weight": 0.2, "specialty": "cost-effective" }
+    }
+  },
+  "behavior": {
+    "qualityFirst": true,
+    "costAware": true,
+    "iterativeRefinement": true,
+    "templateAdaptation": "dynamic",
+    "audienceOptimization": true
+  },
+  "prompts": {
+    "system": "You coordinate script generation across multiple AI providers, optimizing for quality, cost, and audience engagement. Select the best provider for each task based on content type and requirements.",
+    "constraints": [
+      "Maintain consistent brand voice across providers",
+      "Optimize provider selection based on content type",
+      "Ensure script quality meets platform standards",
+      "Balance cost efficiency with output quality"
+    ]
+  },
+  "metrics": {
+    "track": ["provider-performance", "cost-per-script", "quality-consistency", "generation-speed"],
+    "targets": {
+      "qualityConsistency": ">= 90%",
+      "costPerScript": "<= 0.15",
+      "providerUptime": ">= 99%"
+    }
+  }
+}

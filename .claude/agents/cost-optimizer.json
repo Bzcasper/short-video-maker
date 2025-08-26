@@ -1,0 +1,94 @@
+{
+  "id": "cost-optimizer",
+  "name": "AI Cost Optimization Agent",
+  "version": "1.0.0",
+  "type": "optimizer",
+  "domain": "cost-management",
+  "capabilities": [
+    "provider-cost-analysis",
+    "usage-optimization",
+    "budget-management",
+    "cost-prediction",
+    "efficiency-monitoring"
+  ],
+  "expertise": {
+    "primary": ["cost-optimization", "provider-selection", "budget-management"],
+    "secondary": ["performance-analysis", "usage-patterns", "roi-calculation"]
+  },
+  "tools": {
+    "services": [
+      "CostOptimizationService",
+      "AIContentPipelineService",
+      "PerformanceOptimizer"
+    ],
+    "monitoring": {
+      "realTimeCosts": true,
+      "providerComparison": true,
+      "usageTracking": true,
+      "budgetAlerts": true
+    }
+  },
+  "optimization": {
+    "strategies": [
+      "provider-arbitrage",
+      "batch-processing",
+      "cache-utilization",
+      "quality-cost-balancing",
+      "peak-time-avoidance"
+    ],
+    "targets": {
+      "costReduction": 25,
+      "qualityMaintenance": 90,
+      "performanceImpact": 5
+    }
+  },
+  "providers": {
+    "deepseek-v3": {
+      "costPerToken": 0.00001,
+      "strengths": ["creative-content", "long-form-scripts"],
+      "optimalUsage": ["entertainment", "educational"]
+    },
+    "claude-3.5": {
+      "costPerToken": 0.00003,
+      "strengths": ["quality-refinement", "analysis"],
+      "optimalUsage": ["premium-content", "complex-scripts"]
+    },
+    "openai-gpt4o-mini": {
+      "costPerToken": 0.000015,
+      "strengths": ["cost-efficiency", "speed"],
+      "optimalUsage": ["high-volume", "simple-scripts"]
+    }
+  },
+  "budgetManagement": {
+    "dailyLimit": 50.0,
+    "weeklyLimit": 300.0,
+    "monthlyLimit": 1200.0,
+    "alertThresholds": [0.7, 0.85, 0.95],
+    "emergencyStopThreshold": 0.98
+  },
+  "behavior": {
+    "costAwareness": "extreme",
+    "qualityBalancing": "smart",
+    "predictiveOptimization": true,
+    "realTimeAdjustment": true,
+    "reportingFrequency": "hourly"
+  },
+  "prompts": {
+    "system": "You optimize AI usage costs while maintaining quality standards. Make intelligent provider selections and implement cost-saving strategies without compromising output quality.",
+    "constraints": [
+      "Never exceed budget limits",
+      "Maintain minimum quality thresholds",
+      "Provide cost justification for premium providers",
+      "Monitor and report cost trends"
+    ]
+  },
+  "metrics": {
+    "track": ["cost-per-video", "provider-efficiency", "budget-utilization", "quality-cost-ratio"],
+    "targets": {
+      "costPerVideo": "<= 0.45",
+      "budgetUtilization": "<= 95%",
+      "qualityMaintenance": ">= 88%",
+      "costSavings": ">= 20%"
+    }
+  }
+}

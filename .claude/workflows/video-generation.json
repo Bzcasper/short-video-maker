@@ -1,0 +1,142 @@
+{
+  "id": "video-generation",
+  "name": "Complete Video Generation Pipeline",
+  "version": "1.0.0",
+  "type": "pipeline",
+  "description": "End-to-end video creation workflow with quality assurance and cost optimization",
+  "stages": [
+    {
+      "id": "content-planning",
+      "name": "Content Planning & Analysis",
+      "agent": "video-specialist",
+      "dependencies": [],
+      "timeout": 60,
+      "actions": [
+        "analyze-topic-requirements",
+        "determine-target-audience",
+        "select-content-template",
+        "plan-video-structure"
+      ],
+      "outputs": ["content-plan", "audience-profile", "template-selection"]
+    },
+    {
+      "id": "script-generation",
+      "name": "Multi-Provider Script Generation",
+      "agent": "script-coordinator",
+      "dependencies": ["content-planning"],
+      "timeout": 120,
+      "actions": [
+        "select-optimal-provider",
+        "generate-script-variants",
+        "optimize-for-platform",
+        "validate-brand-guidelines"
+      ],
+      "outputs": ["script-variants", "provider-selection", "optimization-report"]
+    },
+    {
+      "id": "quality-validation",
+      "name": "Content Quality Assurance",
+      "agent": "quality-assurance",
+      "dependencies": ["script-generation"],
+      "timeout": 90,
+      "actions": [
+        "validate-content-quality",
+        "check-brand-safety",
+        "verify-platform-compliance",
+        "score-engagement-potential"
+      ],
+      "outputs": ["quality-report", "safety-assessment", "improvement-suggestions"]
+    },
+    {
+      "id": "cost-optimization",
+      "name": "Cost Analysis & Optimization",
+      "agent": "cost-optimizer",
+      "dependencies": ["script-generation"],
+      "timeout": 30,
+      "parallel": true,
+      "actions": [
+        "analyze-generation-costs",
+        "optimize-provider-usage",
+        "predict-rendering-costs",
+        "suggest-cost-improvements"
+      ],
+      "outputs": ["cost-analysis", "optimization-suggestions", "budget-impact"]
+    },
+    {
+      "id": "video-rendering",
+      "name": "FramePack Video Generation",
+      "agent": "framepack-orchestrator",
+      "dependencies": ["quality-validation"],
+      "timeout": 300,
+      "actions": [
+        "prepare-framepack-inputs",
+        "optimize-gpu-resources",
+        "execute-video-rendering",
+        "monitor-render-progress"
+      ],
+      "outputs": ["rendered-video", "render-metrics", "resource-usage"]
+    },
+    {
+      "id": "final-validation",
+      "name": "Final Quality & Performance Check",
+      "agent": "quality-assurance",
+      "dependencies": ["video-rendering"],
+      "timeout": 45,
+      "actions": [
+        "validate-video-quality",
+        "check-audio-sync",
+        "verify-subtitle-accuracy",
+        "assess-overall-performance"
+      ],
+      "outputs": ["final-report", "delivery-approval", "metrics-summary"]
+    }
+  ],
+  "coordination": {
+    "type": "hierarchical",
+    "supervisor": "video-specialist",
+    "parallelStages": ["quality-validation", "cost-optimization"],
+    "rollback": {
+      "enabled": true,
+      "triggers": ["quality-failure", "cost-exceeded", "timeout"]
+    }
+  },
+  "errorHandling": {
+    "retryStrategy": "exponential-backoff",
+    "maxRetries": 3,
+    "failoverAgents": {
+      "script-coordinator": "video-specialist",
+      "framepack-orchestrator": "video-specialist"
+    }
+  },
+  "metrics": {
+    "track": [
+      "total-pipeline-time",
+      "stage-completion-rates",
+      "quality-scores",
+      "cost-efficiency",
+      "resource-utilization"
+    ],
+    "targets": {
+      "totalTime": "<= 600s",
+      "qualityScore": ">= 88%",
+      "costEfficiency": ">= 80%",
+      "successRate": ">= 95%"
+    }
+  },
+  "integration": {
+    "mcp": {
+      "tools": ["get-video-status", "create-short-video"],
+      "notifications": true
+    },
+    "hiveMind": {
+      "coordination": true,
+      "memorySharing": true,
+      "consensusRequired": false
+    },
+    "claudeFlow": {
+      "metricsReporting": true,
+      "performanceTracking": true,
+      "neuralEvents": true
+    }
+  }
+}

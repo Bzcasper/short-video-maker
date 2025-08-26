@@ -1,0 +1,59 @@
+{
+  "version": "3.0.0",
+  "initialized": "2025-08-26T00:00:00.000Z",
+  "project": {
+    "name": "short-video-maker",
+    "type": "ai-content-generation",
+    "domain": "video-creation",
+    "complexity": "enterprise"
+  },
+  "integration": {
+    "hiveMind": {
+      "enabled": true,
+      "configPath": ".hive-mind/config.json",
+      "database": ".hive-mind/hive.db",
+      "syncInterval": 30000,
+      "sharedMemory": true
+    },
+    "claudeFlow": {
+      "enabled": true,
+      "metricsPath": ".claude-flow/metrics/",
+      "performanceTracking": true,
+      "neuralEvents": true
+    },
+    "mcp": {
+      "enabled": true,
+      "router": "src/server/routers/mcp.ts",
+      "tools": ["get-video-status", "create-short-video"],
+      "transport": "sse",
+      "parallel": true
+    }
+  },
+  "agents": {
+    "maxConcurrent": 12,
+    "defaultProfile": "video-specialist",
+    "coordination": "hierarchical",
+    "loadBalancing": "capability-based",
+    "failover": true
+  },
+  "services": {
+    "aiPipeline": "src/services/AIContentPipelineService.ts",
+    "scriptGeneration": "src/services/ScriptGenerationService.ts",
+    "framePackIntegration": "src/services/FramePackIntegrationService.ts",
+    "enhancedCreator": "src/services/EnhancedShortCreator.ts",
+    "costOptimization": "src/services/CostOptimizationService.ts"
+  },
+  "providers": {
+    "ai": ["deepseek-v3", "claude-3.5", "openai-gpt4o-mini"],
+    "tts": "multi-provider",
+    "video": "framepack",
+    "audio": "enhanced-pipeline"
+  },
+  "optimization": {
+    "gpu": true,
+    "cache": true,
+    "parallel": true,
+    "costAware": true,
+    "qualityFirst": true
+  }
+}

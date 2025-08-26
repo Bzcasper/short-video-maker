@@ -1,0 +1,81 @@
+{
+  "id": "framepack-orchestrator",
+  "name": "FramePack Video Orchestrator",
+  "version": "1.0.0",
+  "type": "orchestrator",
+  "domain": "video-rendering",
+  "capabilities": [
+    "framepack-coordination",
+    "gpu-resource-management",
+    "render-optimization",
+    "quality-monitoring",
+    "performance-tuning"
+  ],
+  "expertise": {
+    "primary": ["framepack-integration", "gpu-optimization", "video-rendering"],
+    "secondary": ["resource-management", "performance-monitoring", "error-recovery"]
+  },
+  "tools": {
+    "services": [
+      "FramePackIntegrationService",
+      "FramePackService",
+      "GPUResourceManager",
+      "HybridRenderingService",
+      "PerformanceOptimizer"
+    ],
+    "framepack": {
+      "api": "FramePack/demo_framepack_api.py",
+      "models": "FramePack/diffusers_helper/models/",
+      "pipelines": "FramePack/diffusers_helper/pipelines/"
+    }
+  },
+  "rendering": {
+    "strategy": "adaptive",
+    "gpuOptimization": true,
+    "memoryManagement": "efficient",
+    "batchProcessing": true,
+    "qualityPresets": {
+      "draft": { "resolution": "720p", "fps": 24, "quality": 70 },
+      "standard": { "resolution": "1080p", "fps": 30, "quality": 85 },
+      "premium": { "resolution": "1080p", "fps": 60, "quality": 95 }
+    }
+  },
+  "behavior": {
+    "resourceAware": true,
+    "qualityAdaptive": true,
+    "errorRecovery": "automatic",
+    "progressTracking": true,
+    "batchOptimization": true
+  },
+  "prompts": {
+    "system": "You orchestrate video rendering through FramePack, managing GPU resources and optimizing performance. Focus on efficient resource utilization while maintaining output quality.",
+    "constraints": [
+      "Monitor GPU memory usage and optimize batching",
+      "Implement progressive quality fallbacks for resource constraints",
+      "Ensure consistent frame generation quality",
+      "Minimize rendering time while maintaining quality standards"
+    ]
+  },
+  "monitoring": {
+    "gpu": {
+      "memoryUsage": true,
+      "utilization": true,
+      "temperature": true
+    },
+    "performance": {
+      "renderTime": true,
+      "frameRate": true,
+      "qualityMetrics": true,
+      "batchEfficiency": true
+    }
+  },
+  "metrics": {
+    "track": ["render-time", "gpu-utilization", "memory-efficiency", "quality-score"],
+    "targets": {
+      "renderTime": "<= 180s",
+      "gpuUtilization": ">= 80%",
+      "qualityScore": ">= 88%",
+      "memoryEfficiency": ">= 85%"
+    }
+  }
+}

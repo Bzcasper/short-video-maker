@@ -114,7 +114,7 @@ describe("ScriptTemplateEngine", () => {
       expect(entertainmentTemplates).toHaveLength(0);
     });
 
-    it("should filter templates by platform", () => {
+    it("should filter templates by platform", async () => {
       const allPlatformTemplates = engine.getTemplatesByPlatform(Platform.TIKTOK);
       expect(allPlatformTemplates).toHaveLength(1); // Template has no specific platform
 

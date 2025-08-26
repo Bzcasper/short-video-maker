@@ -27,11 +27,42 @@ export class VideosRouter {
     this.shortCreator = shortCreator;
     this.webhookService = webhookService;
     this.videoTracker = new VideoTracker(config);
-    this.videoQueue = new VideoQueue(shortCreator);
-    this.wsServer = new VideoWebSocketServer(config, this.videoTracker);
+    
+    // Only initialize VideoQueue if not in test environment to avoid Redis connection issues
+    if (process.env.NODE_ENV !== 'test') {
+      this.videoQueue = new VideoQueue(shortCreator);
+    } else {
+      // Create a proper mock videoQueue for testing with required methods
+      this.videoQueue = {
+        addJob: async (videoId: string, scenes: any, config: any) => {
+          console.log(`Mock addJob called for video ${videoId}`);
+          return Promise.resolve();
+        },
+        cancelJob: async (videoId: string) => {
+          console.log(`Mock cancelJob called for video ${videoId}`);
+          return Promise.resolve(true);
+        }
+      } as VideoQueue;
+    }
+    
+    try {
+      this.wsServer = new VideoWebSocketServer(config, this.videoTracker);
+      console.log('VideosRouter: wsServer created');
+    } catch (error) {
+      console.error('VideosRouter: Error creating wsServer:', error);
+      throw error;
+    }
+    
     this.router = express.Router();
+    console.log('VideosRouter: router created', typeof this.router, this.router);
 
-    this.setupRoutes();
+    try {
+      this.setupRoutes();
+      console.log('VideosRouter: after setupRoutes', typeof this.router, this.router);
+    } catch (error) {
+      console.error('VideosRouter: Error in setupRoutes:', error);
+      throw error;
+    }
   }
 
   private setupRoutes() {

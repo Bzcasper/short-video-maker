@@ -22,9 +22,33 @@ export class APIV2Router {
   constructor(config: Config, shortCreator: ShortCreator) {
     this.router = express.Router();
     this.webhookService = new WebhookService();
-    this.videosRouter = new VideosRouter(config, shortCreator, this.webhookService);
-    this.webhooksRouter = new WebhooksRouter(this.webhookService);
-    this.scriptsRouter = new ScriptsRouter(config);
+    
+    try {
+      console.log('Creating VideosRouter...');
+      this.videosRouter = new VideosRouter(config, shortCreator, this.webhookService);
+      console.log('VideosRouter created, router property type:', typeof this.videosRouter.router);
+      console.log('VideosRouter created, router property value:', this.videosRouter.router);
+      console.log('VideosRouter instance:', this.videosRouter);
+    } catch (error) {
+      console.error('Error creating VideosRouter:', error);
+      throw error;
+    }
+    
+    try {
+      this.webhooksRouter = new WebhooksRouter(this.webhookService);
+      console.log('WebhooksRouter created, router property:', this.webhooksRouter.router);
+    } catch (error) {
+      console.error('Error creating WebhooksRouter:', error);
+      throw error;
+    }
+    
+    try {
+      this.scriptsRouter = new ScriptsRouter(config);
+      console.log('ScriptsRouter created, router property:', this.scriptsRouter.router);
+    } catch (error) {
+      console.error('Error creating ScriptsRouter:', error);
+      throw error;
+    }
 
     this.router.use(express.json());
     this.setupRoutes();
@@ -65,6 +89,7 @@ export class APIV2Router {
     });
 
     // Mount videos router
+    console.log('APIV2Router: mounting videos router', typeof this.videosRouter.router, this.videosRouter.router);
     this.router.use("/videos", this.videosRouter.router);
 
     // Mount webhooks router

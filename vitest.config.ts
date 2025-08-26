@@ -38,7 +38,7 @@ export default defineConfig({
       'dist/',
       '.git/'
     ],
-    reporter: ['default', 'json', 'html']
+    reporter: ['default', 'json']
   },
   resolve: {
     alias: {
@@ -49,4 +49,4 @@ export default defineConfig({
   define: {
     __TEST__: true
   }
-});}
+});

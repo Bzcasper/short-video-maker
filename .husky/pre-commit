@@ -1,0 +1,101 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks for Short Video Maker..."
+
+# Check for sensitive files
+echo "🔒 Checking for sensitive content..."
+if git diff --cached --name-only | grep -E '\.(key|pem|p12|env)$|secret|password' > /dev/null; then
+  echo "❌ Sensitive files detected! Please review:"
+  git diff --cached --name-only | grep -E '\.(key|pem|p12|env)$|secret|password'
+  exit 1
+fi
+
+# Check for large media files
+echo "📁 Checking for large media files..."
+for file in $(git diff --cached --name-only); do
+  if [ -f "$file" ]; then
+    size=$(wc -c < "$file")
+    if [ "$size" -gt 50000000 ]; then # 50MB
+      echo "❌ Large file detected: $file ($(($size / 1024 / 1024))MB)"
+      echo "Please use Git LFS for large media files or exclude from git"
+      exit 1
+    fi
+  fi
+done
+
+# Run linting on TypeScript files
+if git diff --cached --name-only | grep '\.ts$\|\.tsx$' > /dev/null; then
+  echo "🔧 Running ESLint on TypeScript files..."
+  npx eslint $(git diff --cached --name-only --diff-filter=ACMR | grep '\.ts$\|\.tsx$' | tr '\n' ' ')
+  if [ $? -ne 0 ]; then
+    echo "❌ ESLint failed. Please fix the issues above."
+    exit 1
+  fi
+fi
+
+# Run Prettier on staged files
+echo "💅 Running Prettier..."
+npx prettier --check $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|js|jsx|json|md|yml|yaml)$' | tr '\n' ' ') 2>/dev/null
+if [ $? -ne 0 ]; then
+  echo "❌ Prettier formatting issues found. Running auto-fix..."
+  npx prettier --write $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|js|jsx|json|md|yml|yaml)$' | tr '\n' ' ')
+  echo "✅ Files formatted. Please review and re-stage them."
+  exit 1
+fi
+
+# Type checking for TypeScript
+if git diff --cached --name-only | grep '\.ts$\|\.tsx$' > /dev/null; then
+  echo "📝 Running TypeScript type checking..."
+  npx tsc --noEmit --project tsconfig.json
+  if [ $? -ne 0 ]; then
+    echo "❌ TypeScript type checking failed."
+    exit 1
+  fi
+fi
+
+# Check for console.log statements (except in allowed files)
+echo "🚫 Checking for console statements..."
+if git diff --cached --diff-filter=ACMR | grep -E '^\+.*console\.(log|debug|info)' | grep -v -E '(test|spec|\.test\.|\.spec\.|logger)'; then
+  echo "❌ console.log/debug/info statements found. Please use the logger instead."
+  exit 1
+fi
+
+# Check for TODOs in production files
+echo "📝 Checking for TODO comments..."
+if git diff --cached --diff-filter=ACMR | grep -E '^\+.*TODO|^\+.*FIXME' | grep -v -E '(test|spec|\.test\.|\.spec\.)'; then
+  echo "⚠️  TODO/FIXME comments found in production code:"
+  git diff --cached --diff-filter=ACMR | grep -E '^\+.*TODO|^\+.*FIXME' | grep -v -E '(test|spec|\.test\.|\.spec\.)'
+  echo "Consider creating issues for these items."
+fi
+
+# Video generation project specific checks
+echo "🎬 Running video generation project checks..."
+
+# Check for proper error handling in services
+if git diff --cached --name-only | grep 'src/services/.*\.ts$' > /dev/null; then
+  echo "🔍 Checking service error handling..."
+  for file in $(git diff --cached --name-only | grep 'src/services/.*\.ts$'); do
+    if [ -f "$file" ] && ! grep -q "try\|catch\|throw" "$file"; then
+      echo "⚠️  Service file $file may be missing error handling"
+    fi
+  done
+fi
+
+# Check for async/await patterns in video processing
+if git diff --cached --name-only | grep -E '(src/short-creator|src/services)/.*\.ts$' > /dev/null; then
+  echo "🔄 Checking async/await patterns..."
+  if git diff --cached --diff-filter=ACMR | grep -E '^\+.*\.then\(' > /dev/null; then
+    echo "⚠️  Found .then() usage. Consider using async/await for consistency."
+  fi
+fi
+
+# Check for proper logging usage
+if git diff --cached --diff-filter=ACMR | grep -E '^\+' | grep -E 'console\.(log|error|warn)' | grep -v -E '(test|spec)' > /dev/null; then
+  echo "⚠️  Direct console usage found. Please use the project logger:"
+  echo "    import { logger } from '../logger';"
+  echo "    logger.info('message');"
+fi
+
+echo "✅ Pre-commit checks completed successfully!"
+echo "🚀 Ready to commit clean, optimized code!"

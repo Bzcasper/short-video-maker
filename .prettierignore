@@ -1,0 +1,94 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Build outputs  
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# Generated files
+*.generated.ts
+*.generated.js
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Media files (binary)
+*.mp4
+*.mov
+*.avi
+*.wav
+*.mp3
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.pdf
+
+# Database files
+*.db
+*.sqlite
+.hive-mind/hive.db*
+.hive-mind/memory.db
+
+# Cache directories
+.cache/
+.remotion/
+static/cache/
+static/music/
+
+# Environment and secrets
+.env*
+*.key
+*.pem
+
+# IDE files
+.vscode/
+.idea/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+uv.lock
+
+# Configuration overrides (project-specific)
+.claude-flow/
+.hive-mind/sessions/
+FramePack/temp/
+FramePack/output/
+
+# Generated documentation
+docs/generated/
+api-docs/
+
+# Test outputs
+test-results/
+playwright-report/
+screenshots/
+
+# Backup files
+*.backup
+*.bak
+*.old

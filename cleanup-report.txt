@@ -1,0 +1,31 @@
+Short Video Maker - Cleanup Report
+Generated: Mon 25 Aug 2025 05:54:25 PM PDT
+
+🧹 Cleaned Items:
+- Node.js build artifacts and cache
+- TypeScript compilation cache  
+- Remotion rendering cache
+- FramePack temporary and output files
+- Video processing cache and temp files
+- Log files and debugging output
+- System temporary files
+- AI/ML model cache
+- Old hive-mind session files (>7 days)
+- Old metrics data (>30 days)
+- Test artifacts and coverage reports
+- Backup and version files
+- Package manager artifacts
+- IDE temporary files
+
+📊 Project Status After Cleanup:
+- Project size: 2.3G
+- Temporary files removed
+- Cache cleared
+- Ready for fresh builds
+
+🚀 Next Steps:
+- Run 'npm install' if needed
+- Run 'npm run build' to rebuild
+- Run 'npm test' to verify everything works
+- Consider running './scripts/optimize-project.sh' for full optimization
+

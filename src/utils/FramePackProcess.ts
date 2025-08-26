@@ -28,6 +28,24 @@ export interface ProcessMetrics {
   errorsOccurred: number;
 }
 
+export interface FramePackEvents {
+  spawned: () => void;
+  processError: () => void;
+  recoverableError: () => void;
+  processStarted: () => void;
+  resourceUpdate: (processId: string, resourceInfo: ProcessResourceInfo) => void;
+  resourceLimitExceeded: (processId: string, warnings: string[], resourceInfo: ProcessResourceInfo) => void;
+  progressUpdate: (processId: string, progress: number) => void;
+  framesUpdate: (processId: string, frames: number) => void;
+  stepUpdate: (processId: string, step: string) => void;
+  processExit: (processId: string, code: number | null, signal: NodeJS.Signals | null) => void;
+}
+
+export declare interface FramePackProcessManager {
+  on<U extends keyof FramePackEvents>(event: U, listener: FramePackEvents[U]): this;
+  emit<U extends keyof FramePackEvents>(event: U, ...args: Parameters<FramePackEvents[U]>): boolean;
+}
+
 export class FramePackProcessManager extends EventEmitter {
   private activeProcesses: Map<string, ChildProcess> = new Map();
   private processMetrics: Map<string, ProcessMetrics> = new Map();

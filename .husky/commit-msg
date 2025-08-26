@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Commit message validation for Short Video Maker project
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,100}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+  echo "❌ Invalid commit message format!"
+  echo ""
+  echo "📝 Commit message must follow conventional commits format:"
+  echo "   <type>(<scope>): <description>"
+  echo ""
+  echo "🎯 Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build"
+  echo ""
+  echo "📋 Examples:"
+  echo "   feat(video): add AI-powered scene generation"
+  echo "   fix(tts): resolve voice synthesis timeout issue"
+  echo "   perf(render): optimize GPU memory usage for FramePack"
+  echo "   refactor(services): improve error handling patterns"
+  echo "   docs(api): update MCP integration documentation"
+  echo ""
+  echo "🚫 Your commit message:"
+  echo "   $(cat "$1")"
+  echo ""
+  exit 1
+fi
+
+# Check for specific video generation project conventions
+commit_msg=$(cat "$1")
+
+# Warn about breaking changes
+if echo "$commit_msg" | grep -q "BREAKING CHANGE"; then
+  echo "⚠️  BREAKING CHANGE detected - ensure proper versioning!"
+fi
+
+# Suggest better commit messages for common patterns
+if echo "$commit_msg" | grep -qE "^(update|change|modify)"; then
+  echo "💡 Consider using a more specific type: feat, fix, refactor, perf, etc."
+fi
+
+# Video generation specific checks
+if echo "$commit_msg" | grep -qiE "(video|render|tts|ai|gpu|frame)"; then
+  echo "🎬 Video generation related commit detected"
+fi
+
+# Check commit message length
+msg_length=${#commit_msg}
+if [ "$msg_length" -gt 100 ]; then
+  echo "⚠️  Commit message is long ($msg_length chars). Consider shortening the subject line."
+fi
+
+echo "✅ Commit message format is valid!"

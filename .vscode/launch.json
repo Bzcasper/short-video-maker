@@ -1,0 +1,88 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Short Video Maker",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/index.js",
+      "preLaunchTask": "build",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "short-video-maker:*"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug Video Service",
+      "type": "node", 
+      "request": "launch",
+      "program": "${workspaceFolder}/src/services/index.ts",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "video:*"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug MCP Router",
+      "type": "node",
+      "request": "launch", 
+      "program": "${workspaceFolder}/src/server/routers/mcp.ts",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "mcp:*"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug Tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "--reporter=verbose"],
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug FramePack Integration",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/services/FramePackIntegrationService.ts",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "framepack:*",
+        "ENABLE_GPU": "true"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach to Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full Stack",
+      "configurations": ["Debug Short Video Maker", "Debug Video Service"]
+    }
+  ]
+}

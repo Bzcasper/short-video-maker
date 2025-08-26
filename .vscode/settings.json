@@ -1,0 +1,154 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.remotion": true,
+    "**/coverage": true,
+    "**/.nyc_output": true,
+    "**/FramePack/temp": true,
+    "**/FramePack/output": true,
+    "**/static/cache": true,
+    "**/*.log": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.remotion": true,
+    "**/coverage": true,
+    "**/static/music": true,
+    "**/.hive-mind/sessions": true,
+    "**/.claude-flow/metrics": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.remotion/**": true,
+    "**/FramePack/temp/**": true,
+    "**/FramePack/output/**": true,
+    "**/static/cache/**": true
+  },
+  "typescript.preferences.quoteStyle": "double",
+  "editor.rulers": [120, 140],
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 120,
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "git.ignoreLimitWarning": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash"
+    }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "$(capture).test.ts, $(capture).spec.ts, $(capture).d.ts",
+    "*.js": "$(capture).test.js, $(capture).spec.js",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, uv.lock",
+    "tsconfig.json": "tsconfig.*.json",
+    "README.md": "CONTRIBUTING.md, CHANGELOG.md, LICENSE, .gitignore",
+    "docker-compose.yml": "docker-compose.*.yml, Dockerfile*, .dockerignore"
+  },
+  "workbench.tree.indent": 12,
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 120,
+  "breadcrumbs.enabled": true,
+  "outline.showVariables": false,
+  "problems.showCurrentInStatus": true,
+  "extensions.ignoreRecommendations": false,
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint", 
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+  "cSpell.words": [
+    "Remotion",
+    "framepack",
+    "hive-mind", 
+    "claude-flow",
+    "TTSProvider",
+    "FramePack",
+    "pexels",
+    "elevenlabs",
+    "kokoro",
+    "bullmq",
+    "ioredis",
+    "CUDA",
+    "webm",
+    "ffmpeg"
+  ],
+  "cSpell.enableFiletypes": [
+    "typescript",
+    "javascript",
+    "json",
+    "markdown"
+  ],
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME", 
+    "NOTE",
+    "HACK",
+    "XXX",
+    "BUG",
+    "OPTIMIZE"
+  ],
+  "todo-tree.highlights.defaultHighlight": {
+    "foreground": "#000000",
+    "background": "#ffcc00",
+    "iconColour": "#ffcc00"
+  },
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.defaultBranchName": "main"
+}

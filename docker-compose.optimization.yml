@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  short-video-maker:
+    image: gyoridavid/short-video-maker:latest
+    build:
+      context: .
+      dockerfile: main.Dockerfile
+      target: production
+    container_name: short-video-maker-optimized
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - ENABLE_GPU=false
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+    volumes:
+      - video_output:/app/FramePack/output
+      - video_cache:/app/static/cache
+      - hive_mind_data:/app/.hive-mind
+    depends_on:
+      - redis
+    networks:
+      - video_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  short-video-maker-cuda:
+    image: gyoridavid/short-video-maker:latest-cuda
+    build:
+      context: .
+      dockerfile: main-cuda.Dockerfile
+      target: production
+    container_name: short-video-maker-gpu
+    restart: unless-stopped
+    ports:
+      - "3002:3001"
+    environment:
+      - NODE_ENV=production
+      - ENABLE_GPU=true
+      - CUDA_VISIBLE_DEVICES=0
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+    volumes:
+      - video_output_gpu:/app/FramePack/output
+      - video_cache_gpu:/app/static/cache
+      - hive_mind_data_gpu:/app/.hive-mind
+    depends_on:
+      - redis
+    runtime: nvidia
+    networks:
+      - video_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+      placement:
+        constraints:
+          - node.labels.gpu==true
+
+  redis:
+    image: redis:7-alpine
+    container_name: video-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - video_network
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: video-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - video_output:/var/www/videos:ro
+    depends_on:
+      - short-video-maker
+    networks:
+      - video_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  video_output:
+    driver: local
+  video_cache:
+    driver: local
+  video_output_gpu:
+    driver: local
+  video_cache_gpu:
+    driver: local
+  hive_mind_data:
+    driver: local
+  hive_mind_data_gpu:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  video_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

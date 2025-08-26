@@ -1,0 +1,185 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        variant: [standard, cuda, tiny]
+        include:
+          - variant: standard
+            dockerfile: main.Dockerfile
+            platforms: linux/amd64,linux/arm64
+            suffix: ""
+          - variant: cuda
+            dockerfile: main-cuda.Dockerfile
+            platforms: linux/amd64
+            suffix: "-cuda"
+          - variant: tiny
+            dockerfile: main-tiny.Dockerfile
+            platforms: linux/amd64,linux/arm64
+            suffix: "-tiny"
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        flavor: |
+          latest=auto
+          suffix=${{ matrix.suffix }},onlatest=true
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ${{ matrix.dockerfile }}
+        platforms: ${{ matrix.platforms }}
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          VERSION=${{ github.ref_name }}
+          BUILD_DATE=${{ github.run_id }}
+          GIT_COMMIT=${{ github.sha }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run type check
+      run: npx tsc --noEmit
+
+    - name: Run linter
+      run: npx eslint src/**/*.{ts,tsx}
+
+    - name: Run tests
+      run: npm test -- --run
+      env:
+        REDIS_URL: redis://localhost:6379
+
+    - name: Test Docker image
+      run: |
+        docker run -d --name test-container \
+          -p 3001:3001 \
+          -e NODE_ENV=production \
+          -e REDIS_URL=redis://host.docker.internal:6379 \
+          --add-host=host.docker.internal:host-gateway \
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}
+        
+        # Wait for container to start
+        sleep 30
+        
+        # Test health endpoint
+        curl -f http://localhost:3001/health || exit 1
+        
+        # Cleanup
+        docker stop test-container
+        docker rm test-container
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name != 'pull_request'
+    
+    steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [build, test, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment"
+        # Add your deployment commands here
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: [build, test, security-scan]
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: production
+    
+    steps:
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment"
+        # Add your deployment commands here

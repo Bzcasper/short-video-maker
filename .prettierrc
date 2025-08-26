@@ -1,6 +1,56 @@
 {
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": false,
+  "printWidth": 120,
+  "tabWidth": 2,
   "useTabs": false,
+  "quoteProps": "as-needed",
   "bracketSpacing": true,
-  "tabWidth": 2
+  "bracketSameLine": false,
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "embeddedLanguageFormatting": "auto",
+  "overrides": [
+    {
+      "files": ["*.json", "*.jsonc"],
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": ["*.md", "*.mdx"],
+      "options": {
+        "printWidth": 100,
+        "proseWrap": "always",
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": ["*.yml", "*.yaml"],
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "singleQuote": true
+      }
+    },
+    {
+      "files": ["src/services/*.ts", "src/short-creator/*.ts"],
+      "options": {
+        "printWidth": 140,
+        "tabWidth": 2,
+        "semi": true
+      }
+    },
+    {
+      "files": ["src/types/*.ts"],
+      "options": {
+        "printWidth": 100,
+        "tabWidth": 2,
+        "semi": true
+      }
+    }
+  ]
 }
 

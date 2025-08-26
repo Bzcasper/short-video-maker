@@ -89,13 +89,28 @@ services:
     environment:
       - NODE_ENV=production
       - WORKER_TYPE=gpu-cuda
-      - GPU_MEMORY_FRACTION=0.8
+      - GPU_MEMORY_FRACTION=0.85
       - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
       - REDIS_URL=redis://redis-cluster:6379
-      - CONCURRENT_JOBS=4
+      - CONCURRENT_JOBS=6
       - QUEUE_NAME=gpu-processing
       - FRAMEPACK_PATH=/app/FramePack
       - FRAMEPACK_VENV=/app/FramePack/venv/bin/python
+      # CUDA Memory Optimizations
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512,garbage_collection_threshold:0.8,expandable_segments:True
+      - CUDA_MODULE_LOADING=LAZY
+      - TORCH_CUDNN_V8_API_ENABLED=1
+      - CUDNN_BENCHMARK=1
+      # FramePack Performance Settings
+      - FRAMEPACK_GPU_MEMORY_PRESERVATION=4.0
+      - FRAMEPACK_BATCH_SIZE_AUTO=true
+      - FRAMEPACK_USE_TENSORRT=true
+      - FRAMEPACK_ENABLE_MEMORY_POOLING=true
+      # Whisper CUDA Settings
+      - WHISPER_CUDA_BATCH_SIZE=16
+      - WHISPER_CUDA_ENABLE_FLASH_ATTENTION=1
     volumes:
       - ./data:/app/data
       - gpu-cache:/app/cache
@@ -121,14 +136,18 @@ services:
             - discrete_resource_spec:
                 kind: 'gpu'
                 value: 1
+          memory: 8G
+          cpus: '4.0'
         limits:
-          cpus: '6.0'
-          memory: 16G
+          cpus: '8.0'
+          memory: 32G
+          pids: 4096
     healthcheck:
-      test: ["CMD", "nvidia-smi"]
-      interval: 60s
-      timeout: 30s
-      retries: 2
+      test: ["CMD-SHELL", "nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits | awk '{if($3>95) exit 1; if($1/$2>0.95) exit 1}' || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 120s
 
   gpu-worker-cpu:
     build:
@@ -156,7 +175,6 @@ services:
       restart_policy:
         condition: on-failure
         delay: 15s
-        max_attempts: 3
       resources:
         limits:
           cpus: '4.0'

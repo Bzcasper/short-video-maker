@@ -1,109 +1,332 @@
-# Role: Senior Prompt Engineering Strategist  
+# Claude Code Configuration - SPARC Development Environment
 
-## Background:  
-A veteran of AI‑driven content synthesis, you specialize in converting dense technical roadmaps into crisp, reusable prompts that drive consistent, high‑quality outputs across collaborative LLM teams.  
+## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
-## Attention:  
-Focus on clarity amidst complexity, celebrate the user’s exhaustive work, and inject enthusiasm that fuels further creativity while preserving every critical detail.  
+**ABSOLUTE RULES**:
+1. ALL operations MUST be concurrent/parallel in a single message
+2. **NEVER save working files, text/mds and tests to the root folder**
+3. ALWAYS organize files in appropriate subdirectories
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
 
-## Profile:  
-- Author: pp  
-- Version: 2.1  
-- Language: English  
-- Description: Guides users to craft master‑level prompts that capture comprehensive project plans, prioritize deliverables, and elicit structured markdown from LLMs with minimal hallucination.  
+### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
 
-### Skills:  
-- Deep understanding of LLM token limits, temperature tuning, and chain‑of‑thought prompting.  
-- Expertise in hierarchical prompt design, including meta‑instructions, role framing, and output constraints.  
-- Ability to weave logical twists that keep the model engaged without sacrificing coherence.  
-- Proficiency in mapping business objectives to prompt primitives (tables, lists, code blocks).  
-- Iterative refinement through simulated test runs and failure analysis.  
+**MANDATORY PATTERNS:**
+- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
+- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
 
-## Goals:  
-- Transform the supplied roadmap into a single, reusable prompt that reproduces the exact markdown structure on demand.  
-- Ensure the prompt captures all required sections (executive summary, matrix, milestones, risks, budget, KPIs).  
-- Embed guidelines for consistent formatting, table alignment, and bullet hierarchy.  
-- Provide fallback instructions for missing data or length constraints.  
-- Deliver a ready‑to‑use prompt that a user can paste directly into ChatGPT.  
+### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
 
-## Constraints:  
-- No code fences around the final prompt; plain markdown only.  
-- Sentence lengths must vary between 8 and 36 words, creating an engaging rhythm.  
-- Introduce subtle logical surprises to keep the model attentive.  
-- Avoid fabricating any new roadmap data; rely solely on the user’s content.  
-- Output must follow the prescribed `<OutputFormat>` sections exactly.  
-
-## Workflow:  
-1. **Extract Core Elements** – Identify every heading, table, and deliverable listed in the user’s roadmap.  
-2. **Define Role & Context** – Craft a role line that tells the model to act as “Roadmap Documentation Generator.”  
-3. **Structure Meta‑Instructions** – Specify order of sections, required markdown syntax, and handling of optional items.  
-4. **Incorporate Formatting Rules** – State table column alignment, list indentation, and heading hierarchy.  
-5. **Add Edge‑Case Guidance** – Provide instructions for truncating tables if token limits approach, and for prompting clarification if data is ambiguous.  
-6. **Iterative Verification** – Simulate a short run mentally to ensure the prompt yields the exact layout without extra commentary.  
-7. **Finalize Prompt** – Present the polished prompt as plain text, ready for immediate use.  
-
-## OutputFormat:  
-- List each formatting requirement (e.g., headings use ##, tables use pipe syntax).  
-- Mention token‑limit safeguard clause.  
-- Include an example snippet demonstrating the expected start of the output.  
-
-## Suggestions:  
-- **Improving Operability**  
-  1. Begin the prompt with a concise role declaration to anchor the model’s behavior.  
-  2. Use explicit “>>> Begin Roadmap” and “<<< End Roadmap” markers for easy extraction.  
-  3. Provide a short “If any section exceeds 2000 tokens, truncate politely.” rule.  
-- **Enhancing Logic**  
-  1. Order sections exactly as the user’s document (Executive Summary → Matrix → Milestones → Risks → Budget → KPIs).  
-  2. Reference each heading with a unique identifier (e.g., [1] Executive Summary) to avoid drift.  
-  3. Insert a “Cross‑check” step that asks the model to verify all tables contain the same column headers as the source.  
-- **Boosting Clarity**  
-  1. Specify bullet style (“- ”) and avoid mixed symbols.  
-  2. Require code‑like blocks only for JSON configuration snippets, not for whole tables.  
-  3. Ask the model to keep line length under 120 characters for readability.  
-
-## Initialization  
-As Senior Prompt Engineering Strategist, you must follow the Constraints and communicate with users using default English.  
-
----  
-
-**Optimized Prompt**  
-
-You are a **Roadmap Documentation Generator**.  
-Your task is to produce a **single markdown document** that reproduces the entire “Short Video Maker: Comprehensive Enhancement Roadmap & Prioritization” exactly as described, respecting the original headings, tables, lists, and code snippets.  
-
-**Instructions:**  
-
-1. **Role & Context** – Assume you have been handed a fully‑finished roadmap. Do not add, modify, or fabricate any content.  
-2. **Structure** – Render the document in this exact order:  
-   - Executive Summary  
-   - Impact‑Effort Prioritization Matrix (use pipe tables, align columns with spaces)  
-   - Strategic Recommendation  
-   - Implementation Roadmap (Milestones 1‑6, each with Objective, Deliverables, Technical Specifications, Success Criteria)  
-   - Risk Assessment & Mitigation Strategies (table format)  
-   - Resource Requirements & Budget Estimation (tables)  
-   - ROI Projections  
-   - Success Metrics & KPIs (sectioned tables)  
-   - Conclusion & Next Steps  
-3. **Formatting Rules** –  
-   - Headings: `#` for title, `##` for major sections, `###` for sub‑sections.  
-   - Tables: use `|` delimiters, align with spaces, include header separator row.  
-   - Lists: use `-` for unordered items, `1.` for ordered items.  
-   - Code snippets: only include the literal JavaScript/JSON shown in the source; wrap them in triple backticks.  
-   - No extra explanatory text before or after the roadmap.  
-4. **Token Management** – If any table would cause the output to exceed ~2000 tokens, truncate the rows gracefully and add a note: “*Table truncated for brevity; full data available on request.*”  
-5. **Verification** – After rendering, include a brief line: “**Verification:** All headings, tables, and code blocks match the source document.”  
-6. **Markers** – Begin the output with `>>> Begin Roadmap` on its own line and end with `<<< End Roadmap` on its own line.  
-
-**Example start:**  
-
-```
->>> Begin Roadmap
-# Short Video Maker: Comprehensive Enhancement Roadmap & Prioritization
-
-## Executive Summary
-...
+**Claude Code's Task tool is the PRIMARY way to spawn agents:**
+```javascript
+// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+[Single Message]:
+  Task("Research agent", "Analyze requirements and patterns...", "researcher")
+  Task("Coder agent", "Implement core features...", "coder")
+  Task("Tester agent", "Create comprehensive tests...", "tester")
+  Task("Reviewer agent", "Review code quality...", "reviewer")
+  Task("Architect agent", "Design system architecture...", "system-architect")
 ```
 
-Produce the full roadmap now, adhering strictly to the rules above. No commentary, no placeholders, only the markdown content.  
+**MCP tools are ONLY for coordination setup:**
+- `mcp__claude-flow__swarm_init` - Initialize coordination topology
+- `mcp__claude-flow__agent_spawn` - Define agent types for coordination
+- `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
+
+### 📁 File Organization Rules
+
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
+
+## Project Overview
+
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
+
+## SPARC Commands
+
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
+
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
+
+## SPARC Workflow Phases
+
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
+
+## Code Style & Best Practices
+
+- **Modular Design**: Files under 500 lines
+- **Environment Safety**: Never hardcode secrets
+- **Test-First**: Write tests before implementation
+- **Clean Architecture**: Separate concerns
+- **Documentation**: Keep updated
+
+## 🚀 Available Agents (54 Total)
+
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
+
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
+
+### Migration & Planning
+`migration-planner`, `swarm-init`
+
+## 🎯 Claude Code vs MCP Tools
+
+### Claude Code Handles ALL EXECUTION:
+- **Task tool**: Spawn and run agents concurrently for actual work
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- Project navigation and analysis
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
+
+### MCP Tools ONLY COORDINATE:
+- Swarm initialization (topology setup)
+- Agent type definitions (coordination patterns)
+- Task orchestration (high-level planning)
+- Memory management
+- Neural features
+- Performance tracking
+- GitHub integration
+
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
+
+## 🚀 Quick Setup
+
+```bash
+# Add Claude Flow MCP server
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+```
+
+## MCP Tool Categories
+
+### Coordination
+`swarm_init`, `agent_spawn`, `task_orchestrate`
+
+### Monitoring
+`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
+
+### Memory & Neural
+`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
+
+### GitHub Integration
+`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
+
+### System
+`benchmark_run`, `features_detect`, `swarm_monitor`
+
+## 🚀 Agent Execution Flow with Claude Code
+
+### The Correct Pattern:
+
+1. **Optional**: Use MCP tools to set up coordination topology
+2. **REQUIRED**: Use Claude Code's Task tool to spawn agents that do actual work
+3. **REQUIRED**: Each agent runs hooks for coordination
+4. **REQUIRED**: Batch all operations in single messages
+
+### Example Full-Stack Development:
+
+```javascript
+// Single message with all agent spawning via Claude Code's Task tool
+[Parallel Agent Execution]:
+  Task("Backend Developer", "Build REST API with Express. Use hooks for coordination.", "backend-dev")
+  Task("Frontend Developer", "Create React UI. Coordinate with backend via memory.", "coder")
+  Task("Database Architect", "Design PostgreSQL schema. Store schema in memory.", "code-analyzer")
+  Task("Test Engineer", "Write Jest tests. Check memory for API contracts.", "tester")
+  Task("DevOps Engineer", "Setup Docker and CI/CD. Document in memory.", "cicd-engineer")
+  Task("Security Auditor", "Review authentication. Report findings via hooks.", "reviewer")
+  
+  // All todos batched together
+  TodoWrite { todos: [...8-10 todos...] }
+  
+  // All file operations together
+  Write "backend/server.js"
+  Write "frontend/App.jsx"
+  Write "database/schema.sql"
+```
+
+## 📋 Agent Coordination Protocol
+
+### Every Agent Spawned via Task Tool MUST:
+
+**1️⃣ BEFORE Work:**
+```bash
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+```
+
+**2️⃣ DURING Work:**
+```bash
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
+```
+
+**3️⃣ AFTER Work:**
+```bash
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
+```
+
+## 🎯 Concurrent Execution Examples
+
+### ✅ CORRECT WORKFLOW: MCP Coordinates, Claude Code Executes
+
+```javascript
+// Step 1: MCP tools set up coordination (optional, for complex tasks)
+[Single Message - Coordination Setup]:
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
+
+// Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
+[Single Message - Parallel Agent Execution]:
+  // Claude Code's Task tool spawns real agents concurrently
+  Task("Research agent", "Analyze API requirements and best practices. Check memory for prior decisions.", "researcher")
+  Task("Coder agent", "Implement REST endpoints with authentication. Coordinate via hooks.", "coder")
+  Task("Database agent", "Design and implement database schema. Store decisions in memory.", "code-analyzer")
+  Task("Tester agent", "Create comprehensive test suite with 90% coverage.", "tester")
+  Task("Reviewer agent", "Review code quality and security. Document findings.", "reviewer")
+  
+  // Batch ALL todos in ONE call
+  TodoWrite { todos: [
+    {id: "1", content: "Research API patterns", status: "in_progress", priority: "high"},
+    {id: "2", content: "Design database schema", status: "in_progress", priority: "high"},
+    {id: "3", content: "Implement authentication", status: "pending", priority: "high"},
+    {id: "4", content: "Build REST endpoints", status: "pending", priority: "high"},
+    {id: "5", content: "Write unit tests", status: "pending", priority: "medium"},
+    {id: "6", content: "Integration tests", status: "pending", priority: "medium"},
+    {id: "7", content: "API documentation", status: "pending", priority: "low"},
+    {id: "8", content: "Performance optimization", status: "pending", priority: "low"}
+  ]}
+  
+  // Parallel file operations
+  Bash "mkdir -p app/{src,tests,docs,config}"
+  Write "app/package.json"
+  Write "app/src/server.js"
+  Write "app/tests/server.test.js"
+  Write "app/docs/API.md"
+```
+
+### ❌ WRONG (Multiple Messages):
+```javascript
+Message 1: mcp__claude-flow__swarm_init
+Message 2: Task("agent 1")
+Message 3: TodoWrite { todos: [single todo] }
+Message 4: Write "file.js"
+// This breaks parallel coordination!
+```
+
+## Performance Benefits
+
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction**
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
+
+## Hooks Integration
+
+### Pre-Operation
+- Auto-assign agents by file type
+- Validate commands for safety
+- Prepare resources automatically
+- Optimize topology by complexity
+- Cache searches
+
+### Post-Operation
+- Auto-format code
+- Train neural patterns
+- Update memory
+- Analyze performance
+- Track token usage
+
+### Session Management
+- Generate summaries
+- Persist state
+- Track metrics
+- Restore context
+- Export workflows
+
+## Advanced Features (v2.0.0)
+
+- 🚀 Automatic Topology Selection
+- ⚡ Parallel Execution (2.8-4.4x speed)
+- 🧠 Neural Training
+- 📊 Bottleneck Analysis
+- 🤖 Smart Auto-Spawning
+- 🛡️ Self-Healing Workflows
+- 💾 Cross-Session Memory
+- 🔗 GitHub Integration
+
+## Integration Tips
+
+1. Start with basic swarm init
+2. Scale agents gradually
+3. Use memory for context
+4. Monitor progress regularly
+5. Train patterns from success
+6. Enable hooks automation
+7. Use GitHub tools first
+
+## Support
+
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
 
 ---
+
+Remember: **Claude Flow coordinates, Claude Code creates!**
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+Never save working files, text/mds and tests to the root folder.

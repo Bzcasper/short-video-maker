@@ -209,12 +209,8 @@ export class ScriptTemplateEngine {
       }
     };
 
-    logger.debug(`Generated script from template ${template.name}`, {
-      scriptId: generatedScript.id,
-      scenes: scenes.length,
-      duration: estimatedDuration,
-      wordCount: wordCount
-    });
+      // Temporary fix: Change to string logging to avoid type mismatch issues
+      logger.debug(`Generated script from template ${template.name}: ID=${generatedScript.id}, Scenes=${scenes.length}, Duration=${estimatedDuration}, WordCount=${wordCount}`);
 
     return generatedScript;
   }

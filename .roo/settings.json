@@ -1,0 +1,182 @@
+{
+  "roo": {
+    "version": "2.0",
+    "projectOptimized": true,
+    "autoLoadProfiles": true,
+    "workspaceSettings": {
+      "enableRealTimeCollaboration": true,
+      "autoSaveInterval": 30000,
+      "intelligentCodeCompletion": true,
+      "contextAwareAssistance": true
+    },
+    "aiModelConfiguration": {
+      "primaryModel": "xai-grok-3-mini",
+      "fallbackModel": "deepseek-chat",
+      "specializedModels": {
+        "codeGeneration": "cerberus-qwen-coder-3",
+        "contentGeneration": "deepseek-chat",
+        "problemSolving": "xai-grok-3-mini"
+      },
+      "temperature": 0.7,
+      "maxTokens": 8000,
+      "streaming": true
+    },
+    "codeAnalysis": {
+      "enableStaticAnalysis": true,
+      "typeScriptStrict": true,
+      "enableLinting": true,
+      "autoFixOnSave": true,
+      "ignorePatterns": [
+        "node_modules/**",
+        "dist/**",
+        "*.test.ts",
+        "*.spec.ts",
+        ".roo/**"
+      ]
+    },
+    "videoGenerationContext": {
+      "primaryDomains": [
+        "video-processing",
+        "ai-content-pipeline", 
+        "mcp-protocol-integration",
+        "typescript-services",
+        "remotion-composition"
+      ],
+      "servicePatterns": {
+        "serviceDirectory": "src/services/",
+        "mcpRouterPath": "src/server/routers/mcp.ts",
+        "typesDirectory": "src/types/",
+        "testDirectory": "src/**/__tests__/"
+      },
+      "knownFrameworks": [
+        "remotion",
+        "express",
+        "zod",
+        "bullmq",
+        "redis",
+        "ffmpeg",
+        "sharp"
+      ],
+      "aiProviderIntegrations": [
+        "openai-tts",
+        "elevenlabs",
+        "framepack-ai",
+        "pexels-api"
+      ]
+    },
+    "developmentWorkflow": {
+      "preferredFileTypes": ["typescript", "json", "markdown"],
+      "codeStyle": {
+        "noComments": true,
+        "preferArrowFunctions": true,
+        "useStrictTypes": true,
+        "exportStyle": "named"
+      },
+      "testingPreferences": {
+        "framework": "vitest",
+        "mockingLibrary": "nock",
+        "coverageThreshold": 80
+      },
+      "gitIntegration": {
+        "autoCommitMessages": true,
+        "conventionalCommits": true,
+        "branchNaming": "feature/",
+        "prTemplate": true
+      }
+    },
+    "contextualIntelligence": {
+      "projectMemory": {
+        "rememberArchitecturalDecisions": true,
+        "trackServiceDependencies": true,
+        "monitorPerformancePatterns": true,
+        "cacheFrequentlyUsedCode": true
+      },
+      "smartSuggestions": {
+        "suggestServiceStructures": true,
+        "recommendOptimizations": true,
+        "identifyPotentialIssues": true,
+        "proposeRefactoring": true
+      },
+      "integrationAwareness": {
+        "mcpToolGeneration": true,
+        "serviceArchitectureAlignment": true,
+        "typeDefinitionConsistency": true,
+        "errorHandlingPatterns": true
+      }
+    },
+    "performance": {
+      "enableGPUAcceleration": true,
+      "cacheGeneratedContent": true,
+      "optimizeForLargeFiles": true,
+      "backgroundProcessing": true,
+      "resourceMonitoring": {
+        "trackMemoryUsage": true,
+        "monitorProcessingTime": true,
+        "alertOnResourceSpikes": true
+      }
+    },
+    "debugging": {
+      "enableVerboseLogging": false,
+      "captureErrorContext": true,
+      "generateDebugReports": true,
+      "integrateWithVSCodeDebugger": true
+    },
+    "extensions": {
+      "enableAdvancedSearch": true,
+      "multiFileEditing": true,
+      "realTimePreview": true,
+      "collaborativeFeatures": true
+    }
+  },
+  "profiles": {
+    "defaultProfile": "video-generation-profile",
+    "availableProfiles": [
+      {
+        "name": "video-generation-profile",
+        "file": "./profiles/video-generation-profile.json",
+        "description": "Specialized for video generation and AI content pipeline tasks"
+      },
+      {
+        "name": "coding-profile", 
+        "file": "./profiles/coding-profile.json",
+        "description": "Advanced TypeScript development and service architecture"
+      },
+      {
+        "name": "script-generation-profile",
+        "file": "./profiles/script-generation-profile.json", 
+        "description": "Content generation and AI pipeline optimization"
+      }
+    ],
+    "autoSwitchProfiles": {
+      "enabled": true,
+      "triggers": {
+        "src/services/**": "coding-profile",
+        "src/server/routers/mcp.ts": "video-generation-profile",
+        "**/script*.ts": "script-generation-profile",
+        "**/content*.ts": "script-generation-profile"
+      }
+    }
+  },
+  "workspace": {
+    "fileAssociations": {
+      "*.ts": "typescript",
+      "*.md": "markdown",
+      "*.json": "jsonc"
+    },
+    "quickAccess": {
+      "frequentFiles": [
+        "src/services/index.ts",
+        "src/server/routers/mcp.ts", 
+        "src/types/shorts.ts",
+        "package.json",
+        "CLAUDE.md"
+      ],
+      "commonDirectories": [
+        "src/services/",
+        "src/server/routers/",
+        "src/types/",
+        ".roo/"
+      ]
+    }
+  }
+}

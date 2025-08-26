@@ -64,7 +64,8 @@ export class ScriptGeneratorService {
       const cacheKey = `${this.GENERATION_CACHE_PREFIX}${requestFingerprint}`;
 
       // Check cache if enabled
-      if (options.enableCache !== false) {
+      const enableCache = (options as any)?.enableCache;
+      if (enableCache !== false) {
         const cached = await this.cacheService.get<ScriptGenerationResult>(cacheKey);
         if (cached) {
           logger.debug(`Script generation cache hit for template: ${templateId}`);
@@ -101,7 +102,7 @@ export class ScriptGeneratorService {
       // Generate main script
       let mainScript: ScriptGenerationResult;
       let attempt = 0;
-      const maxRetries = options.maxRetries || 3;
+      const maxRetries = (options as any)?.maxRetries || 3;
 
       while (attempt <= maxRetries) {
         try {
@@ -112,10 +113,12 @@ export class ScriptGeneratorService {
           );
 
           // Quality validation if enabled
-          if (options.enableQualityValidation !== false) {
+          const enableQualityValidation = (options as any)?.enableQualityValidation;
+          const qualityThreshold = (options as any)?.qualityThreshold;
+          if (enableQualityValidation !== false) {
             const qualityResult = await this.validateScriptQuality(
               mainScript.script!,
-              options.qualityThreshold || QualityScoreEnum.good
+              qualityThreshold || QualityScoreEnum.good
             );
 
             mainScript.qualityValidation = qualityResult;
@@ -146,11 +149,13 @@ export class ScriptGeneratorService {
 
       // Generate variations if requested
       let variations: ScriptGenerationResult['variations'] = [];
-      if (options.generateVariations && options.variationCount && options.variationCount > 1) {
+      const generateVariations = (options as any)?.generateVariations;
+      const variationCount = (options as any)?.variationCount;
+      if (generateVariations && variationCount && variationCount > 1) {
         variations = await this.generateScriptVariations(
           substitutionResult.result,
           template,
-          options.variationCount - 1, // -1 because main script counts as one
+          variationCount - 1, // -1 because main script counts as one
           context.requestId
         );
       }
@@ -178,7 +183,8 @@ export class ScriptGeneratorService {
       );
 
       // Cache result if enabled
-      if (options.enableCache !== false) {
+      const enableCacheForResult = (options as any)?.enableCache;
+      if (enableCacheForResult !== false) {
         const cacheTtl = this.calculateCacheTtl(template.complexity, processingTimeMs);
         await this.cacheService.set(
           cacheKey,

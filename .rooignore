@@ -1,0 +1,132 @@
+# Roo Code ignore file - exclude sensitive and unnecessary files from AI analysis
+
+# Sensitive configuration
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+config/secrets.json
+
+# API keys and credentials
+**/api-keys/**
+**/credentials/**
+**/*-secret*
+**/*-private*
+
+# Large binary files and media
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.aac
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.webp
+*.pdf
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+
+# Generated files
+*.generated.ts
+*.generated.js
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Logs and debugging
+*.log
+logs/
+debug/
+.vscode/launch.json
+
+# Database files
+*.db
+*.sqlite
+*.db-journal
+.hive-mind/hive.db*
+
+# Cache directories
+.cache/
+.parcel-cache/
+.remotion/
+static/cache/
+
+# Test output and fixtures
+__pycache__/
+*.pyc
+test-results/
+playwright-report/
+screenshots/
+
+# Docker and infrastructure
+Dockerfile.dev
+docker-compose.override.yml
+.dockerignore
+
+# Project specific exclusions
+static/music/
+static/videos/
+static/images/processed/
+FramePack/temp/
+FramePack/output/
+
+# Backup and version files
+*.backup
+*.bak
+*.old
+*.orig
+*~
+
+# IDE and editor files (except Roo config)
+.vscode/settings.json
+.idea/
+*.sublime-*
+.atom/
+
+# OS generated files
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# Large data files
+*.csv
+*.json.gz
+*.xml.gz
+data/
+datasets/
+
+# Experimental and work-in-progress
+experimental/
+wip/
+scratch/
+playground/

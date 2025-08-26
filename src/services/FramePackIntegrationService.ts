@@ -91,7 +91,7 @@ export class FramePackIntegrationService {
   constructor(config: Config, framePackConfig: FramePackConfig) {
     this.config = config;
     this.framePackConfig = framePackConfig;
-    this.framePackPath = path.resolve(config.packageDirPath, 'FramePack');
+    this.framePackPath = this.framePackConfig.modelPath;
     
     if (!fs.existsSync(this.framePackPath)) {
       throw new Error(`FramePack directory not found at ${this.framePackPath}`);

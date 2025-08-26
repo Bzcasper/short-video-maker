@@ -35,6 +35,12 @@ RUN node -v && npm -v
 # install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
+# Install Python 3.12 from deadsnakes PPA
+RUN apt update
+RUN apt install -y software-properties-common
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt update && apt install -y python3.12 python3.12-venv python3-pip
+
 RUN apt update
 RUN apt install -y \
       # whisper dependencies
@@ -85,6 +91,16 @@ FROM base
 COPY static /app/static
 COPY --from=install-whisper /app/data/libs/whisper /app/data/libs/whisper
 COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY FramePack /app/FramePack
+# Install FramePack dependencies in dedicated virtual environment
+RUN python3.12 -m venv /app/FramePack/venv
+# Install CUDA-compatible PyTorch before other dependencies
+RUN /app/FramePack/venv/bin/pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu123
+
+# Install FramePack dependencies without re-installing torch
+RUN /app/FramePack/venv/bin/pip install -r /app/FramePack/requirements.txt --no-cache-dir --no-deps
+
+
 COPY --from=build /app/dist /app/dist
 COPY package.json /app/
 

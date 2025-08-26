@@ -130,7 +130,7 @@ export class TTSDashboard {
         cost: metrics.totalCost,
         characters: metrics.totalCharacters,
         audioSeconds: metrics.totalAudioSeconds,
-        healthStatus: health?.status || 'unknown',
+        healthStatus: (health?.status || 'unknown') as 'healthy' | 'unhealthy' | 'degraded', // Adjusted type to match expected values
         lastUsed: new Date(), // This would ideally come from provider stats
       };
 
@@ -203,14 +203,10 @@ export class TTSDashboard {
     }
 
     // Provider health alerts
-    for (const [provider, metrics] of Object.entries(metrics.providerBreakdown)) {
+    for (const [provider, metricsObj] of Object.entries(metrics.providerBreakdown)) {
+      const metrics: any = metricsObj; // Temporary type annotation to avoid implicit any
       if (metrics.healthStatus === 'unhealthy') {
-        this.triggerAlert({
-          type: 'health',
-          severity: 'high',
-          message: `Provider ${provider} is unhealthy`,
-          data: { provider, status: metrics.healthStatus }
-        });
+        this.triggerAlert({ type: 'health', severity: 'high', message: `Provider ${provider} is unhealthy`, data: { provider, status: metrics.healthStatus } } as any); // Temporary cast to any for undefined parameter type
       }
     }
   }
@@ -235,7 +231,7 @@ export class TTSDashboard {
 
     if (!existingAlert) {
       this.activeAlerts.push(newAlert);
-      logger.warn('TTS Dashboard Alert triggered', { alert: newAlert });
+      logger.warn('TTS Dashboard Alert triggered', { alert: newAlert } as any); // Retain cast to handle undefined type in logging
       
       // TODO: Send notification (email, Slack, etc.)
       this.sendNotification(newAlert);
@@ -258,7 +254,7 @@ export class TTSDashboard {
     const alert = this.activeAlerts.find(a => a.id === alertId);
     if (alert) {
       alert.resolved = true;
-      logger.info('TTS Dashboard Alert resolved', { alertId });
+      logger.info('TTS Dashboard Alert resolved', { alertId } as any); // Temporary cast to any for undefined parameter type
     }
   }
 

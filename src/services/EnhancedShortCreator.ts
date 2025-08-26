@@ -66,7 +66,8 @@ export class EnhancedShortCreator extends ShortCreator {
     
     // Set up default FramePack config
     this.defaultFramePackConfig = framePackConfig || {
-      modelPath: path.join(config.packageDirPath, 'FramePack'),
+      modelPath: process.env.FRAMEPACK_PATH || path.join(config.packageDirPath, 'FramePack'),
+      pythonEnv: process.env.FRAMEPACK_VENV || path.join(config.packageDirPath, 'FramePack/venv/bin/python'),
       gpuEnabled: true,
       batchSize: 1,
       maxVideoLength: 60,

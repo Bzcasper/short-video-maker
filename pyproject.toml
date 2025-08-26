@@ -1,0 +1,9 @@
+[project]
+name = "short-video-maker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "gradio>=5.43.1",
+]

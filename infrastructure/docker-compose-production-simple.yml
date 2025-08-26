@@ -1,0 +1,87 @@
+# Simplified Production Docker Compose for Short Video Maker
+# Focuses on core services without missing dependencies
+
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: main.Dockerfile
+      target: prod-deps
+    environment:
+      - NODE_ENV=production
+      - PORT=3123
+      - REDIS_URL=redis://redis:6379
+      - GPU_POOL_ENABLED=false
+      - MONITORING_ENABLED=false
+      - LOG_LEVEL=info
+    ports:
+      - "3123:3123"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3123/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Redis for Queue & Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # GPU Worker
+  gpu-worker:
+    build:
+      context: .
+      dockerfile: main.Dockerfile
+    environment:
+      - NODE_ENV=production
+      - WORKER_TYPE=gpu-cpu
+      - REDIS_URL=redis://redis:6379
+      - CONCURRENT_JOBS=2
+      - QUEUE_NAME=cpu-processing
+      - FFMPEG_THREADS=4
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3123/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Auto-scaler Service
+  autoscaler:
+    build:
+      context: ./autoscaler
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SCALING_ENABLED=false  # Disable until monitoring is set up
+      - MIN_REPLICAS=1
+      - MAX_REPLICAS=5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - api-gateway
+      - redis
+
+volumes:
+  redis-data:
+    driver: local

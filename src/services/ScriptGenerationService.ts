@@ -37,10 +37,7 @@ export class ScriptGenerationService {
     scenes: EnhancedSceneInput[];
     validation: any;
   }> {
-    logger.debug("Generating script and converting to scenes", {
-      templateId: request.templateId,
-      platform: request.platform ?? undefined
-    });
+    logger.debug("Generating script and converting to scenes");
 
     // Generate the script
     let script = await this.templateEngine.generateScript(request);
@@ -54,11 +51,7 @@ export class ScriptGenerationService {
     // Get engagement metrics for additional insights
     const engagementMetrics = await this.contentValidator.calculateEngagementMetrics(script);
 
-    logger.info(`Generated script with ${scenes.length} scenes`, {
-      scriptId: script.id,
-      validationScore: script.validation?.score ?? undefined,
-      estimatedDuration: script.content.estimatedDuration
-    });
+    logger.info(`Generated script with ${scenes.length} scenes`);
 
     return {
       script,

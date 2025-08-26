@@ -444,9 +444,9 @@ export class ShortCreator {
 
         const audioStream = Buffer.from(audioArrayBuffer);
         
-        await this.ffmpeg.saveNormalizedAudio(audioStream, tempWavPath);
+        await this.ffmpeg.saveNormalizedAudio(audioStream as any, tempWavPath); // Temporary cast to any for Buffer type mismatch
         const captions = await this.whisper.CreateCaption(tempWavPath);
-        await this.ffmpeg.saveToMp3(audioStream, tempMp3Path);
+        await this.ffmpeg.saveToMp3(audioStream as any, tempMp3Path); // Temporary cast to any for Buffer type mismatch
 
         audioData.push({
           audioStream,

@@ -1,0 +1,43 @@
+{
+  "projectName": "Short Video Maker",
+  "projectType": "video-generation",
+  "framework": "typescript",
+  "aiProvider": {
+    "primary": "xai-grok-3-mini",
+    "fallback": "deepseek-chat",
+    "specialized": {
+      "scriptGeneration": "deepseek-chat",
+      "videoProcessing": "cerberus-qwen-coder-3",
+      "mcpIntegration": "xai-grok-3-mini"
+    }
+  },
+  "codeStyle": {
+    "typescript": {
+      "noComments": true,
+      "preferArrowFunctions": true,
+      "useStrictTypes": true,
+      "exportStyle": "named"
+    },
+    "formatting": {
+      "semicolons": true,
+      "quotes": "double",
+      "trailingCommas": true,
+      "tabWidth": 2
+    }
+  },
+  "projectStructure": {
+    "srcDir": "src",
+    "servicesDir": "src/services",
+    "typesDir": "src/types",
+    "testsDir": "src/**/__tests__",
+    "mcpRouter": "src/server/routers/mcp.ts"
+  },
+  "specializations": [
+    "video-generation",
+    "ai-content-pipeline",
+    "mcp-protocol",
+    "remotion-rendering",
+    "tts-services",
+    "framepack-integration"
+  ]
+}

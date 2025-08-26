@@ -1,0 +1,736 @@
+# Kubernetes Production Deployment for Short Video Maker
+# Supports auto-scaling, GPU scheduling, and high availability
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: video-maker-prod
+  labels:
+    environment: production
+    app: short-video-maker
+---
+# ConfigMap for application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: video-maker-config
+  namespace: video-maker-prod
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  REDIS_URL: "redis://redis-cluster.video-maker-prod.svc.cluster.local:6379"
+  PROMETHEUS_URL: "http://prometheus.video-maker-prod.svc.cluster.local:9090"
+  MONITORING_ENABLED: "true"
+  GPU_POOL_ENABLED: "true"
+  MAX_CONCURRENT_JOBS: "10"
+  QUEUE_PROCESSING_INTERVAL: "5000"
+
+---
+# Secret for sensitive data
+apiVersion: v1
+kind: Secret
+metadata:
+  name: video-maker-secrets
+  namespace: video-maker-prod
+type: Opaque
+data:
+  DATABASE_URL: cG9zdGdyZXNxbDovL3VzZXI6cGFzc3dvcmRAcG9zdGdyZXMtcHJpbWFyeTo1NDMyL3ZpZGVvX2Ri
+  REDIS_PASSWORD: cmVkaXNfcGFzc3dvcmQ=
+  JWT_SECRET: and0X3NlY3JldF9rZXk=
+  PEXELS_API_KEY: cGV4ZWxzX2FwaV9rZXk=
+  OPENAI_API_KEY: b3BlbmFpX2FwaV9rZXk=
+
+---
+# API Gateway Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: video-maker-prod
+  labels:
+    app: api-gateway
+    tier: frontend
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        tier: frontend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3123"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: video-maker-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: api-gateway
+        image: video-maker:latest
+        ports:
+        - containerPort: 3123
+          name: http
+        - containerPort: 8080
+          name: metrics
+        env:
+        - name: PORT
+          value: "3123"
+        envFrom:
+        - configMapRef:
+            name: video-maker-config
+        - secretRef:
+            name: video-maker-secrets
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        volumeMounts:
+        - name: app-data
+          mountPath: /app/data
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: api-gateway-pvc
+      - name: tmp-volume
+        emptyDir:
+          sizeLimit: 1Gi
+      nodeSelector:
+        tier: api
+      tolerations:
+      - key: "api-node"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+---
+# GPU Worker Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-worker-cuda
+  namespace: video-maker-prod
+  labels:
+    app: gpu-worker
+    type: cuda
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: gpu-worker
+      type: cuda
+  template:
+    metadata:
+      labels:
+        app: gpu-worker
+        type: cuda
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      serviceAccountName: video-maker-service-account
+      securityContext:
+        runAsNonRoot: false  # GPU access requires root
+      containers:
+      - name: gpu-worker
+        image: video-maker:cuda-latest
+        ports:
+        - containerPort: 8080
+          name: metrics
+        env:
+        - name: WORKER_TYPE
+          value: "gpu-cuda"
+        - name: GPU_MEMORY_FRACTION
+          value: "0.8"
+        - name: CONCURRENT_JOBS
+          value: "4"
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        envFrom:
+        - configMapRef:
+            name: video-maker-config
+        - secretRef:
+            name: video-maker-secrets
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "4"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "16Gi"
+            cpu: "8"
+            nvidia.com/gpu: 1
+        livenessProbe:
+          exec:
+            command:
+            - nvidia-smi
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: metrics
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        volumeMounts:
+        - name: gpu-cache
+          mountPath: /app/cache
+        - name: app-data
+          mountPath: /app/data
+      volumes:
+      - name: gpu-cache
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: gpu-worker-pvc
+      nodeSelector:
+        accelerator: nvidia-tesla-v100
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+
+---
+# CPU Worker Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-worker
+  namespace: video-maker-prod
+  labels:
+    app: cpu-worker
+    type: cpu
+spec:
+  replicas: 8
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: cpu-worker
+      type: cpu
+  template:
+    metadata:
+      labels:
+        app: cpu-worker
+        type: cpu
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      serviceAccountName: video-maker-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: cpu-worker
+        image: video-maker:latest
+        ports:
+        - containerPort: 8080
+          name: metrics
+        env:
+        - name: WORKER_TYPE
+          value: "cpu"
+        - name: CONCURRENT_JOBS
+          value: "2"
+        - name: FFMPEG_THREADS
+          value: "4"
+        envFrom:
+        - configMapRef:
+            name: video-maker-config
+        - secretRef:
+            name: video-maker-secrets
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: metrics
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: metrics
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: cpu-cache
+          mountPath: /app/cache
+        - name: app-data
+          mountPath: /app/data
+      volumes:
+      - name: cpu-cache
+        emptyDir:
+          sizeLimit: 1Gi
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: cpu-worker-pvc
+      nodeSelector:
+        tier: worker
+      tolerations:
+      - key: "worker-node"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+---
+# Auto-scaler Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoscaler
+  namespace: video-maker-prod
+  labels:
+    app: autoscaler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoscaler
+  template:
+    metadata:
+      labels:
+        app: autoscaler
+    spec:
+      serviceAccountName: autoscaler-service-account
+      containers:
+      - name: autoscaler
+        image: video-maker-autoscaler:latest
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: PROMETHEUS_URL
+          value: "http://prometheus:9090"
+        - name: MIN_REPLICAS
+          value: "2"
+        - name: MAX_REPLICAS
+          value: "20"
+        - name: SCALE_UP_THRESHOLD
+          value: "80"
+        - name: SCALE_DOWN_THRESHOLD
+          value: "20"
+        - name: SCALING_INTERVAL
+          value: "60"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+# Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: video-maker-prod
+  labels:
+    app: api-gateway
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3123
+    protocol: TCP
+    name: http
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: metrics
+  selector:
+    app: api-gateway
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpu-worker-service
+  namespace: video-maker-prod
+  labels:
+    app: gpu-worker
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: metrics
+  selector:
+    app: gpu-worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpu-worker-service
+  namespace: video-maker-prod
+  labels:
+    app: cpu-worker
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: metrics
+  selector:
+    app: cpu-worker
+
+---
+# Horizontal Pod Autoscaler for API Gateway
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway-hpa
+  namespace: video-maker-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  minReplicas: 3
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: queue_depth
+      target:
+        type: AverageValue
+        averageValue: "5"
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+
+---
+# Horizontal Pod Autoscaler for CPU Workers
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cpu-worker-hpa
+  namespace: video-maker-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cpu-worker
+  minReplicas: 5
+  maxReplicas: 30
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85
+  - type: Pods
+    pods:
+      metric:
+        name: processing_queue_depth
+      target:
+        type: AverageValue
+        averageValue: "3"
+
+---
+# Vertical Pod Autoscaler for GPU Workers (optional)
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: gpu-worker-vpa
+  namespace: video-maker-prod
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gpu-worker-cuda
+  updatePolicy:
+    updateMode: "Off"  # Recommendation only
+  resourcePolicy:
+    containerPolicies:
+    - containerName: gpu-worker
+      maxAllowed:
+        cpu: "8"
+        memory: "32Gi"
+      minAllowed:
+        cpu: "2"
+        memory: "4Gi"
+
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: api-gateway-pdb
+  namespace: video-maker-prod
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gpu-worker-pdb
+  namespace: video-maker-prod
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: gpu-worker
+
+---
+# Persistent Volume Claims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: api-gateway-pvc
+  namespace: video-maker-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gpu-worker-pvc
+  namespace: video-maker-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: fast-ssd
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cpu-worker-pvc
+  namespace: video-maker-prod
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Gi
+  storageClassName: standard-ssd
+
+---
+# Service Accounts
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: video-maker-service-account
+  namespace: video-maker-prod
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: autoscaler-service-account
+  namespace: video-maker-prod
+
+---
+# RBAC for autoscaler
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: autoscaler-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "update", "patch"]
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["*"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: autoscaler-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: autoscaler-role
+subjects:
+- kind: ServiceAccount
+  name: autoscaler-service-account
+  namespace: video-maker-prod
+
+---
+# Network Policies
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-network-policy
+  namespace: video-maker-prod
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 3123
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: gpu-worker
+  - to:
+    - podSelector:
+        matchLabels:
+          app: cpu-worker
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 6379  # Redis
+    - protocol: TCP
+      port: 5432  # PostgreSQL
+
+---
+# Quality of Service Classes
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: resource-limits
+  namespace: video-maker-prod
+spec:
+  limits:
+  - default:
+      memory: "4Gi"
+      cpu: "2"
+    defaultRequest:
+      memory: "2Gi"
+      cpu: "1"
+    type: Container
+  - max:
+      memory: "32Gi"
+      cpu: "16"
+    min:
+      memory: "256Mi"
+      cpu: "100m"
+    type: Container
+
+---
+# Resource Quotas
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: video-maker-quota
+  namespace: video-maker-prod
+spec:
+  hard:
+    requests.cpu: "100"
+    requests.memory: 400Gi
+    requests.nvidia.com/gpu: "10"
+    limits.cpu: "200"
+    limits.memory: 800Gi
+    limits.nvidia.com/gpu: "20"
+    pods: "100"
+    persistentvolumeclaims: "20"
+    services: "20"
+    secrets: "10"
+    configmaps: "10"

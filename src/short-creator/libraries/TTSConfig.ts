@@ -3,6 +3,8 @@
  * Centralized configuration for all TTS providers
  */
 
+import { logger } from '../../config';
+
 export interface TTSProviderConfig {
   enabled: boolean;
   priority: number;
@@ -135,6 +137,7 @@ export const DEFAULT_TTS_CONFIG: TTSGlobalConfig = {
 
 export class TTSConfigManager {
   private config: TTSGlobalConfig;
+  private logger = logger.child({ service: 'TTSConfigManager' });
 
   constructor(initialConfig: Partial<TTSGlobalConfig> = {}) {
     this.config = { ...DEFAULT_TTS_CONFIG, ...initialConfig };
@@ -166,11 +169,11 @@ export class TTSConfigManager {
     }
 
     // Debug logging to show what providers are enabled
-    console.log('🔧 TTS Configuration Environment Overrides Applied:');
+    this.logger.debug('TTS Configuration Environment Overrides Applied');
     for (const [providerName, config] of Object.entries(this.config.providers)) {
-      console.log(`   ${providerName}: ${config.enabled ? '✅ ENABLED' : '❌ DISABLED'}`);
+      this.logger.debug({ provider: providerName, enabled: config.enabled }, 'Provider status');
     }
-    console.log(`   Default Provider: ${this.config.defaultProvider}`);
+    this.logger.debug({ defaultProvider: this.config.defaultProvider }, 'Default provider set');
   }
 
   private validateConfig(): void {
@@ -178,7 +181,7 @@ export class TTSConfigManager {
     for (const [providerName, providerConfig] of Object.entries(this.config.providers)) {
       if (providerConfig.enabled) {
         if (!providerConfig.apiKey && providerName !== 'kokoro') {
-          console.warn(`⚠️  TTS Provider ${providerName} is enabled but missing API key`);
+          this.logger.warn({ provider: providerName }, 'TTS Provider is enabled but missing API key');
         }
       }
     }

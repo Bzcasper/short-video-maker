@@ -105,6 +105,7 @@ export class TitleSequenceService {
   private config: Config;
   private templatesCache: Map<string, TitleTemplate> = new Map();
   private predefinedTemplates: TitleTemplate[] = [];
+  private logger = logger.child({ service: 'TitleSequenceService' });
 
   constructor(config: Config) {
     this.config = config;
@@ -781,7 +782,7 @@ export class TitleSequenceService {
       function initializeTitleAnimations() {
         titleAnimations.forEach((animation, index) => {
           setTimeout(() => {
-            console.log('Starting animation:', animation.type);
+            this.logger.debug({ animationType: animation.type }, 'Starting animation');
           }, (animation.delay || 0) * 1000);
         });
       }

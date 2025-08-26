@@ -243,8 +243,14 @@ export class TTSDashboard {
    */
   private sendNotification(alert: Alert): void {
     // Implementation would integrate with notification services
-    // For now, just log to console
-    console.log(`🚨 ALERT [${alert.severity.toUpperCase()}]: ${alert.message}`);
+    // Log alert to proper logger
+    if (alert.severity === 'critical') {
+      this.logger.error({ alert }, 'Critical TTS alert triggered');
+    } else if (alert.severity === 'warning') {
+      this.logger.warn({ alert }, 'TTS warning alert triggered');
+    } else {
+      this.logger.info({ alert }, 'TTS info alert triggered');
+    }
   }
 
   /**

@@ -52,9 +52,11 @@ export class TTSDashboard {
   private metricsHistory: DashboardMetrics[] = [];
   private activeAlerts: Alert[] = [];
   private monitoringInterval: NodeJS.Timeout | null = null;
+  private logger;
 
   constructor(ttsService: TTSService) {
     this.ttsService = ttsService;
+    this.logger = logger;
   }
 
   /**
@@ -246,7 +248,7 @@ export class TTSDashboard {
     // Log alert to proper logger
     if (alert.severity === 'critical') {
       this.logger.error({ alert }, 'Critical TTS alert triggered');
-    } else if (alert.severity === 'warning') {
+    } else if (alert.severity === 'medium') {
       this.logger.warn({ alert }, 'TTS warning alert triggered');
     } else {
       this.logger.info({ alert }, 'TTS info alert triggered');

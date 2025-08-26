@@ -95,7 +95,7 @@ COPY FramePack /app/FramePack
 # Install FramePack dependencies in dedicated virtual environment
 RUN python3.12 -m venv /app/FramePack/venv
 # Install CUDA-compatible PyTorch before other dependencies
-RUN /app/FramePack/venv/bin/pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu123
+RUN /app/FramePack/venv/bin/pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
 
 # Install FramePack dependencies without re-installing torch
 RUN /app/FramePack/venv/bin/pip install -r /app/FramePack/requirements.txt --no-cache-dir --no-deps
@@ -114,5 +114,8 @@ ENV VIDEO_CACHE_SIZE_IN_BYTES=2097152000
 
 # install kokoro, headless chrome and ensure music files are present
 RUN node dist/scripts/install.js
+
+# Expose port 8080 for Northflank health checks
+EXPOSE 8080
 
 CMD ["pnpm", "start"]

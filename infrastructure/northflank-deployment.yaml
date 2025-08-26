@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: short-video-maker-service
+spec:
+  type: Deployment
+  image: thetoolpool/content-gen:latest-cuda
+  replicas: 1
+  resources:
+    cpu: 2-4
+    memory: 4-8Gi
+    gpu:
+      count: 1
+      type: nvidia-a100
+  env:
+    - name: PEXELS_API_KEY
+      valueFrom: secret
+    - name: ELEVENLABS_API_KEY
+      valueFrom: secret
+    - name: OPENAI_API_KEY
+      valueFrom: secret
+    - name: AZURE_SPEECH_KEY
+      valueFrom: secret
+    - name: AZURE_SPEECH_ENDPOINT
+      valueFrom: secret
+    - name: AZURE_SPEECH_REGION
+      valueFrom: secret
+    - name: GOOGLE_TTS_API_KEY
+      valueFrom: secret
+    - name: GOOGLE_CLOUD_PROJECT
+      valueFrom: secret
+    - name: KOKORO_API_KEY
+      valueFrom: secret
+    - name: KOKORO_API_ENDPOINT
+      value: "https://api.kokoro.io/v1"
+    - name: TTS_DEFAULT_PROVIDER
+      value: "elevenlabs"
+    - name: TTS_MAX_BUDGET
+      value: "100"
+    - name: TTS_MAX_CHARACTERS
+      value: "1000000"
+    - name: TTS_ENABLE_COST_OPTIMIZATION
+      value: "true"
+    - name: TTS_ENABLE_HEALTH_MONITORING
+      value: "true"
+    - name: LOG_LEVEL
+      value: "info"
+    - name: ENABLE_TTS_DEBUG
+      value: "false"
+    - name: TTS_MAX_REQUESTS_PER_MINUTE
+      value: "60"
+    - name: TTS_MAX_CONCURRENT_REQUESTS
+      value: "5"
+    - name: TTS_REQUEST_TIMEOUT_MS
+      value: "30000"
+    - name: TTS_RETRY_ATTEMPTS
+      value: "3"
+    - name: PORT
+      value: "8080"
+    - name: DATA_DIR_PATH
+      value: "/app/data"
+    - name: DOCKER
+      value: "true"
+    - name: CONCURRENCY
+      value: "1"
+    - name: VIDEO_CACHE_SIZE_IN_BYTES
+      value: "2097152000"
+  healthCheck:
+    path: "/health"
+    port: 8080
+    timeout: 30s
+    interval: 60s
+    initialDelay: 30s
+  storage:
+    - name: persistent-storage
+      size: 10Gi
+      mountPath: "/app/data"
+      type: persistentVolumeClaim
+  deploymentStrategy:
+    type: rollingUpdate
+    maxSurge: 1
+    maxUnavailable: 0
+  dependencies: []
+  scaling:
+    minReplicas: 0
+    maxReplicas: 5
+    cpuThreshold: 70
+    memoryThreshold: 80
+    scaleToZeroEnabled: true
+  ports:
+    - containerPort: 8080
+      protocol: TCP

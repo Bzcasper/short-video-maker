@@ -12,7 +12,13 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'src/ui/index.html'),
       },
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
     },
+    chunkSizeWarningLimit: 1000,
   },
   resolve: {
     alias: {

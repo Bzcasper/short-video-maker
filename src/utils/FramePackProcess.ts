@@ -82,7 +82,7 @@ export class FramePackProcessManager extends EventEmitter {
     throw new Error(`Process ${processId} is already running`);
   }
 
-  logger.info("Starting FramePack process", { processId, command, args });
+  logger.info(`Starting FramePack process - ID: ${processId}, Command: ${command}, Args: ${JSON.stringify(args)}`);
 
   const childProcess = spawn(command, args, {
     cwd: options.cwd,
@@ -122,9 +122,8 @@ export class FramePackProcessManager extends EventEmitter {
   });
 
   childProcess.on("error", (error: Error) => {
-    logger.error("Process error", { processId, error: error.message });
-    // Emit event without additional data to avoid type issues
-    // Remove arguments to avoid type issues
+    logger.error(`Process error - ID: ${processId}, Error: ${error.message}`);
+logger.debug(`Emitting processError event`);
     this.emit("processError");
     this.updateErrorCount(processId);
   });
@@ -136,15 +135,15 @@ export class FramePackProcessManager extends EventEmitter {
 
   childProcess.stderr?.on("data", (data: Buffer) => {
     const errorOutput = data.toString();
-    logger.warn("Process stderr", { processId, stderr: errorOutput.trim() });
+    logger.warn(`Process stderr - ID: ${processId}, Stderr: ${errorOutput.trim()}`);
+logger.debug(`Emitting recoverableError event`);
     
     // Check for specific error patterns that might require intervention
     if (this.isRecoverableError(errorOutput)) {
-      // Emit event without additional data to avoid type issues
-      // Remove arguments to avoid type issues
+      logger.debug(`Emitting recoverableError event`);
       this.emit("recoverableError");
     } else if (this.isFatalError(errorOutput)) {
-      logger.error("Fatal error detected", { processId, stderr: errorOutput });
+      logger.error(`Fatal error detected - ID: ${processId}, Stderr: ${errorOutput}`);
       this.terminateProcess(processId, "SIGKILL");
     }
   });
@@ -161,11 +160,14 @@ export class FramePackProcessManager extends EventEmitter {
   public async terminateProcess(processId: string, signal: NodeJS.Signals = "SIGTERM"): Promise<void> {
     const process = this.activeProcesses.get(processId);
     if (!process) {
-      logger.warn("Process not found for termination", { processId });
+logger.debug(`Note: 'terminating' event is not defined in FramePackEvents`);
+      logger.warn(`Process not found for termination - ID: ${processId}`);
       return;
     }
 
-    logger.info("Terminating process");
+    logger.info(`Terminating process - ID: ${processId}`);
+        logger.debug(`Note: 'terminating' event is not defined in FramePackEvents`);
+        // this.emit("terminating", processId); // Commented out as 'terminating' is not in FramePackEvents
 
     // Stop resource monitoring
     this.stopResourceMonitoring(processId);
@@ -220,12 +222,12 @@ export class FramePackProcessManager extends EventEmitter {
         }
       } catch (error) {
         // GPU monitoring is optional
-        logger.debug("GPU monitoring not available", { processId, error: error.message });
+        logger.debug(`GPU monitoring not available - ID: ${processId}, Error: ${String(error)}`);
       }
 
       return resourceInfo;
     } catch (error) {
-      logger.error("Failed to get process resource usage", { processId, error: error.message });
+      logger.error(`Failed to get process resource usage - ID: ${processId}, Error: ${String(error)}`);
       return null;
     }
   }
@@ -304,6 +306,7 @@ export class FramePackProcessManager extends EventEmitter {
         if (metrics) {
           metrics.peakMemoryMB = Math.max(metrics.peakMemoryMB, resourceInfo.memoryUsage);
           
+logger.debug(`Emitting resourceUpdate with args - Process ID: ${processId}`);
           // Simple moving average for CPU
           const weight = 0.1;
           metrics.averageCpuPercent = metrics.averageCpuPercent * (1 - weight) + resourceInfo.cpuUsage * weight;
@@ -314,7 +317,7 @@ export class FramePackProcessManager extends EventEmitter {
 
         this.emit("resourceUpdate", processId, resourceInfo);
       } catch (error) {
-        logger.debug("Resource monitoring error", { processId, error: error.message });
+        logger.debug(`Resource monitoring error - ID: ${processId}, Error: ${String(error)}`);
       }
     }, 5000); // Monitor every 5 seconds
 
@@ -344,6 +347,7 @@ export class FramePackProcessManager extends EventEmitter {
 
     if (resourceInfo.cpuUsage > this.processLimits.maxCpuPercent) {
       warnings.push(`CPU usage (${resourceInfo.cpuUsage}%) exceeds limit (${this.processLimits.maxCpuPercent}%)`);
+logger.debug(`Emitting resourceLimitExceeded with args - Process ID: ${processId}, Warnings count: ${warnings.length}`);
     }
 
     if (resourceInfo.gpuMemoryUsage && this.processLimits.maxGpuMemoryMB) {
@@ -353,7 +357,7 @@ export class FramePackProcessManager extends EventEmitter {
     }
 
     if (warnings.length > 0) {
-      logger.warn("Process exceeding resource limits", { processId, warnings, resourceInfo });
+      logger.warn(`Process exceeding resource limits - ID: ${processId}, Warnings: ${JSON.stringify(warnings)}, ResourceInfo: ${JSON.stringify(resourceInfo)}`);
       this.emit("resourceLimitExceeded", processId, warnings, resourceInfo);
     }
   }
@@ -363,6 +367,7 @@ export class FramePackProcessManager extends EventEmitter {
    */
   private parseProcessOutput(processId: string, output: string): void {
     const lines = output.split('\n');
+logger.debug(`Emitting progressUpdate event - Process ID: ${processId}`);
     
     for (const line of lines) {
       const trimmedLine = line.trim();
@@ -374,9 +379,11 @@ export class FramePackProcessManager extends EventEmitter {
         const progress = parseInt(progressMatch[1]);
         this.emit("progressUpdate", processId, progress);
       }
+logger.debug(`Emitting framesUpdate event - Process ID: ${processId}`);
 
       // Parse frame count
       const frameMatch = trimmedLine.match(/Frames generated: (\d+)/);
+logger.debug(`Emitting stepUpdate event - Process ID: ${processId}`);
       if (frameMatch) {
         const frames = parseInt(frameMatch[1]);
         const metrics = this.processMetrics.get(processId);
@@ -393,7 +400,8 @@ export class FramePackProcessManager extends EventEmitter {
       }
 
       // Log significant output
-      logger.debug("Process output", { processId, output: trimmedLine });
+      logger.debug(`Process output - ID: ${processId}, Output: ${trimmedLine}`);
+logger.debug(`Emitting processExit event - Process ID: ${processId}`);
     }
   }
 
@@ -401,7 +409,9 @@ export class FramePackProcessManager extends EventEmitter {
    * Handle process exit
    */
   private handleProcessExit(processId: string, code: number | null, signal: NodeJS.Signals | null): void {
-    logger.info("Process exited", { processId, code, signal });
+logger.debug(`Emitting processExit with args - Process ID: ${processId}, Code: ${code !== null ? code : 'N/A'}, Signal: ${signal || 'N/A'}`);
+    logger.info(`Process exited - ID: ${processId}, Code: ${code}, Signal: ${signal}`);
+    this.emit("processExit", processId, code, signal);
 
     const metrics = this.processMetrics.get(processId);
     if (metrics) {
@@ -409,7 +419,8 @@ export class FramePackProcessManager extends EventEmitter {
     }
 
     this.cleanupProcess(processId);
-    this.emit("processExit", processId, code, signal);
+    logger.debug(`Emitting processExit event again - Process ID: ${processId}`);
+        this.emit("processExit", processId, code, signal);
   }
 
   /**

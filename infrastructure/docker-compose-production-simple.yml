@@ -1,5 +1,6 @@
 # Simplified Production Docker Compose for Short Video Maker
 # Focuses on core services without missing dependencies
+# Uses environment variables from .env file
 
 version: '3.8'
 
@@ -10,13 +11,25 @@ services:
       context: .
       dockerfile: main.Dockerfile
       target: prod-deps
+    env_file:
+      - ../.env
     environment:
       - NODE_ENV=production
-      - PORT=3123
+      - DOCKER=true
+      - PORT=${PORT:-3123}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - TTS_PROVIDER=${TTS_PROVIDER:-kokoro}
+      - WHISPER_MODEL=${WHISPER_MODEL:-medium.en}
+      - CONCURRENCY=${CONCURRENCY:-2}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=${REDIS_DB:-0}
+      - ENABLE_METRICS=${ENABLE_METRICS:-false}
+      # Legacy variables for backward compatibility
       - REDIS_URL=redis://redis:6379
       - GPU_POOL_ENABLED=false
-      - MONITORING_ENABLED=false
-      - LOG_LEVEL=info
+      - MONITORING_ENABLED=${ENABLE_METRICS:-false}
     ports:
       - "3123:3123"
     volumes:
@@ -33,10 +46,13 @@ services:
   # Redis for Queue & Cache
   redis:
     image: redis:7-alpine
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis-data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -48,13 +64,26 @@ services:
     build:
       context: .
       dockerfile: main.Dockerfile
+    env_file:
+      - ../.env
     environment:
       - NODE_ENV=production
+      - DOCKER=true
       - WORKER_TYPE=gpu-cpu
-      - REDIS_URL=redis://redis:6379
-      - CONCURRENT_JOBS=2
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - TTS_PROVIDER=${TTS_PROVIDER:-kokoro}
+      - WHISPER_MODEL=${WHISPER_MODEL:-medium.en}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=${REDIS_DB:-0}
+      - CONCURRENCY=${CONCURRENCY:-2}
+      - VIDEO_CACHE_SIZE_IN_BYTES=${VIDEO_CACHE_SIZE_IN_BYTES:-2097152000}
+      # Worker-specific settings
+      - CONCURRENT_JOBS=${CONCURRENCY:-2}
       - QUEUE_NAME=cpu-processing
       - FFMPEG_THREADS=4
+      # Legacy variables for backward compatibility
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./data:/app/data
     depends_on:
@@ -71,12 +100,16 @@ services:
     build:
       context: ./autoscaler
       dockerfile: Dockerfile
+    env_file:
+      - ../.env
     environment:
       - NODE_ENV=production
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - SCALING_ENABLED=false  # Disable until monitoring is set up
-      - MIN_REPLICAS=1
-      - MAX_REPLICAS=5
+      - SCALING_ENABLED=${AUTOSCALER_ENABLED:-false}
+      - MIN_REPLICAS=${MIN_REPLICAS:-1}
+      - MAX_REPLICAS=${MAX_REPLICAS:-5}
+      - SCALE_UP_THRESHOLD=${SCALE_UP_THRESHOLD:-80}
+      - SCALE_DOWN_THRESHOLD=${SCALE_DOWN_THRESHOLD:-20}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:

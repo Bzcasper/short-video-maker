@@ -72,14 +72,34 @@ COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 COPY package.json /app/
 
-# app configuration via environment variables
+# Default environment variables for Docker container
+# These can be overridden by docker-compose.yml or docker run -e flags
 ENV DATA_DIR_PATH=/app/data
 ENV DOCKER=true
+ENV NODE_ENV=production
+ENV LOG_LEVEL=info
+
+# Whisper configuration
 ENV WHISPER_MODEL=base.en
-# number of chrome tabs to use for rendering
+ENV WHISPER_VERSION=1.7.1
+ENV WHISPER_VERBOSE=false
+
+# Performance settings
 ENV CONCURRENCY=1
-# video cache - 2000MB
 ENV VIDEO_CACHE_SIZE_IN_BYTES=2097152000
+
+# TTS configuration
+ENV TTS_PROVIDER=kokoro
+ENV KOKORO_MODEL_PRECISION=fp32
+ENV KOKORO_MODEL_NAME=onnx-community/Kokoro-82M-v1.0-ONNX
+
+# Redis configuration
+ENV REDIS_HOST=localhost
+ENV REDIS_PORT=6379
+ENV REDIS_DB=0
+
+# Monitoring
+ENV ENABLE_METRICS=false
 
 # install kokoro, headless chrome and ensure music files are present
 RUN node dist/scripts/install.js

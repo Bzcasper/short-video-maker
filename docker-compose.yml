@@ -8,7 +8,62 @@ services:
     env_file:
       - .env
     environment:
+      # Override specific values for container deployment
+      - NODE_ENV=production
+      - DOCKER=true
       - DEV=false
+      # Use environment variables from .env for everything else
+      - PORT=${PORT:-3123}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - TTS_PROVIDER=${TTS_PROVIDER:-kokoro}
+      - WHISPER_MODEL=${WHISPER_MODEL:-base.en}
+      - CONCURRENCY=${CONCURRENCY:-1}
+      - VIDEO_CACHE_SIZE_IN_BYTES=${VIDEO_CACHE_SIZE_IN_BYTES:-2097152000}
+      - REDIS_HOST=${REDIS_HOST:-localhost}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB:-0}
+      - ENABLE_METRICS=${ENABLE_METRICS:-false}
     ports:
-      - "3123:3123"
+      - "${PORT:-3123}:${PORT:-3123}"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+    networks:
+      - short-video-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3123}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     entrypoint: ["node", "dist/index.js"]
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - short-video-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  short-video-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local

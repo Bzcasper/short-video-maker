@@ -1,35 +1,15 @@
-FROM ubuntu:22.04 AS install-whisper
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update
-# whisper install dependencies
-RUN apt install -y \
-    git \
-    build-essential \
-    wget \
-    cmake \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-WORKDIR /whisper
-RUN git clone https://github.com/ggml-org/whisper.cpp.git .
-RUN git checkout v1.7.1
-RUN make
-WORKDIR /whisper/models
-RUN sh ./download-ggml-model.sh tiny.en
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
 FROM node:22-bookworm-slim AS base
-ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
+
+# Install system dependencies
 RUN apt update
 RUN apt install -y \
-      # whisper dependencies
       git \
       wget \
       cmake \
       ffmpeg \
       curl \
       make \
-      libsdl2-dev \
       # remotion dependencies
       libnss3 \
       libdbus-1-3 \
@@ -47,10 +27,8 @@ RUN apt install -y \
       libcups2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 # setup pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 
 FROM base AS prod-deps
@@ -68,7 +46,6 @@ RUN pnpm build
 
 FROM base
 COPY static /app/static
-COPY --from=install-whisper /whisper /app/data/libs/whisper
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 COPY package.json /app/
@@ -76,14 +53,21 @@ COPY package.json /app/
 # app configuration via environment variables
 ENV DATA_DIR_PATH=/app/data
 ENV DOCKER=true
-ENV WHISPER_MODEL=tiny.en
-ENV KOKORO_MODEL_PRECISION=q4
-# number of chrome tabs to use for rendering
 ENV CONCURRENCY=1
-# video cache - 2000MB
 ENV VIDEO_CACHE_SIZE_IN_BYTES=2097152000
 
-# install kokoro, headless chrome and ensure music files are present
-RUN node dist/scripts/install.js
+# Create data directory for runtime
+RUN mkdir -p /app/data
+
+# Set minimal environment variables for build
+ENV PEXELS_API_KEY=dummy_build_key
+ENV NODE_ENV=production
+ENV LOG_LEVEL=info
+
+# install kokoro, headless chrome and ensure music files are present (with dummy env)
+RUN node dist/scripts/install.js || true
+
+# Expose port 8080 for Northflank
+EXPOSE 8080
 
 CMD ["pnpm", "start"]

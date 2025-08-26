@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    app: redis
+    component: cache
+spec:
+  type: Deployment
+  image: redis:7-alpine
+  replicas: 1
+  resources:
+    cpu: "0.5"
+    memory: 1Gi
+  env:
+    - name: REDIS_PASSWORD
+      valueFrom: secret
+      key: redis-password
+  ports:
+    - containerPort: 6379
+      name: redis
+      protocol: TCP
+  storage:
+    - name: redis-data
+      size: 2Gi
+      mountPath: "/data"
+      type: persistentVolumeClaim
+  healthCheck:
+    exec:
+      command: ["redis-cli", "ping"]
+    initialDelay: 30s
+    interval: 10s
+    timeout: 5s
+  deploymentStrategy:
+    type: rollingUpdate
+    maxSurge: 1
+    maxUnavailable: 0
+  scaling:
+    minReplicas: 1
+    maxReplicas: 1
+    scaleToZeroEnabled: false
+
+---
+# Redis configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  redis.conf: |
+    # Redis configuration for production
+    maxmemory 800mb
+    maxmemory-policy allkeys-lru
+    save 900 1
+    save 300 10
+    save 60 10000
+    appendonly yes
+    appendfsync everysec
+    tcp-keepalive 300
+    timeout 0

@@ -29,6 +29,7 @@ export class APIV2Router {
       console.log('VideosRouter created, router property type:', typeof this.videosRouter.router);
       console.log('VideosRouter created, router property value:', this.videosRouter.router);
       console.log('VideosRouter instance:', this.videosRouter);
+      console.log('VideosRouter router methods:', this.videosRouter.router ? Object.keys(this.videosRouter.router) : 'router is undefined');
     } catch (error) {
       console.error('Error creating VideosRouter:', error);
       throw error;

@@ -26,7 +26,13 @@ export class VideosRouter {
     this.config = config;
     this.shortCreator = shortCreator;
     this.webhookService = webhookService;
-    this.videoTracker = new VideoTracker(config);
+    try {
+      this.videoTracker = new VideoTracker(config);
+      console.log('VideosRouter: videoTracker created successfully');
+    } catch (error) {
+      console.error('VideosRouter: Error creating videoTracker:', error);
+      throw error;
+    }
     
     // Only initialize VideoQueue if not in test environment to avoid Redis connection issues
     if (process.env.NODE_ENV !== 'test') {
@@ -45,22 +51,37 @@ export class VideosRouter {
       } as VideoQueue;
     }
     
-    try {
-      this.wsServer = new VideoWebSocketServer(config, this.videoTracker);
-      console.log('VideosRouter: wsServer created');
-    } catch (error) {
-      console.error('VideosRouter: Error creating wsServer:', error);
-      throw error;
+    // Only initialize WebSocket server if not in test environment to avoid setInterval issues
+    if (process.env.NODE_ENV !== 'test') {
+      try {
+        this.wsServer = new VideoWebSocketServer(config, this.videoTracker);
+        console.log('VideosRouter: wsServer created');
+      } catch (error) {
+        console.error('VideosRouter: Error creating wsServer:', error);
+        throw error;
+      }
+    } else {
+      // Create a minimal mock wsServer for testing - use type assertion to bypass private property checks
+      this.wsServer = {
+        broadcastVideoEvent: () => {},
+        getClientCount: () => 0,
+        attachToServer: () => {},
+        close: () => {}
+      } as unknown as VideoWebSocketServer;
+      console.log('VideosRouter: mock wsServer created for testing');
     }
     
     this.router = express.Router();
     console.log('VideosRouter: router created', typeof this.router, this.router);
+    console.log('VideosRouter: router methods available:', Object.keys(this.router));
 
     try {
       this.setupRoutes();
       console.log('VideosRouter: after setupRoutes', typeof this.router, this.router);
+      console.log('VideosRouter: router methods after setup:', Object.keys(this.router));
     } catch (error) {
       console.error('VideosRouter: Error in setupRoutes:', error);
+      console.error('VideosRouter: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       throw error;
     }
   }

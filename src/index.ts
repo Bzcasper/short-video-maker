@@ -42,6 +42,9 @@ async function main() {
   const ffmpeg = await FFMpeg.init();
   const pexelsApi = new PexelsAPI(config.pexelsApiKey);
 
+  logger.debug("initializing redis");
+  RedisConnection.initialize(config);
+
   logger.debug("initializing the short creator");
   const shortCreator = new ShortCreator(
     config,

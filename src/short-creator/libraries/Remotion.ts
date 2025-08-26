@@ -19,15 +19,30 @@ export class Remotion {
   static async init(config: Config): Promise<Remotion> {
     await ensureBrowser();
 
-    const bundled = await bundle({
-      entryPoint: path.join(
+    const bundled = await bundle(
+      path.join(
         config.packageDirPath,
         config.devMode ? "src" : "dist",
         "components",
         "root",
         `index.${config.devMode ? "ts" : "js"}`,
       ),
-    });
+      undefined,
+      {
+        webpackOverride: (config) => {
+          config.target = "node";
+          config.resolve ??= {};
+          const fallback = {
+            ...(config.resolve.fallback && typeof config.resolve.fallback === 'object' && !Array.isArray(config.resolve.fallback) ? config.resolve.fallback : {}),
+            path: false as const,
+            fs: false as const,
+            os: false as const,
+          };
+          config.resolve.fallback = fallback;
+          return config;
+        },
+      }
+    );
 
     return new Remotion(bundled, config);
   }

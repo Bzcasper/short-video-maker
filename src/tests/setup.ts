@@ -1,5 +1,5 @@
 // Test setup file for Vitest
-import { afterEach, beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi, afterAll, beforeAll } from 'vitest';
 
 // Global test setup
 beforeEach(() => {

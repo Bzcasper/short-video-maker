@@ -16,7 +16,7 @@ RUN git clone https://github.com/ggerganov/whisper.cpp.git -b v1.7.1 --depth 1 .
 RUN make clean
 # Optimized CUDA compilation with memory pooling and compute capability targeting
 RUN GGML_CUDA=1 CXXFLAGS="-DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT -O3 -march=native -mtune=native" \
-    CUDA_DOCKER_ARCH=compute_75,compute_80,compute_86,compute_89,compute_90 \
+    CUDA_DOCKER_ARCH=compute_80 \
     GGML_CUDA_FORCE_DMMV=1 GGML_CUDA_FORCE_MMQ=1 make -j$(nproc)
 
 RUN sh ./models/download-ggml-model.sh medium.en

@@ -1,17 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: short-video-maker-service
+  name: short-video-maker-cuda
+  labels:
+    app: short-video-maker
+    version: cuda
+    tier: production
 spec:
   type: Deployment
-  image: thetoolpool/content-gen:latest-cuda
+  image: bzcasper/content-gen:latest
   replicas: 1
   resources:
-    cpu: 2-4
-    memory: 4-8Gi
-    gpu:
-      count: 1
-      type: nvidia-a100
+    cpu: "2"
+    memory: 4Gi
   env:
     - name: PEXELS_API_KEY
       valueFrom: secret
@@ -65,6 +66,13 @@ spec:
       value: "1"
     - name: VIDEO_CACHE_SIZE_IN_BYTES
       value: "2097152000"
+    # Redis Configuration  
+    - name: REDIS_HOST
+      value: "redis-service"
+    - name: REDIS_PORT
+      value: "6379"
+    - name: REDIS_DB
+      value: "0"
   healthCheck:
     path: "/health"
     port: 8080

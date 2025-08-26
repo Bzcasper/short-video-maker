@@ -1,0 +1,900 @@
+
+/app/src/components/root/Root.tsx
+  13:23  error    Async arrow function has no 'await' expression                   require-await
+  21:39  warning  Arrow function has too many lines (269). Maximum allowed is 150  max-lines-per-function
+
+/app/src/components/utils.ts
+   37:8  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+  132:8  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+/app/src/components/videos/LandscapeVideo.tsx
+  120:29  warning  This GPU effect may slow down the render on machines which don't have a GPU.
+See: https://remotion.dev/docs/gpu  @remotion/slow-css-property
+
+/app/src/components/videos/PortraitVideo.tsx
+  120:29  warning  This GPU effect may slow down the render on machines which don't have a GPU.
+See: https://remotion.dev/docs/gpu  @remotion/slow-css-property
+
+/app/src/config.ts
+  115:3  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+/app/src/examples/CachingSystemExample.ts
+  467:3  error  Async method 'cleanup' has no 'await' expression  require-await
+
+/app/src/index.ts
+   1:1   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unused-vars')
+  17:1   warning  Missing return type on function                                                                       @typescript-eslint/explicit-function-return-type
+  90:51  warning  Missing return type on function                                                                       @typescript-eslint/explicit-function-return-type
+
+/app/src/scripts/install.ts
+  10:8  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+/app/src/scripts/normalizeMusic.ts
+  10:1  warning  Missing return type on function                       @typescript-eslint/explicit-function-return-type
+  10:1  error    Async function 'normalize' has no 'await' expression  require-await
+  32:8  warning  Missing return type on function                       @typescript-eslint/explicit-function-return-type
+
+/app/src/scripts/setup-tts.ts
+   50:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   51:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   52:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   53:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   54:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   67:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   68:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   69:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   70:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   71:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   84:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   85:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   86:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   87:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+   88:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  105:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  106:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  107:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  108:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  109:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  124:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  125:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  126:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  139:3   error    Async method 'updateEnvFile' has no 'await' expression                             require-await
+  165:39  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  181:40  warning  Unexpected any. Specify a different type                                           @typescript-eslint/no-explicit-any
+  192:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  195:3   error    Async method 'updateTTSConfig' has no 'await' expression                           require-await
+  210:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  214:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  215:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  218:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  219:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  220:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  223:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  226:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  229:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  233:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  234:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  235:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  236:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  237:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  241:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  242:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  243:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  247:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  276:1   error    Async function 'confirm' has no 'await' expression                                 require-await
+
+/app/src/scripts/test-tts-setup.ts
+    9:10  error    'getTTSService' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+   11:10  error    'Config' is defined but never used. Allowed unused vars must match /^_/u               @typescript-eslint/no-unused-vars
+   13:1   warning  Missing return type on function                                                        @typescript-eslint/explicit-function-return-type
+   13:1   error    Async function 'testTTSConfiguration' has no 'await' expression                        require-await
+   14:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   20:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   21:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   22:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   23:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   24:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   28:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   31:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   33:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   35:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   39:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   43:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   44:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   45:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   49:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   53:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   56:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   85:11  error    'ttsService' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   86:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   88:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   97:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   98:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+   99:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+  100:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+  101:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+  107:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error      no-console
+
+/app/src/server/queue/VideoQueue.ts
+   45:24  error    Async arrow function has no 'await' expression  require-await
+   77:52  warning  Unexpected any. Specify a different type        @typescript-eslint/no-explicit-any
+  137:12  error    Redundant use of `await` on a return value      no-return-await
+
+/app/src/server/redis.ts
+  12:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/server/routers/mcp.ts
+  32:3   warning  Missing return type on function                 @typescript-eslint/explicit-function-return-type
+  39:27  error    Async arrow function has no 'await' expression  require-await
+  74:3   warning  Missing return type on function                 @typescript-eslint/explicit-function-return-type
+
+/app/src/server/routers/rest.ts
+  30:3   warning  Method 'setupRoutes' has too many lines (178). Maximum allowed is 150  max-lines-per-function
+  30:3   warning  Missing return type on function                                        @typescript-eslint/explicit-function-return-type
+  33:57  error    Async arrow function has no 'await' expression                         require-await
+  76:57  error    Async arrow function has no 'await' expression                         require-await
+
+/app/src/server/routers/v2/__tests__/index.test.ts
+  19:7  error  'webhookService' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/app/src/server/routers/v2/index.ts
+  10:10  error    'logger' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  33:3   warning  Missing return type on function                                           @typescript-eslint/explicit-function-return-type
+
+/app/src/server/routers/v2/scripts.ts
+   9:10  error    'ScriptTemplateEngine' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  26:3   warning  Method 'setupRoutes' has too many lines (260). Maximum allowed is 150                   max-lines-per-function
+  26:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+
+/app/src/server/routers/v2/videos.ts
+   37:3   warning  Method 'setupRoutes' has too many lines (245). Maximum allowed is 150  max-lines-per-function
+   37:3   warning  Missing return type on function                                        @typescript-eslint/explicit-function-return-type
+  186:57  error    Async arrow function has no 'await' expression                         require-await
+  240:57  error    Async arrow function has no 'await' expression                         require-await
+  312:57  error    Async arrow function has no 'await' expression                         require-await
+  458:57  error    Async arrow function has no 'await' expression                         require-await
+
+/app/src/server/routers/v2/webhooks.ts
+   20:3   warning  Method 'setupRoutes' has too many lines (159). Maximum allowed is 150                                                                                                                                                                                                                                   max-lines-per-function
+   20:3   warning  Missing return type on function                                                                                                                                                                                                                                                                         @typescript-eslint/explicit-function-return-type
+  154:47  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  362:15  error    'testPayload' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+
+/app/src/server/server.ts
+  120:3  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+/app/src/server/swagger.ts
+  4:8  warning  Function 'createSwaggerSpec' has too many lines (333). Maximum allowed is 150  max-lines-per-function
+  4:8  warning  Missing return type on function                                                @typescript-eslint/explicit-function-return-type
+
+/app/src/server/webhook/WebhookService.ts
+   16:9   warning  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+   46:69  warning  Unexpected any. Specify a different type                      @typescript-eslint/no-explicit-any
+  133:3   error    Async method 'startRetryProcessor' has no 'await' expression  require-await
+  146:18  error    'error' is defined but never used                             @typescript-eslint/no-unused-vars
+
+/app/src/server/websocket/VideoWebSocketServer.ts
+  149:72  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  174:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  174:49  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  174:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/services/AIContentPipelineService.ts
+    6:8   error    'crypto' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  176:3   error    Missing accessibility modifier on method definition constructor                  @typescript-eslint/explicit-member-accessibility
+  386:3   warning  Missing return type on function                                                  @typescript-eslint/explicit-function-return-type
+  402:52  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  404:77  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  408:43  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  465:46  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  527:49  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  585:45  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  637:47  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  705:3   warning  Missing return type on function                                                  @typescript-eslint/explicit-function-return-type
+  735:45  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  747:47  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  757:34  error    'providersUsed' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  804:3   error    Missing accessibility modifier on method definition constructor                  @typescript-eslint/explicit-member-accessibility
+  808:3   error    Missing accessibility modifier on method definition generate                     @typescript-eslint/explicit-member-accessibility
+  832:3   error    Async method 'callProviderAPI' has no 'await' expression                         require-await
+  832:49  error    'options' is defined but never used. Allowed unused args must match /^_/u        @typescript-eslint/no-unused-vars
+  832:58  warning  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  841:3   error    Missing accessibility modifier on method definition isHealthy                    @typescript-eslint/explicit-member-accessibility
+  845:3   error    Missing accessibility modifier on method definition canHandleSpecialty           @typescript-eslint/explicit-member-accessibility
+  849:3   error    Missing accessibility modifier on method definition getUsageStats                @typescript-eslint/explicit-member-accessibility
+  849:3   warning  Missing return type on function                                                  @typescript-eslint/explicit-function-return-type
+  861:3   error    Missing accessibility modifier on method definition trackUsage                   @typescript-eslint/explicit-member-accessibility
+  861:3   warning  Missing return type on function                                                  @typescript-eslint/explicit-function-return-type
+  869:3   error    Missing accessibility modifier on method definition getMonthlyUsage              @typescript-eslint/explicit-member-accessibility
+  874:3   error    Missing accessibility modifier on method definition getDailyUsage                @typescript-eslint/explicit-member-accessibility
+
+/app/src/services/AIThumbnailService.ts
+   161:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+   175:34  warning  Async method 'generateThumbnails' has a complexity of 16. Maximum allowed is 15                                                                                                                                                                                                                         complexity
+   340:3   error    Async method 'createBaseDesign' has no 'await' expression                                                                                                                                                                                                                                               require-await
+   380:5   error    'type' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   541:5   error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   640:3   warning  Missing return type on function                                                                                                                                                                                                                                                                         @typescript-eslint/explicit-function-return-type
+   791:54  error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   824:49  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   829:3   warning  Missing return type on function                                                                                                                                                                                                                                                                         @typescript-eslint/explicit-function-return-type
+   929:36  error    'design' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   943:35  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  1050:54  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  1102:12  error    Redundant use of `await` on a return value                                                                                                                                                                                                                                                              no-return-await
+  1192:3   error    Missing accessibility modifier on method definition analyzePerformance                                                                                                                                                                                                                                  @typescript-eslint/explicit-member-accessibility
+  1192:22  error    'thumbnails' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  1192:57  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/app/src/services/AudioPipelineService.ts
+   56:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+   64:3   error    Missing accessibility modifier on method definition analyzeAudio                                                                                                                                                                                                                                        @typescript-eslint/explicit-member-accessibility
+  103:3   error    Missing accessibility modifier on method definition mixAudioWithMusic                                                                                                                                                                                                                                   @typescript-eslint/explicit-member-accessibility
+  119:13  error    'speechAnalysis' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+  229:3   error    Missing accessibility modifier on method definition synchronizeToBeats                                                                                                                                                                                                                                  @typescript-eslint/explicit-member-accessibility
+  305:3   error    Missing accessibility modifier on method definition enhanceVoice                                                                                                                                                                                                                                        @typescript-eslint/explicit-member-accessibility
+  370:3   error    Async method 'getAudioInfo' has no 'await' expression                                                                                                                                                                                                                                                   require-await
+  399:58  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  429:41  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  449:3   error    Async method 'analyzeSpectralFeatures' has no 'await' expression                                                                                                                                                                                                                                        require-await
+  449:41  error    'audioPath' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  462:3   error    Async method 'executeFFmpeg' has no 'await' expression                                                                                                                                                                                                                                                  require-await
+  491:3   error    Missing accessibility modifier on method definition cleanup                                                                                                                                                                                                                                             @typescript-eslint/explicit-member-accessibility
+
+/app/src/services/BrandSafetyService.ts
+   33:23  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+   85:3   error    Missing accessibility modifier on method definition constructor                      @typescript-eslint/explicit-member-accessibility
+  201:3   error    Async method 'analyzeCategoryRuleBased' has no 'await' expression                    require-await
+  249:3   error    Async method 'performAIAnalysis' has no 'await' expression                           require-await
+  249:73  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  253:11  error    'aiPrompt' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  284:21  error    Unreachable code                                                                     no-unreachable
+  306:3   warning  Missing return type on function                                                      @typescript-eslint/explicit-function-return-type
+  306:39  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  306:81  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  318:29  warning  Unexpected any. Specify a different type                                             @typescript-eslint/no-explicit-any
+  452:12  error    Redundant use of `await` on a return value                                           no-return-await
+  589:12  error    Redundant use of `await` on a return value                                           no-return-await
+
+/app/src/services/CacheService.ts
+   10:3   error    'validatePerformanceMetrics' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   39:3   error    Missing accessibility modifier on method definition constructor                               @typescript-eslint/explicit-member-accessibility
+   71:40  warning  Unexpected any. Specify a different type                                                      @typescript-eslint/no-explicit-any
+   89:14  error    Redundant use of `await` on a return value                                                    no-return-await
+  456:37  warning  Unexpected any. Specify a different type                                                      @typescript-eslint/no-explicit-any
+  499:32  error    'key' is defined but never used. Allowed unused args must match /^_/u                         @typescript-eslint/no-unused-vars
+
+/app/src/services/ContentValidator.ts
+    2:37  error    'ContentType' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+   47:3   error    Missing accessibility modifier on method definition constructor                        @typescript-eslint/explicit-member-accessibility
+  428:13  error    'fullScript' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  473:31  warning  Method 'checkPlatformFeature' has a complexity of 23. Maximum allowed is 15            complexity
+  482:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  492:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  496:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  503:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  510:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  515:9   error    Unexpected lexical declaration in case block                                           no-case-declarations
+  545:3   error    Async method 'checkContentSafety' has no 'await' expression                            require-await
+  612:3   error    Async method 'calculateHookStrength' has no 'await' expression                         require-await
+  617:3   error    Async method 'calculatePacing' has no 'await' expression                               require-await
+  622:3   error    Async method 'calculateClarity' has no 'await' expression                              require-await
+  627:3   error    Async method 'calculateCTAEffectiveness' has no 'await' expression                     require-await
+  632:3   error    Async method 'calculateVisualAppeal' has no 'await' expression                         require-await
+  647:3   error    Async method 'calculatePlatformOptimization' has no 'await' expression                 require-await
+
+/app/src/services/CostOptimizationService.ts
+   133:3    error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+   382:12   error    Redundant use of `await` on a return value                                                                                                                                                                                                                                                              no-return-await
+   389:12   error    Redundant use of `await` on a return value                                                                                                                                                                                                                                                              no-return-await
+   403:44   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   558:5    error    'currentUsage' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   558:19   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   663:103  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   836:3    error    Async method 'generateCostRecommendations' has no 'await' expression                                                                                                                                                                                                                                    require-await
+   836:71   error    'period' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   932:70   error    'cost' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  1018:3    error    Missing accessibility modifier on method definition record                                                                                                                                                                                                                                              @typescript-eslint/explicit-member-accessibility
+  1018:3    error    Async method 'record' has no 'await' expression                                                                                                                                                                                                                                                         require-await
+  1023:3    error    Missing accessibility modifier on method definition getUsage                                                                                                                                                                                                                                            @typescript-eslint/explicit-member-accessibility
+  1023:3    error    Async method 'getUsage' has no 'await' expression                                                                                                                                                                                                                                                       require-await
+  1029:3    error    Missing accessibility modifier on method definition getRecentUsage                                                                                                                                                                                                                                      @typescript-eslint/explicit-member-accessibility
+  1029:3    error    Async method 'getRecentUsage' has no 'await' expression                                                                                                                                                                                                                                                 require-await
+  1041:3    error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  1045:3    error    Missing accessibility modifier on method definition createAlert                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  1048:34   error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  1063:3    error    Missing accessibility modifier on method definition getActiveAlerts                                                                                                                                                                                                                                     @typescript-eslint/explicit-member-accessibility
+  1063:3    error    Async method 'getActiveAlerts' has no 'await' expression                                                                                                                                                                                                                                                require-await
+  1067:3    error    Missing accessibility modifier on method definition acknowledgeAlert                                                                                                                                                                                                                                    @typescript-eslint/explicit-member-accessibility
+  1067:3    error    Async method 'acknowledgeAlert' has no 'await' expression                                                                                                                                                                                                                                               require-await
+  1076:3    error    Missing accessibility modifier on method definition updateConfig                                                                                                                                                                                                                                        @typescript-eslint/explicit-member-accessibility
+  1080:3    error    Async method 'sendWebhookAlert' has no 'await' expression                                                                                                                                                                                                                                               require-await
+  1080:34   error    'alert' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+
+/app/src/services/EnhancedShortCreator.ts
+    2:8   error    'cuid' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+    7:32  error    'AudioMixingOptions' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    7:52  error    'BeatSyncOptions' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+    8:32  error    'TitleGenerationOptions' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+    8:56  error    'BrandingConfig' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+    9:62  error    'KaraokeSettings' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   10:80  error    'AudioToVideoRequest' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   17:3   error    'VideoStatus' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   36:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   48:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+   48:3   warning  Constructor has too many parameters (8). Maximum allowed is 6                                                                                                                                                                                                                                           max-params
+   51:15  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   52:13  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   53:14  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   54:13  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   55:16  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   56:19  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   93:3   error    Missing accessibility modifier on method definition createEnhancedShort                                                                                                                                                                                                                                 @typescript-eslint/explicit-member-accessibility
+  119:19  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  202:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  270:53  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  347:3   error    Async method 'processAdvancedAudio' has no 'await' expression                                                                                                                                                                                                                                           require-await
+  355:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  400:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  493:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  527:15  error    'enhancedSubtitles' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  573:17  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  708:3   error    Missing accessibility modifier on method definition getAICapabilities                                                                                                                                                                                                                                   @typescript-eslint/explicit-member-accessibility
+
+/app/src/services/EnhancedSubtitleService.ts
+    1:8   error    'fs' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    2:8   error    'path' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  130:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  138:3   error    Missing accessibility modifier on method definition generateEnhancedSubtitles                                                                                                                                                                                                                           @typescript-eslint/explicit-member-accessibility
+  140:50  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  201:3   error    Missing accessibility modifier on method definition generateKaraokeSubtitles                                                                                                                                                                                                                            @typescript-eslint/explicit-member-accessibility
+  201:3   error    Async method 'generateKaraokeSubtitles' has no 'await' expression                                                                                                                                                                                                                                       require-await
+  227:3   error    Missing accessibility modifier on method definition generateMultiLanguageSubtitles                                                                                                                                                                                                                      @typescript-eslint/explicit-member-accessibility
+  227:3   error    Async method 'generateMultiLanguageSubtitles' has no 'await' expression                                                                                                                                                                                                                                 require-await
+  258:3   error    Missing accessibility modifier on method definition generateAccessibleSubtitles                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  258:3   error    Async method 'generateAccessibleSubtitles' has no 'await' expression                                                                                                                                                                                                                                    require-await
+  298:3   error    Missing accessibility modifier on method definition applyContextualStyling                                                                                                                                                                                                                              @typescript-eslint/explicit-member-accessibility
+  298:3   error    Async method 'applyContextualStyling' has no 'await' expression                                                                                                                                                                                                                                         require-await
+  307:9   error    'baseStyle' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                                    prefer-const
+  345:3   error    Missing accessibility modifier on method definition exportSubtitles                                                                                                                                                                                                                                     @typescript-eslint/explicit-member-accessibility
+  345:3   error    Async method 'exportSubtitles' has no 'await' expression                                                                                                                                                                                                                                                require-await
+  454:3   error    Async method 'createEnhancedCaptionPages' has no 'await' expression                                                                                                                                                                                                                                     require-await
+  508:3   error    Async method 'generateSubtitleTracks' has no 'await' expression                                                                                                                                                                                                                                         require-await
+  527:47  error    'index' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  546:3   error    Async method 'generateSubtitleHTML' has no 'await' expression                                                                                                                                                                                                                                           require-await
+  552:26  error    'pageIndex' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  555:33  error    'lineIndex' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  582:3   error    Async method 'generateSubtitleCSS' has no 'await' expression                                                                                                                                                                                                                                            require-await
+  582:36  warning  Async method 'generateSubtitleCSS' has a complexity of 20. Maximum allowed is 15                                                                                                                                                                                                                        complexity
+  748:9   error    Unexpected lexical declaration in case block                                                                                                                                                                                                                                                            no-case-declarations
+  791:3   error    Async method 'generateSubtitleAnimations' has no 'await' expression                                                                                                                                                                                                                                     require-await
+  862:3   error    Async method 'generateWebVTT' has no 'await' expression                                                                                                                                                                                                                                                 require-await
+  892:3   error    Async method 'generateSRT' has no 'await' expression                                                                                                                                                                                                                                                    require-await
+  910:3   error    Async method 'generateASS' has no 'await' expression                                                                                                                                                                                                                                                    require-await
+
+/app/src/services/FramePackIntegrationService.ts
+   91:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  104:3   error    Missing accessibility modifier on method definition generateVideoFromPrompt                                                                                                                                                                                                                             @typescript-eslint/explicit-member-accessibility
+  121:13  error    'result' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+  171:3   error    Missing accessibility modifier on method definition generateVideoFromAudio                                                                                                                                                                                                                              @typescript-eslint/explicit-member-accessibility
+  249:3   error    Missing accessibility modifier on method definition generateThematicBackground                                                                                                                                                                                                                          @typescript-eslint/explicit-member-accessibility
+  249:3   error    Async method 'generateThematicBackground' has no 'await' expression                                                                                                                                                                                                                                     require-await
+  281:3   error    Missing accessibility modifier on method definition batchGenerateVideos                                                                                                                                                                                                                                 @typescript-eslint/explicit-member-accessibility
+  281:3   error    Async method 'batchGenerateVideos' has no 'await' expression                                                                                                                                                                                                                                            require-await
+  282:42  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  308:3   error    Missing accessibility modifier on method definition getBatchJobStatus                                                                                                                                                                                                                                   @typescript-eslint/explicit-member-accessibility
+  315:3   error    Missing accessibility modifier on method definition cancelBatchJob                                                                                                                                                                                                                                      @typescript-eslint/explicit-member-accessibility
+  329:3   error    Missing accessibility modifier on method definition optimizeParameters                                                                                                                                                                                                                                  @typescript-eslint/explicit-member-accessibility
+  399:83  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  424:3   error    Async method 'enhancePromptWithStyle' has no 'await' expression                                                                                                                                                                                                                                         require-await
+  469:3   error    Async method 'executeFramePackGeneration' has no 'await' expression                                                                                                                                                                                                                                     require-await
+  473:13  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  538:3   error    Async method 'analyzeAudioForVisuals' has no 'await' expression                                                                                                                                                                                                                                         require-await
+  558:3   error    Async method 'generateVisualPromptsFromAudio' has no 'await' expression                                                                                                                                                                                                                                 require-await
+  603:54  error    'segmentIndex' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  650:3   error    Async method 'combineVideoWithAudio' has no 'await' expression                                                                                                                                                                                                                                          require-await
+  708:3   error    Async method 'enhanceVideoQuality' has no 'await' expression                                                                                                                                                                                                                                            require-await
+  716:3   error    Async method 'getGPUInfo' has no 'await' expression                                                                                                                                                                                                                                                     require-await
+  725:23  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  731:3   error    Missing accessibility modifier on method definition cleanup                                                                                                                                                                                                                                             @typescript-eslint/explicit-member-accessibility
+
+/app/src/services/FramePackService.ts
+    4:17  error  'Job' is defined but never used. Allowed unused vars must match /^_/u                    @typescript-eslint/no-unused-vars
+   46:3   error  Missing accessibility modifier on method definition constructor                          @typescript-eslint/explicit-member-accessibility
+  131:3   error  Async method 'runFramePackGeneration' has no 'await' expression                          require-await
+  167:11  error  'outputBuffer' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  229:19  error  'stats' is assigned a value but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  249:20  error  'error' is defined but never used                                                        @typescript-eslint/no-unused-vars
+  280:3   error  Async method 'getVideoDuration' has no 'await' expression                                require-await
+  281:34  error  'reject' is defined but never used. Allowed unused args must match /^_/u                 @typescript-eslint/no-unused-vars
+  391:13  error  Expected the Promise rejection reason to be an Error                                     prefer-promise-reject-errors
+  429:13  error  Expected the Promise rejection reason to be an Error                                     prefer-promise-reject-errors
+
+/app/src/services/GPUResourceManager.ts
+   38:3   error    Missing accessibility modifier on method definition constructor                     @typescript-eslint/explicit-member-accessibility
+   79:3   error    Async method 'getGPUInfo' has no 'await' expression                                 require-await
+  397:3   error    Async method 'isProcessRunning' has no 'await' expression                           require-await
+  397:34  error    'processId' is defined but never used. Allowed unused args must match /^_/u         @typescript-eslint/no-unused-vars
+  406:3   error    Async method 'getProcessGPUUsage' has no 'await' expression                         require-await
+  434:27  error    'gpuUuid' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  458:3   error    Async method 'waitForResources' has no 'await' expression                           require-await
+  466:42  warning  Missing return type on function                                                     @typescript-eslint/explicit-function-return-type
+
+/app/src/services/HybridRenderingService.ts
+    3:8   error    'cuid' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+    5:45  error    'FramePackResult' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+    6:57  error    'ImageProcessingResult' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   59:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  276:26  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  463:5   error    'orientation' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  570:31  warning  Method 'categorizeSearchTerm' has a complexity of 33. Maximum allowed is 15                                                                                                                                                                                                                             complexity
+  654:25  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/app/src/services/ImageProcessingService.ts
+    1:10  error    'spawn' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+   41:3   error    Missing accessibility modifier on method definition constructor                 @typescript-eslint/explicit-member-accessibility
+  497:34  warning  Method 'extractColorsFromPrompt' has a complexity of 16. Maximum allowed is 15  complexity
+
+/app/src/services/PerformanceOptimizer.ts
+   40:42  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+   43:3   error    Missing accessibility modifier on method definition constructor  @typescript-eslint/explicit-member-accessibility
+  193:49  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  414:3   error    Async method 'checkPerformanceAlerts' has no 'await' expression  require-await
+  503:28  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  522:3   error    Async method 'loadOptimizationCache' has no 'await' expression   require-await
+  530:3   error    Async method 'saveOptimizationCache' has no 'await' expression   require-await
+
+/app/src/services/PromptTemplateService.ts
+   29:34  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   30:41  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   30:49  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   51:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  275:35  warning  Async method 'substituteVariables' has a complexity of 23. Maximum allowed is 15                                                                                                                                                                                                                        complexity
+  277:31  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  546:22  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  623:40  error    'templateId' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  628:47  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  628:59  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/app/src/services/SEOOptimizationService.ts
+   143:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+   288:3   error    Async method 'generateTitleVariations' has no 'await' expression                                                                                                                                                                                                                                        require-await
+   451:3   error    Async method 'generateShortDescription' has no 'await' expression                                                                                                                                                                                                                                       require-await
+   474:3   error    Async method 'generateLongDescription' has no 'await' expression                                                                                                                                                                                                                                        require-await
+   522:3   error    Async method 'generateKeywordOptimizedDescription' has no 'await' expression                                                                                                                                                                                                                            require-await
+   522:94  error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   589:3   error    Async method 'getTrendingHashtags' has no 'await' expression                                                                                                                                                                                                                                            require-await
+   646:51  error    'contentType' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   661:3   error    Async method 'analyzeHashtagPerformance' has no 'await' expression                                                                                                                                                                                                                                      require-await
+   661:63  error    'platform' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   667:32  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+   668:33  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+   669:31  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+   708:66  error    'constraints' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   765:3   error    Async method 'generateSemanticKeywords' has no 'await' expression                                                                                                                                                                                                                                       require-await
+   822:3   error    Async method 'analyzeSearchVolume' has no 'await' expression                                                                                                                                                                                                                                            require-await
+   827:33  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+   828:37  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+   903:3   error    Functions that return promises must be async                                                                                                                                                                                                                                                            @typescript-eslint/promise-function-async
+   903:69  error    'constraints' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   915:3   error    Functions that return promises must be async                                                                                                                                                                                                                                                            @typescript-eslint/promise-function-async
+   915:65  error    'constraints' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   934:3   error    Functions that return promises must be async                                                                                                                                                                                                                                                            @typescript-eslint/promise-function-async
+   934:48  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   934:53  error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   934:95  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   965:44  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   965:49  error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   965:82  error    'constraints' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  1110:67  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  1187:12  error    Redundant use of `await` on a return value                                                                                                                                                                                                                                                              no-return-await
+  1225:43  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  1228:3   error    Missing accessibility modifier on method definition getTrending                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  1228:3   error    Async method 'getTrending' has no 'await' expression                                                                                                                                                                                                                                                    require-await
+  1228:66  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/app/src/services/ScriptGenerationService.ts
+    1:8   error    'path' is defined but never used. Allowed unused vars must match /^_/u                  @typescript-eslint/no-unused-vars
+    5:27  error    'RenderConfig' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+   24:3   error    Missing accessibility modifier on method definition constructor                         @typescript-eslint/explicit-member-accessibility
+   38:17  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+   81:74  error    'index' is defined but never used. Allowed unused args must match /^_/u                 @typescript-eslint/no-unused-vars
+  190:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  197:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  198:66  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  204:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  205:67  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  211:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  218:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  251:37  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  267:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  327:64  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  327:85  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  328:37  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  346:63  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+  347:11  error    'lowerPrompt' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  443:48  error    'description' is defined but never used. Allowed unused args must match /^_/u           @typescript-eslint/no-unused-vars
+  466:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  473:3   warning  Missing return type on function                                                         @typescript-eslint/explicit-function-return-type
+  473:34  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+/app/src/services/ScriptGeneratorService.ts
+   20:45  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+   40:3   error    Missing accessibility modifier on method definition constructor              @typescript-eslint/explicit-member-accessibility
+   53:30  warning  Async method 'generateScript' has a complexity of 33. Maximum allowed is 15  complexity
+   67:39  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  105:38  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  116:55  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  117:48  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  152:46  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  153:42  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  186:48  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  228:13  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  338:15  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  339:5   error    'requestId' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  379:15  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  382:14  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  413:3   error    Async method 'parsePromptIntoScenes' has no 'await' expression               require-await
+  413:55  error    'template' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  413:65  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  481:43  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  481:49  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  520:50  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  552:90  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  564:41  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  566:38  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  601:3   error    Missing accessibility modifier on method definition validateCoherence        @typescript-eslint/explicit-member-accessibility
+  601:3   error    Async method 'validateCoherence' has no 'await' expression                   require-await
+  614:3   error    Missing accessibility modifier on method definition validateEngagement       @typescript-eslint/explicit-member-accessibility
+  614:3   error    Async method 'validateEngagement' has no 'await' expression                  require-await
+  629:3   error    Missing accessibility modifier on method definition validateClarity          @typescript-eslint/explicit-member-accessibility
+  629:3   error    Async method 'validateClarity' has no 'await' expression                     require-await
+  644:3   error    Missing accessibility modifier on method definition validateRelevance        @typescript-eslint/explicit-member-accessibility
+  644:3   error    Async method 'validateRelevance' has no 'await' expression                   require-await
+  644:41  error    'context' is defined but never used. Allowed unused args must match /^_/u    @typescript-eslint/no-unused-vars
+  644:51  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  656:3   error    Missing accessibility modifier on method definition validateCreativity       @typescript-eslint/explicit-member-accessibility
+  656:3   error    Async method 'validateCreativity' has no 'await' expression                  require-await
+
+/app/src/services/ScriptTemplateEngine.ts
+   45:18  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   57:29  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   80:31  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  103:3   error    Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  108:3   error    Async method 'loadTemplates' has no 'await' expression                                                                                                                                                                                                                                                  require-await
+  153:3   error    Async method 'generateScript' has no 'await' expression                                                                                                                                                                                                                                                 require-await
+  218:70  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  219:36  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  262:75  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  291:68  error    'request' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+  331:39  error    Unnecessary escape character: \.                                                                                                                                                                                                                                                                        no-useless-escape
+  331:46  error    Unnecessary escape character: \.                                                                                                                                                                                                                                                                        no-useless-escape
+  408:9   error    'optimized' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                                    prefer-const
+  437:36  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+
+/app/src/services/TitleSequenceService.ts
+  109:3   error  Missing accessibility modifier on method definition constructor                                                                                                                                                                                                                                         @typescript-eslint/explicit-member-accessibility
+  117:3   error  Missing accessibility modifier on method definition generateTitle                                                                                                                                                                                                                                       @typescript-eslint/explicit-member-accessibility
+  147:46  error  The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  179:3   error  Missing accessibility modifier on method definition generateIntroSequence                                                                                                                                                                                                                               @typescript-eslint/explicit-member-accessibility
+  179:3   error  Async method 'generateIntroSequence' has no 'await' expression                                                                                                                                                                                                                                          require-await
+  210:3   error  Missing accessibility modifier on method definition generateOutroSequence                                                                                                                                                                                                                               @typescript-eslint/explicit-member-accessibility
+  210:3   error  Async method 'generateOutroSequence' has no 'await' expression                                                                                                                                                                                                                                          require-await
+  243:3   error  Missing accessibility modifier on method definition generateSectionDivider                                                                                                                                                                                                                              @typescript-eslint/explicit-member-accessibility
+  243:3   error  Async method 'generateSectionDivider' has no 'await' expression                                                                                                                                                                                                                                         require-await
+  274:3   error  Missing accessibility modifier on method definition renderTitleToFrames                                                                                                                                                                                                                                 @typescript-eslint/explicit-member-accessibility
+  290:13  error  'totalFrames' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  318:3   error  Missing accessibility modifier on method definition getTemplateByCategory                                                                                                                                                                                                                               @typescript-eslint/explicit-member-accessibility
+  325:3   error  Missing accessibility modifier on method definition getAllTemplates                                                                                                                                                                                                                                     @typescript-eslint/explicit-member-accessibility
+  332:3   error  Missing accessibility modifier on method definition createCustomTemplate                                                                                                                                                                                                                                @typescript-eslint/explicit-member-accessibility
+  340:35  error  The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  477:3   error  Async method 'selectBestTemplate' has no 'await' expression                                                                                                                                                                                                                                             require-await
+  507:3   error  Async method 'analyzeContent' has no 'await' expression                                                                                                                                                                                                                                                 require-await
+  532:3   error  Async method 'generateAdaptiveStyle' has no 'await' expression                                                                                                                                                                                                                                          require-await
+  567:3   error  Async method 'generateContextualAnimations' has no 'await' expression                                                                                                                                                                                                                                   require-await
+  594:3   error  Async method 'generateHTML' has no 'await' expression                                                                                                                                                                                                                                                   require-await
+  630:3   error  Async method 'generateCSS' has no 'await' expression                                                                                                                                                                                                                                                    require-await
+  731:9   error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                            no-case-declarations
+  732:9   error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                            no-case-declarations
+  744:9   error  Unexpected lexical declaration in case block                                                                                                                                                                                                                                                            no-case-declarations
+  776:3   error  Async method 'generateAnimationCode' has no 'await' expression                                                                                                                                                                                                                                          require-await
+
+/app/src/services/__tests__/ContentValidator.test.ts
+    3:10  error  'ScriptTemplateEngine' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+    3:42  error  'ContentType' is defined but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+  150:61  error  Async arrow function has no 'await' expression                                          require-await
+  177:51  error  Async arrow function has no 'await' expression                                          require-await
+  201:78  error  Async arrow function has no 'await' expression                                          require-await
+  220:52  error  Async arrow function has no 'await' expression                                          require-await
+  240:59  error  Async arrow function has no 'await' expression                                          require-await
+  255:56  error  Async arrow function has no 'await' expression                                          require-await
+  272:52  error  Async arrow function has no 'await' expression                                          require-await
+  300:45  error  Async arrow function has no 'await' expression                                          require-await
+  322:57  error  Async arrow function has no 'await' expression                                          require-await
+  346:59  error  Async arrow function has no 'await' expression                                          require-await
+  369:73  error  Async arrow function has no 'await' expression                                          require-await
+
+/app/src/services/__tests__/ScriptTemplateEngine.test.ts
+  91:57  error  Async arrow function has no 'await' expression  require-await
+
+/app/src/short-creator/ShortCreator.test.ts
+  37:16  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  37:23  error  Empty block statement              no-empty
+  48:16  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  48:23  error  Empty block statement              no-empty
+
+/app/src/short-creator/ShortCreator.ts
+   29:3   error    'AIImageStyleEnum' is defined but never used. Allowed unused vars must match /^_/u                                                                                  @typescript-eslint/no-unused-vars
+   42:3   warning  Constructor has too many parameters (7). Maximum allowed is 6                                                                                                       max-params
+   97:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  125:7   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  397:34  warning  Async method 'createHybridShort' has a complexity of 18. Maximum allowed is 15                                                                                      complexity
+  422:19  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  447:62  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  449:52  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  596:69  warning  Unexpected any. Specify a different type                                                                                                                            @typescript-eslint/no-explicit-any
+  644:3   warning  Missing return type on function                                                                                                                                     @typescript-eslint/explicit-function-return-type
+  645:12  error    Redundant use of `await` on a return value                                                                                                                          no-return-await
+
+/app/src/short-creator/VideoTracker.ts
+  10:28  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  17:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  40:73  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/short-creator/libraries/FFmpeg.ts
+   6:3  error  Static async method 'init' has no 'await' expression          require-await
+  14:3  error  Async method 'saveNormalizedAudio' has no 'await' expression  require-await
+  42:3  error  Async method 'createMp3DataUri' has no 'await' expression     require-await
+  72:3  error  Async method 'saveToMp3' has no 'await' expression            require-await
+
+/app/src/short-creator/libraries/Pexels.test.ts
+  20:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                   no-console
+  24:34  error    Async arrow function has no 'await' expression                                                                                                                      require-await
+  30:3   error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+  56:3   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                   no-console
+
+/app/src/short-creator/libraries/Pexels.ts
+  160:20  error  Redundant use of `await` on a return value  no-return-await
+
+/app/src/short-creator/libraries/Remotion.ts
+  35:3  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+  76:3  warning  Missing return type on function  @typescript-eslint/explicit-function-return-type
+
+/app/src/short-creator/libraries/TTSConfig.ts
+  169:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  171:7  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  173:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+
+/app/src/short-creator/libraries/TTSDashboard.ts
+   46:10   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   69:7    error    Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator                                                                                                                                      @typescript-eslint/no-floating-promises
+  109:11   error    'totalCost' is assigned a value but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  207:22   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  209:163  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  219:34   error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  234:75   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  247:5    warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  257:66   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  279:32   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  334:7    error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  344:7    error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  351:27   error    'languageCount' is defined but never used. Allowed unused args must match /^_/u                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  360:17   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+/app/src/short-creator/libraries/TTSProvider.ts
+    11:29  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   236:27  warning  Method 'detectLanguage' has a complexity of 18. Maximum allowed is 15       complexity
+   347:32  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   357:3   warning  Missing return type on function                                             @typescript-eslint/explicit-function-return-type
+   393:18  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   418:54  error    Async arrow function has no 'await' expression                              require-await
+   457:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   475:20  error    'language' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+   480:33  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   492:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   503:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   527:18  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   557:54  error    Async arrow function has no 'await' expression                              require-await
+   592:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   610:3   error    Async method 'listVoices' has no 'await' expression                         require-await
+   610:20  error    'language' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+   696:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   710:18  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   754:54  error    Async arrow function has no 'await' expression                              require-await
+   790:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   823:48  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   828:41  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   840:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   858:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   864:21  warning  Method 'createSSML' has a complexity of 17. Maximum allowed is 15           complexity
+   920:18  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+   945:54  error    Async arrow function has no 'await' expression                              require-await
+   984:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1010:33  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1022:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1033:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1058:18  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1083:54  error    Async arrow function has no 'await' expression                              require-await
+  1113:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+  1122:3   error    Async method 'listVoices' has no 'await' expression                         require-await
+  1122:20  error    'language' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  1146:21  warning  Unexpected any. Specify a different type                                    @typescript-eslint/no-explicit-any
+
+/app/src/short-creator/libraries/TTSService.ts
+   68:27  warning  Unexpected any. Specify a different type                                     @typescript-eslint/no-explicit-any
+  140:3   error    Async method 'selectProvider' has no 'await' expression                      require-await
+  140:31  warning  Async method 'selectProvider' has a complexity of 17. Maximum allowed is 15  complexity
+  145:23  error    'provider' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  165:46  error    'provider' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  171:44  error    'provider' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  191:60  error    'provider' is defined but never used. Allowed unused args must match /^_/u   @typescript-eslint/no-unused-vars
+  470:3   error    Async method 'getProviderHealth' has no 'await' expression                   require-await
+  478:3   error    Async method 'getProviderMetrics' has no 'await' expression                  require-await
+  534:3   warning  Missing return type on function                                              @typescript-eslint/explicit-function-return-type
+  548:3   error    Async method 'shutdown' has no 'await' expression                            require-await
+
+/app/src/tests/TTSQualityTestSuite.ts
+    7:38  error    'TTSVoice' is defined but never used. Allowed unused vars must match /^_/u                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   63:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+   64:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+   67:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+   75:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+   90:9   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  171:36  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  172:41  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  173:37  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  174:37  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  175:31  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  176:26  error    The result of Math.random() will change between frames while in rendering mode.
+Use the `random()` API from Remotion to get a deterministic pseudorandom value.
+If you are sure you want a true random value, use `random(null)` to hide this warning.
+See: https://remotion.dev/docs/using-randomness  @remotion/deterministic-randomness
+  262:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  263:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  267:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  272:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  273:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  274:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  275:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  282:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  283:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  299:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  300:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  306:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  318:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  319:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  321:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  325:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  326:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  337:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  338:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  339:7   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+  359:5   warning  Unexpected console statement. Only these console methods are allowed: warn, error                                                                                                                                                                                                                       no-console
+
+/app/src/types/shorts.ts
+   25:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+  187:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+  193:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+  199:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+  202:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+  285:13  error  Use an `interface` instead of a `type`  @typescript-eslint/consistent-type-definitions
+
+/app/src/ui/App.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/App.tsx
+
+/app/src/ui/components/Layout.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/components/Layout.tsx
+
+/app/src/ui/index.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/index.tsx
+
+/app/src/ui/pages/VideoCreator.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/pages/VideoCreator.tsx
+
+/app/src/ui/pages/VideoDetails.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/pages/VideoDetails.tsx
+
+/app/src/ui/pages/VideoList.tsx
+  0:0  error  Parsing error: "parserOptions.project" has been provided for @typescript-eslint/parser.
+The file was not found in any of the provided project(s): src/ui/pages/VideoList.tsx
+
+/app/src/utils/FramePackProcess.ts
+   44:26  error  Unsafe declaration merging between classes and interfaces                  @typescript-eslint/no-unsafe-declaration-merging
+   49:14  error  Unsafe declaration merging between classes and interfaces                  @typescript-eslint/no-unsafe-declaration-merging
+   71:3   error  Async method 'startProcess' has no 'await' expression                      require-await
+  161:3   error  Async method 'terminateProcess' has no 'await' expression                  require-await
+  294:54  error  'process' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  482:14  error  'error' is defined but never used                                          @typescript-eslint/no-unused-vars
+  521:3   error  Async method 'executeCommand' has no 'await' expression                    require-await
+
+✖ 671 problems (370 errors, 301 warnings)
+  11 errors and 1 warning potentially fixable with the `--fix` option.

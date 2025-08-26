@@ -17,6 +17,8 @@
     "node_modules",
     "dist",
     "vitest.config.ts",
+    "vite.config.ts",
+    "eslint.config.mjs",
     "src/ui"
   ]
 }

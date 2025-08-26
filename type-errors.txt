@@ -1,0 +1,30 @@
+src/server/routers/v2/__tests__/index.test.ts(3,21): error TS2307: Cannot find module 'supertest' or its corresponding type declarations.
+src/server/routers/v2/__tests__/videos.test.ts(3,21): error TS2307: Cannot find module 'supertest' or its corresponding type declarations.
+src/server/routers/v2/__tests__/webhooks.test.ts(3,21): error TS2307: Cannot find module 'supertest' or its corresponding type declarations.
+src/server/routers/v2/__tests__/webhooks.test.ts(144,44): error TS2503: Cannot find namespace 'vi'.
+src/server/routers/v2/__tests__/webhooks.test.ts(156,44): error TS2503: Cannot find namespace 'vi'.
+src/services/__tests__/ScriptGenerationService.test.ts(19,7): error TS2322: Type '"educational"' is not assignable to type 'ContentType'.
+src/services/__tests__/ScriptGenerationService.test.ts(34,30): error TS2322: Type '"af_heart"' is not assignable to type 'VoiceEnum | undefined'.
+src/services/__tests__/ScriptGenerationService.test.ts(34,49): error TS2322: Type '"hopeful"' is not assignable to type 'MusicMoodEnum | undefined'.
+src/services/__tests__/ScriptGenerationService.test.ts(34,67): error TS2322: Type '"portrait"' is not assignable to type 'OrientationEnum | undefined'.
+src/services/__tests__/ScriptTemplateEngine.test.ts(72,9): error TS2322: Type '"af_heart"' is not assignable to type 'VoiceEnum | undefined'.
+src/services/__tests__/ScriptTemplateEngine.test.ts(73,9): error TS2322: Type '"hopeful"' is not assignable to type 'MusicMoodEnum | undefined'.
+src/services/__tests__/ScriptTemplateEngine.test.ts(74,9): error TS2322: Type '"portrait"' is not assignable to type 'OrientationEnum | undefined'.
+src/services/__tests__/ScriptTemplateEngine.test.ts(123,7): error TS1308: 'await' expressions are only allowed within async functions and at the top levels of modules.
+src/short-creator/ShortCreator.test.ts(17,55): error TS2307: Cannot find module 'memfs' or its corresponding type declarations.
+src/short-creator/ShortCreator.test.ts(83,14): error TS2339: Property 'setFfmpegPath' does not exist on type 'Mock<() => { input: Mock<Procedure>; audioCodec: Mock<Procedure>; audioBitrate: Mock<Procedure>; audioChannels: Mock<Procedure>; ... 4 more ...; pipe: Mock<...>; }>'.
+src/short-creator/ShortCreator.test.ts(212,3): error TS2454: Variable 'resolveRenderPromise' is used before being assigned.
+src/utils/FramePackProcess.ts(85,45): error TS2345: Argument of type '{ processId: string; command: string; args: string[]; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(125,35): error TS2345: Argument of type '{ processId: string; error: string; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(139,35): error TS2345: Argument of type '{ processId: string; stderr: string; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(147,44): error TS2345: Argument of type '{ processId: string; stderr: string; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(164,56): error TS2345: Argument of type '{ processId: string; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(223,54): error TS2345: Argument of type '{ processId: string; error: any; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(223,74): error TS18046: 'error' is of type 'unknown'.
+src/utils/FramePackProcess.ts(228,60): error TS2345: Argument of type '{ processId: string; error: any; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(228,80): error TS18046: 'error' is of type 'unknown'.
+src/utils/FramePackProcess.ts(317,51): error TS2345: Argument of type '{ processId: string; error: any; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(317,71): error TS18046: 'error' is of type 'unknown'.
+src/utils/FramePackProcess.ts(356,56): error TS2345: Argument of type '{ processId: string; warnings: string[]; resourceInfo: ProcessResourceInfo; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(396,38): error TS2345: Argument of type '{ processId: string; output: string; }' is not assignable to parameter of type 'undefined'.
+src/utils/FramePackProcess.ts(404,35): error TS2345: Argument of type '{ processId: string; code: number | null; signal: NodeJS.Signals | null; }' is not assignable to parameter of type 'undefined'.
